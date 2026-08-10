@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scaled Font & Aligned Chevron Engine</title>
+  <title>Optimized Mobile Full Shoot Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +39,18 @@
           this.selectedBase = c;
           if (this.count < c) {
             this.count = c;
+          }
+        },
+
+        sanitizeInput() {
+          let val = parseInt(this.count, 10);
+          if (isNaN(val) || val < 25) val = 25;
+          if (val > 150) val = 150;
+          this.count = val;
+          if (this.count < this.selectedBase) {
+            if (this.count >= 40) this.selectedBase = 40;
+            else if (this.count >= 36) this.selectedBase = 36;
+            else this.selectedBase = 25;
           }
         },
 
@@ -87,7 +99,7 @@
         }
       }">
 
-  <!-- HEADER CONTROL SWITCHER -->
+  <!-- HEADER CONTROL SWITCHER WITH EXPANDED TOUCH TARGETS -->
   <header class="w-full max-w-sm flex items-center justify-between p-3 rounded-2xl border transition-colors duration-300"
           :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-300 shadow-md'">
     <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme</span>
@@ -95,10 +107,10 @@
          :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
       <button @click="isDark = true"
               :class="isDark ? 'bg-white text-black font-extrabold shadow-sm' : 'text-neutral-500 hover:text-black'"
-              class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all">🌙 Dark</button>
+              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all before:absolute before:-inset-1 before:content-['']">🌙 Dark</button>
       <button @click="isDark = false"
               :class="!isDark ? 'bg-black text-white font-extrabold shadow-sm' : 'text-neutral-400 hover:text-white'"
-              class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all">☀️ Light</button>
+              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all before:absolute before:-inset-1 before:content-['']">☀️ Light</button>
     </div>
   </header>
 
@@ -108,7 +120,7 @@
     
     <!-- TOP CONTROL ROW -->
     <div class="flex items-center justify-between mb-4">
-      <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all tracking-tight shrink-0"
+      <div class="relative inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold border transition-all tracking-tight shrink-0 before:absolute before:-inset-1 before:content-['']"
            :class="isDark ? 'text-neutral-300 bg-white/5 border-white/10' : 'text-neutral-800 bg-neutral-200/80 border-neutral-300 shadow-sm'">
         <svg class="w-2.5 h-2.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
@@ -116,7 +128,7 @@
         <span>Wizard</span>
       </div>
 
-      <button class="w-6 h-6 flex items-center justify-center transition-colors rounded-full"
+      <button class="relative w-8 h-8 flex items-center justify-center transition-colors rounded-full before:absolute before:-inset-1.5 before:content-['']"
               :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'"
               title="Package details">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -154,7 +166,7 @@
 
       <!-- Tax Toggle -->
       <div class="flex justify-end mt-2">
-        <label class="flex items-center gap-1.5 cursor-pointer select-none">
+        <label class="relative flex items-center gap-1.5 cursor-pointer select-none py-1 before:absolute before:-inset-1 before:content-['']">
           <span class="text-[11px] font-bold transition-colors"
                 :class="isDark ? 'text-neutral-400' : 'text-neutral-600'" 
                 x-text="includeTax ? 'Inc. Tax (8.25%)' : 'No Tax'"></span>
@@ -200,7 +212,7 @@
       </template>
     </div>
 
-    <!-- INSET LINE ITEMS WITH SCALED TEXT AND ALIGNED RIGHT CHEVRON -->
+    <!-- INSET LINE ITEMS -->
     <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300 overflow-hidden"
          :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
       
@@ -255,18 +267,15 @@
         <template x-if="targetUpgradeTier">
           <div class="flex items-center justify-between w-full select-none text-red-600 pr-2.5">
             <div class="flex items-center gap-2">
-              <!-- Spark Icon -->
               <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
               </svg>
 
-              <!-- Scaled Font (1.75x) -->
               <span class="text-[18px] font-black tracking-tight leading-none">
                 Same price! Get <span x-text="targetUpgradeTier"></span> Upgrade
               </span>
             </div>
 
-            <!-- Vertically Aligned Right Chevron -->
             <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
@@ -276,7 +285,7 @@
 
     </div>
 
-    <!-- STEPPER ROW -->
+    <!-- STEPPER ROW WITH INPUT SANITIZATION -->
     <div class="flex items-center justify-between py-1 mb-6">
       <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Image Count</span>
       
@@ -287,7 +296,12 @@
                 :class="count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
                 class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">-</button>
         
-        <input type="number" x-model.number="count"
+        <input type="number" 
+               x-model.number="count"
+               @change="sanitizeInput()"
+               @blur="sanitizeInput()"
+               min="25"
+               max="150"
                class="w-9 h-9 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors"
                :class="isDark ? 'text-white' : 'text-neutral-900'" />
         
