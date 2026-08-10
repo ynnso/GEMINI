@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full antialiased" x-data="{ isDark: true }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
+<html lang="en" class="h-full antialiased" x-data="{ isDark: false }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Light & Dark Mode Tier Selector Engine</title>
+  <title>Required Sq Ft Unlock Component</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,12 +17,22 @@
     input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     input[type=number] { -moz-appearance: textfield; }
 
-    @keyframes subtle-pulse-red {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
+    @keyframes subtle-pulse-white {
+      0%, 100% { border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+      50% { border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 12px 0 rgba(255, 255, 255, 0.25); }
     }
-    .animate-pulse-red {
-      animation: subtle-pulse-red 1.2s infinite ease-in-out;
+
+    @keyframes subtle-pulse-red-light {
+      0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 10px 0 rgba(239, 68, 68, 0.2); }
+    }
+
+    .animate-pulse-dark { animation: subtle-pulse-white 2s infinite ease-in-out; }
+    .animate-pulse-light { animation: subtle-pulse-red-light 1.8s infinite ease-in-out; }
+
+    select.text-center-select {
+      text-align-last: center;
+      text-align: center;
     }
   </style>
 </head>
@@ -31,14 +41,79 @@
         state: 'idle',
         includeTax: false,
         taxRate: 0.0825,
-        count: 47,
-        selectedBase: 40,
+        count: 25,
+        selectedBase: 25,
+        selectedSqFt: '', // Fixed: Defaults to unselected to demand user interaction
         extraCost: 5,
 
+        sqFtOptions: [
+          { label: '0 – 1,999 Sq Ft', value: '0-1999' },
+          { label: '2,000 – 2,999 Sq Ft', value: '2000-2999' },
+          { label: '3,000 – 3,999 Sq Ft', value: '3000-3999' },
+          { label: '4,000 – 4,999 Sq Ft', value: '4000-4999' },
+          { label: '5,000 – 6,999 Sq Ft', value: '5000-6999' },
+          { label: '7,000 – 9,999 Sq Ft', value: '7000-9999' },
+          { label: '10,000+ Sq Ft', value: '10000+' }
+        ],
+
+        priceMatrix: {
+          '0-1999':    { 25: 139, 36: 179, 40: 189, 50: 224 },
+          '2000-2999': { 25: 166, 36: 206, 40: 216, 50: 251 },
+          '3000-3999': { 25: 189, 36: 229, 40: 239, 50: 274 },
+          '4000-4999': { 25: 214, 36: 254, 40: 264, 50: 299 },
+          '5000-6999': { 25: 279, 36: 319, 40: 329, 50: 374 },
+          '7000-9999': { 25: 339, 36: 379, 40: 389, 50: 434 },
+          '10000+':    { 25: 399, 36: 439, 40: 449, 50: 499 }
+        },
+
+        get holdsSelection() { return this.selectedSqFt !== ''; },
+
+        handleSqFtChange() {
+          this.selectedBase = 25;
+          if (this.count < 25) this.count = 25;
+          this.evaluateCheapestBase();
+        },
+
+        getTierPrice(imgs) {
+          if (!this.holdsSelection) return '--';
+          return this.priceMatrix[this.selectedSqFt][imgs];
+        },
+
         selectTier(c) { 
+          if (!this.holdsSelection) return;
           this.selectedBase = c;
-          if (this.count < c) {
-            this.count = c;
+          this.count = c; 
+        },
+
+        evaluateCheapestBase() {
+          if (!this.holdsSelection) return;
+          const tiers = [25, 36, 40, 50];
+          
+          let bestTier = tiers[0];
+          let minCost = Infinity;
+
+          for (let t of tiers) {
+            let cost = 0;
+            if (this.count >= t) {
+              cost = this.getTierPrice(t) + (this.count - t) * this.extraCost;
+            } else {
+              cost = this.getTierPrice(t);
+            }
+
+            if (cost < minCost) {
+              minCost = cost;
+              bestTier = t;
+            }
+          }
+
+          if (this.count === 33) {
+            this.selectedBase = 25;
+          } else if (this.count === 38) {
+            this.selectedBase = 36;
+          } else if (this.count === 47) {
+            this.selectedBase = 40;
+          } else {
+            this.selectedBase = bestTier;
           }
         },
 
@@ -47,19 +122,15 @@
           if (isNaN(val) || val < 25) val = 25;
           if (val > 150) val = 150;
           this.count = val;
-          if (this.count < this.selectedBase) {
-            if (this.count >= 40) this.selectedBase = 40;
-            else if (this.count >= 36) this.selectedBase = 36;
-            else this.selectedBase = 25;
-          }
+          this.evaluateCheapestBase();
         },
 
         get effectiveTier() {
-          const basePrices = { 25: 139, 36: 179, 40: 189, 50: 224 };
-          return { imgs: this.selectedBase, price: basePrices[this.selectedBase] };
+          return { imgs: this.selectedBase, price: this.holdsSelection ? this.getTierPrice(this.selectedBase) : 0 };
         },
 
         get targetUpgradeTier() {
+          if (!this.holdsSelection) return null;
           if (this.selectedBase === 25 && this.count === 33) return 36;
           if (this.selectedBase === 36 && this.count === 38) return 40;
           if (this.selectedBase === 40 && this.count === 47) return 50;
@@ -70,27 +141,28 @@
         get extraTotal() { return this.extras * this.extraCost; },
         get rawTotal() { return this.effectiveTier.price + this.extraTotal; },
         get finalTotal() { 
+          if (!this.holdsSelection) return null;
           const amount = this.includeTax ? this.rawTotal * (1 + this.taxRate) : this.rawTotal;
           return amount.toFixed(2);
         },
 
-        get priceDollars() { return this.finalTotal.split('.')[0]; },
-        get priceCents() { return this.finalTotal.split('.')[1]; },
+        get priceDollars() { return this.finalTotal ? this.finalTotal.split('.')[0] : '--'; },
+        get priceCents() { return this.finalTotal ? '.' + this.finalTotal.split('.')[1] : ''; },
 
         updateCount(dir) {
-          if (dir === 'up' && this.count < 150) this.count++;
+          if (!this.holdsSelection) return;
+          if (dir === 'up' && this.count < 150) {
+            this.count++;
+            this.evaluateCheapestBase();
+          }
           if (dir === 'down' && this.count > 25) {
             this.count--;
-            if (this.count < this.selectedBase) {
-              if (this.count >= 40) this.selectedBase = 40;
-              else if (this.count >= 36) this.selectedBase = 36;
-              else this.selectedBase = 25;
-            }
+            this.evaluateCheapestBase();
           }
         },
 
         triggerCart() {
-          if (this.state !== 'idle') return;
+          if (!this.holdsSelection || this.state !== 'idle') return;
           this.state = 'success';
           if (window.navigator && window.navigator.vibrate) {
             window.navigator.vibrate(40);
@@ -99,7 +171,7 @@
         }
       }">
 
-  <!-- HEADER CONTROL SWITCHER -->
+  <!-- TOP HEADER CONTROL -->
   <header class="w-full max-w-sm flex items-center justify-between p-3 rounded-2xl border transition-colors duration-300"
           :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-300 shadow-md'">
     <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme</span>
@@ -107,38 +179,19 @@
          :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
       <button @click="isDark = true"
               :class="isDark ? 'bg-white text-black font-extrabold shadow-sm' : 'text-neutral-500 hover:text-black'"
-              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all before:absolute before:-inset-1 before:content-['']">🌙 Dark</button>
+              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all">🌙 Dark</button>
       <button @click="isDark = false"
               :class="!isDark ? 'bg-black text-white font-extrabold shadow-sm' : 'text-neutral-400 hover:text-white'"
-              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all before:absolute before:-inset-1 before:content-['']">☀️ Light</button>
+              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all">☀️ Light</button>
     </div>
   </header>
 
   <!-- MAIN CARD CONTAINER -->
   <main class="w-full max-w-sm py-6 border-y px-2 transition-colors duration-300"
         :class="isDark ? 'border-white/15' : 'border-neutral-300'">
-    
-    <!-- TOP CONTROL ROW -->
-    <div class="flex items-center justify-between mb-4">
-      <div class="relative inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold border transition-all tracking-tight shrink-0 before:absolute before:-inset-1 before:content-['']"
-           :class="isDark ? 'text-neutral-300 bg-white/5 border-white/10' : 'text-neutral-800 bg-neutral-200/80 border-neutral-300 shadow-sm'">
-        <svg class="w-2.5 h-2.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-        </svg>
-        <span>Wizard</span>
-      </div>
 
-      <button class="relative w-8 h-8 flex items-center justify-center transition-colors rounded-full before:absolute before:-inset-1.5 before:content-['']"
-              :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'"
-              title="Package details">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- HERO ROW -->
-    <div class="mb-6">
+    <!-- HERO TOP SECTION -->
+    <div class="mb-4">
       <div class="flex items-stretch justify-between gap-2">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors"
@@ -147,7 +200,6 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
           </div>
-          
           <div class="flex flex-col justify-between py-0.5">
             <span class="text-xs font-bold leading-none block mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
             <h1 class="text-[28px] font-black leading-none transition-colors" :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</h1>
@@ -157,20 +209,20 @@
         <div class="flex flex-col items-end justify-center select-none">
           <div class="text-[42px] font-black leading-[0.85] tracking-tight flex items-baseline transition-colors tabular-nums"
                :class="isDark ? 'text-white' : 'text-neutral-900'">
-            <sup class="text-base font-extrabold relative top-[-0.05em] mr-[1px] self-start leading-none">$</sup>
+            <template x-if="holdsSelection"><sup class="text-base font-extrabold relative top-[-0.05em] mr-[1px] self-start leading-none">$</sup></template>
             <span x-text="priceDollars"></span>
-            <sub class="text-xs font-extrabold relative bottom-[0.05em] ml-[1px] leading-none" x-text="'.' + priceCents"></sub>
+            <sub class="text-xs font-extrabold relative bottom-[0.05em] ml-[1px] leading-none" x-text="priceCents"></sub>
           </div>
         </div>
       </div>
 
       <!-- Tax Toggle -->
-      <div class="flex justify-end mt-2">
-        <label class="relative flex items-center gap-1.5 cursor-pointer select-none py-1 before:absolute before:-inset-1 before:content-['']">
+      <div class="flex justify-end mt-2" :class="!holdsSelection && 'opacity-30 pointer-events-none'">
+        <label class="relative flex items-center gap-1.5 cursor-pointer select-none py-1">
           <span class="text-[11px] font-bold transition-colors"
                 :class="isDark ? 'text-neutral-400' : 'text-neutral-600'" 
                 x-text="includeTax ? 'Inc. Tax (8.25%)' : 'No Tax'"></span>
-          <input type="checkbox" x-model="includeTax" class="sr-only">
+          <input type="checkbox" x-model="includeTax" :disabled="!holdsSelection" class="sr-only">
           <div class="w-7 h-3.5 rounded-full border relative transition-colors"
                :class="isDark 
                  ? (includeTax ? 'bg-white/30 border-white/40' : 'bg-neutral-800 border-white/10') 
@@ -185,177 +237,217 @@
       </div>
     </div>
 
-    <!-- FIXED LIGHT / DARK TIER SELECTOR TRACK -->
-    <div class="grid grid-cols-4 gap-1.5 mb-6 tabular-nums">
-      <template x-for="t in [{imgs: 25, price: 139}, {imgs: 36, price: 179}, {imgs: 40, price: 189}, {imgs: 50, price: 224}]" :key="t.imgs">
-        <button @click="selectTier(t.imgs)"
+    <!-- REQUIRED PULSING SELECT SQ FT FIELD -->
+    <div class="mb-5">
+      <label class="block text-center text-xs font-black uppercase tracking-wider mb-2"
+             :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Property Size</label>
+      
+      <div class="relative">
+        <select x-model="selectedSqFt" 
+                @change="handleSqFtChange()"
+                class="text-center-select w-full appearance-none pl-8 pr-8 py-3.5 rounded-2xl text-sm font-black border cursor-pointer focus:outline-none transition-all shadow-md"
                 :class="[
-                  /* Target Upgrade Pulsing Card */
-                  targetUpgradeTier === t.imgs 
-                    ? 'animate-pulse-red ring-2 ring-red-500 border-red-500 bg-black text-white' 
-                    : '',
-
-                  /* Active Selected Base Tier Card */
-                  effectiveTier.imgs === t.imgs && targetUpgradeTier !== t.imgs
+                  !holdsSelection 
                     ? (isDark 
-                        ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' 
-                        : 'bg-white border-neutral-900 text-neutral-900 ring-1 ring-neutral-900/20 shadow-md') 
-                    : '',
-
-                  /* Dimmed State when upgrade target is present */
-                  targetUpgradeTier && targetUpgradeTier !== t.imgs && effectiveTier.imgs !== t.imgs 
-                    ? 'opacity-40 border-transparent bg-transparent' 
-                    : '',
-
-                  /* Standard Inactive Base Tier Cards */
-                  !targetUpgradeTier && effectiveTier.imgs !== t.imgs 
-                    ? (isDark 
-                        ? 'bg-neutral-900/50 text-neutral-400 border-white/10 hover:border-white/20' 
-                        : 'bg-neutral-200/60 text-neutral-600 border-neutral-300 hover:border-neutral-400') 
-                    : ''
-                ]"
-                class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
-          
-          <span class="text-xs font-extrabold leading-tight transition-colors" 
-                :class="[
-                  targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs 
-                    ? (isDark ? 'text-white font-black' : (targetUpgradeTier === t.imgs ? 'text-white font-black' : 'text-neutral-900 font-black'))
-                    : (isDark ? 'text-neutral-400' : 'text-neutral-600')
-                ]" 
-                x-text="t.imgs + ' Imgs'"></span>
-          
-          <div class="flex items-center justify-center mt-0.5 leading-none">
-            <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px] transition-colors" 
-                 :class="[
-                   targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs 
-                     ? (isDark ? 'text-white' : (targetUpgradeTier === t.imgs ? 'text-white' : 'text-neutral-900'))
-                     : (isDark ? 'text-neutral-500' : 'text-neutral-500')
-                 ]">$</sup>
-            <span class="text-base font-black transition-colors" 
-                  :class="[
-                    targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs 
-                      ? (isDark ? 'text-white' : (targetUpgradeTier === t.imgs ? 'text-white' : 'text-neutral-900'))
-                      : (isDark ? 'text-neutral-400' : 'text-neutral-600')
-                  ]" 
-                  x-text="t.price"></span>
-          </div>
-        </button>
-      </template>
+                        ? 'animate-pulse-dark bg-neutral-900 text-white border-white/30' 
+                        : 'animate-pulse-light bg-white text-red-600 border-red-500/80') 
+                    : (isDark 
+                        ? 'bg-neutral-900 text-white border-white/20' 
+                        : 'bg-white text-neutral-900 border-neutral-300')
+                ]">
+          <option value="" disabled selected :class="isDark ? 'text-white' : 'text-neutral-900'">Select Sq Ft</option>
+          <template x-for="opt in sqFtOptions" :key="opt.value">
+            <option :value="opt.value" x-text="opt.label" :class="isDark ? 'bg-neutral-900 text-white' : 'bg-white text-neutral-900'"></option>
+          </template>
+        </select>
+        
+        <div class="absolute inset-y-0 right-3.5 flex items-center pointer-events-none"
+             :class="!holdsSelection && !isDark ? 'text-red-500' : (isDark ? 'text-white' : 'text-neutral-600')">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </div>
+      </div>
     </div>
 
-    <!-- INSET LINE ITEMS -->
-    <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300 overflow-hidden"
-         :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+    <!-- MAIN INTERACTIVE SECTION (LOCKED UNTIL SQ FT IS SELECTED) -->
+    <div :class="!holdsSelection && 'opacity-30 pointer-events-none select-none'">
       
-      <!-- Base Package Row -->
-      <div class="p-3.5 flex items-center justify-between">
-        <span class="text-sm font-semibold transition-colors"
-              :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" 
-              x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+      <!-- PHOTO TIER TILES -->
+      <div class="grid grid-cols-4 gap-1.5 mb-6 tabular-nums">
+        <template x-for="tImg in [25, 36, 40, 50]" :key="tImg">
+          <button @click="selectTier(tImg)"
+                  :disabled="!holdsSelection"
+                  :class="[
+                    targetUpgradeTier === tImg 
+                      ? 'animate-pulse-red ring-2 ring-red-500 border-red-500 bg-black text-white' 
+                      : '',
+
+                    !targetUpgradeTier && effectiveTier.imgs === tImg && holdsSelection
+                      ? (isDark 
+                          ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' 
+                          : 'bg-white border-neutral-900 text-neutral-900 ring-1 ring-neutral-900/20 shadow-md') 
+                      : '',
+
+                    targetUpgradeTier && targetUpgradeTier !== tImg 
+                      ? (isDark ? 'opacity-25 border-transparent bg-transparent' : 'opacity-30 border-transparent bg-transparent') 
+                      : '',
+
+                    !targetUpgradeTier && effectiveTier.imgs !== tImg 
+                      ? (isDark 
+                          ? 'bg-neutral-900/50 text-neutral-400 border-white/10 hover:border-white/20' 
+                          : 'bg-neutral-200/60 text-neutral-600 border-neutral-300 hover:border-neutral-400') 
+                      : ''
+                  ]"
+                  class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
+            
+            <span class="text-xs font-extrabold leading-tight transition-colors" 
+                  :class="[
+                    targetUpgradeTier === tImg 
+                      ? 'text-white font-black' 
+                      : (!targetUpgradeTier && effectiveTier.imgs === tImg && holdsSelection
+                          ? (isDark ? 'text-white font-black' : 'text-neutral-900 font-black') 
+                          : (isDark ? 'text-neutral-400' : 'text-neutral-600'))
+                  ]" 
+                  x-text="tImg + ' Imgs'"></span>
+            
+            <div class="flex items-center justify-center mt-0.5 leading-none">
+              <template x-if="holdsSelection"><sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup></template>
+              <span class="text-base font-black" 
+                    :class="[
+                      targetUpgradeTier === tImg 
+                        ? 'text-white' 
+                        : (!targetUpgradeTier && effectiveTier.imgs === tImg && holdsSelection
+                            ? (isDark ? 'text-white' : 'text-neutral-900') 
+                            : (isDark ? 'text-neutral-400' : 'text-neutral-600'))
+                    ]" 
+                    x-text="getTierPrice(tImg)"></span>
+            </div>
+          </button>
+        </template>
+      </div>
+
+      <!-- INSET LINE ITEMS -->
+      <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300 overflow-hidden"
+           :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
         
-        <div class="flex items-center text-sm font-bold transition-colors"
-             :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-          <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup>
-          <span x-text="effectiveTier.price"></span>
+        <!-- Base Package Row -->
+        <div class="p-3.5 flex items-center justify-between">
+          <span class="text-sm font-semibold transition-colors"
+                :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" 
+                x-text="'Base Package ' + (holdsSelection ? effectiveTier.imgs : 25) + ' Photos'"></span>
+          
+          <div class="flex items-center text-sm font-bold transition-colors"
+               :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+            <template x-if="holdsSelection"><sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup></template>
+            <span x-text="holdsSelection ? effectiveTier.price : '--'"></span>
+          </div>
+        </div>
+
+        <!-- Extra Photo Row / Same Price Banner -->
+        <div @click="targetUpgradeTier && selectTier(targetUpgradeTier)"
+             class="p-3.5 flex items-center justify-between transition-all duration-300 h-[52px]"
+             :class="[
+               targetUpgradeTier 
+                 ? 'bg-white text-red-600 cursor-pointer hover:bg-neutral-100 active:scale-[0.99]' 
+                 : (extras > 0 && holdsSelection
+                     ? (isDark ? 'bg-white text-black font-black' : 'bg-black text-white font-black') 
+                     : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold'))
+             ]">
+          
+          <template x-if="!targetUpgradeTier">
+            <div class="flex items-center justify-between w-full">
+              <div class="text-sm transition-colors flex items-center">
+                <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup>
+                <span x-text="extras > 0 && holdsSelection ? '5 / Extra Photo × ' + extras : '5 / Extra Photo'"></span>
+              </div>
+              
+              <div class="flex items-center text-sm font-bold transition-colors">
+                <template x-if="extras > 0 && holdsSelection">
+                  <div>
+                    <span>+</span><sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup><span x-text="extraTotal"></span>
+                  </div>
+                </template>
+                <template x-if="extras === 0 || !holdsSelection">
+                  <div>
+                    <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup><span>0</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <template x-if="targetUpgradeTier">
+            <div class="flex items-center justify-between w-full select-none text-red-600 pr-2.5">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+
+                <span class="text-[18px] font-black tracking-tight leading-none">
+                  Same price! Get <span x-text="targetUpgradeTier"></span> Upgrade
+                </span>
+              </div>
+
+              <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+          </template>
+        </div>
+
+      </div>
+
+      <!-- STEPPER ROW -->
+      <div class="flex items-center justify-between py-1 mb-6">
+        <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Image Count</span>
+        
+        <div class="flex items-center p-1 rounded-2xl border transition-colors"
+             :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+          
+          <button @click="updateCount('down')" :disabled="!holdsSelection || count <= 25"
+                  :class="!holdsSelection || count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                  class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">-</button>
+          
+          <input type="number" 
+                 x-model.number="count"
+                 @change="sanitizeInput()"
+                 @blur="sanitizeInput()"
+                 :disabled="!holdsSelection"
+                 min="25"
+                 max="150"
+                 class="w-9 h-9 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors"
+                 :class="isDark ? 'text-white' : 'text-neutral-900'" />
+          
+          <button @click="updateCount('up')" :disabled="!holdsSelection || count >= 150"
+                  :class="!holdsSelection || count >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                  class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">+</button>
         </div>
       </div>
 
-      <!-- Extra Photo Row / Red Toast Banner -->
-      <div @click="targetUpgradeTier && selectTier(targetUpgradeTier)"
-           class="p-3.5 flex items-center justify-between transition-all duration-300 h-[52px]"
-           :class="[
-             targetUpgradeTier 
-               ? 'bg-white text-red-600 cursor-pointer hover:bg-neutral-100 active:scale-[0.99]' 
-               : (extras > 0 
-                   ? (isDark ? 'bg-white text-black font-black' : 'bg-black text-white font-black') 
-                   : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold'))
-           ]">
-        
-        <!-- Standard Extra State -->
-        <template x-if="!targetUpgradeTier">
-          <div class="flex items-center justify-between w-full">
-            <div class="text-sm transition-colors flex items-center">
-              <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup>
-              <span x-text="extras > 0 ? '5 / Extra Photo × ' + extras : '5 / Extra Photo'"></span>
-            </div>
-            
-            <div class="flex items-center text-sm font-bold transition-colors">
-              <template x-if="extras > 0">
-                <div>
-                  <span>+</span><sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup><span x-text="extraTotal"></span>
-                </div>
-              </template>
-              <template x-if="extras === 0">
-                <div>
-                  <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup><span>0</span>
-                </div>
-              </template>
-            </div>
-          </div>
-        </template>
-
-        <!-- Red Banner with Scaled Font & Right Chevron Aligned to Cart Button -->
-        <template x-if="targetUpgradeTier">
-          <div class="flex items-center justify-between w-full select-none text-red-600 pr-2.5">
-            <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-              </svg>
-
-              <span class="text-[18px] font-black tracking-tight leading-none">
-                Same price! Get <span x-text="targetUpgradeTier"></span> Upgrade
-              </span>
-            </div>
-
-            <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </div>
-        </template>
-      </div>
-
     </div>
 
-    <!-- STEPPER ROW WITH INPUT SANITIZATION -->
-    <div class="flex items-center justify-between py-1 mb-6">
-      <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Image Count</span>
-      
-      <div class="flex items-center p-1 rounded-2xl border transition-colors"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        
-        <button @click="updateCount('down')" :disabled="count <= 25"
-                :class="count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
-                class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">-</button>
-        
-        <input type="number" 
-               x-model.number="count"
-               @change="sanitizeInput()"
-               @blur="sanitizeInput()"
-               min="25"
-               max="150"
-               class="w-9 h-9 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors"
-               :class="isDark ? 'text-white' : 'text-neutral-900'" />
-        
-        <button @click="updateCount('up')" :disabled="count >= 150"
-                :class="count >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
-                class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">+</button>
-      </div>
-    </div>
-
-    <!-- PRIMARY CTA BUTTON -->
-    <button @click="triggerCart()" :disabled="state !== 'idle'"
-            :class="isDark 
-              ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
-              : (state === 'success' ? 'bg-white border-2 border-black text-black' : 'bg-black text-white hover:bg-neutral-800')"
-            class="relative w-full h-12 px-6 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-2xl active:scale-[0.98] disabled:pointer-events-none">
+    <!-- PRIMARY CART CTA BUTTON -->
+    <button @click="triggerCart()" 
+            :disabled="!holdsSelection || state !== 'idle'"
+            :class="[
+              !holdsSelection 
+                ? (isDark 
+                    ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500 border border-white/10' 
+                    : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500 border border-neutral-300') 
+                : (isDark 
+                    ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
+                    : (state === 'success' ? 'bg-white border-2 border-black text-black' : 'bg-black text-white hover:bg-neutral-800'))
+            ]"
+            class="relative w-full h-12 px-6 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-2xl active:scale-[0.98] mb-4">
       
       <template x-if="state !== 'success'">
         <div class="flex items-center justify-between w-full">
           <div class="w-6"></div>
-          <svg class="w-7 h-7" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="w-7 h-7" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
           </svg>
-          <svg class="w-5 h-5" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <svg class="w-5 h-5" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
         </div>
@@ -377,6 +469,25 @@
       </template>
 
     </button>
+
+    <!-- FOOTER WIZARD & INFO FOOTER ROW -->
+    <div class="flex items-center justify-between pt-1">
+      <div class="relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold border transition-all tracking-tight shrink-0 cursor-pointer"
+           :class="isDark ? 'text-neutral-300 bg-white/5 border-white/10 hover:border-white/30' : 'text-neutral-800 bg-neutral-200/80 border-neutral-300 hover:border-neutral-400 shadow-sm'">
+        <svg class="w-3 h-3" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+        </svg>
+        <span>Wizard</span>
+      </div>
+
+      <button class="w-8 h-8 flex items-center justify-center transition-colors rounded-full"
+              :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'"
+              title="Shoot details">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+        </svg>
+      </button>
+    </div>
 
   </main>
 </body>
