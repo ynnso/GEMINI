@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full antialiased" x-data="{ isDark: false }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
+<html lang="en" class="h-full antialiased" x-data="{ isDark: false, redHero: false }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Outdoor-Optimized Light Mode</title>
+  <title>Light Mode Outdoor Optimized</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .tabular-nums { font-variant-numeric: tabular-nums; }
@@ -61,48 +61,55 @@
         }
       }">
 
-  <!-- THEME SWITCHER -->
-  <header class="w-full max-w-sm flex items-center justify-between z-50 p-3 rounded-2xl border transition-colors duration-300"
-          :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-200 shadow-md'">
-    <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme Mode</span>
+  <!-- DUAL CONTROL SWITCHER HEADER -->
+  <header class="w-full max-w-sm flex flex-col gap-2 z-50 p-3 rounded-2xl border transition-colors duration-300"
+          :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-300 shadow-md'">
     
-    <div class="flex items-center gap-1 p-1 rounded-xl border transition-colors"
-         :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
-      <button @click="isDark = true"
-              :class="isDark ? 'bg-white text-black font-extrabold shadow-sm' : 'text-neutral-500 hover:text-black'"
-              class="px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
-        <span>🌙</span> Dark
-      </button>
-      <button @click="isDark = false"
-              :class="!isDark ? 'bg-black text-white font-extrabold shadow-sm' : 'text-neutral-400 hover:text-white'"
-              class="px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
-        <span>☀️</span> Light
+    <!-- Theme Toggle -->
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme</span>
+      <div class="flex items-center gap-1 p-1 rounded-xl border transition-colors"
+           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
+        <button @click="isDark = true"
+                :class="isDark ? 'bg-white text-black font-extrabold shadow-sm' : 'text-neutral-500 hover:text-black'"
+                class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all">🌙 Dark</button>
+        <button @click="isDark = false"
+                :class="!isDark ? 'bg-black text-white font-extrabold shadow-sm' : 'text-neutral-400 hover:text-white'"
+                class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all">☀️ Light</button>
+      </div>
+    </div>
+
+    <!-- Hero Color Accent Toggle -->
+    <div class="flex items-center justify-between border-t pt-2" :class="isDark ? 'border-white/10' : 'border-neutral-200'">
+      <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Hero Price Accent</span>
+      <button @click="redHero = !redHero"
+              :class="redHero ? 'bg-red-600 text-white font-extrabold' : (isDark ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-200 text-neutral-800')"
+              class="px-3 py-1 rounded-lg text-xs font-bold transition-all">
+        <span x-text="redHero ? 'Red Hero Active' : 'Default Hero'"></span>
       </button>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
+  <!-- MAIN CARD CONTAINER -->
   <main class="w-full max-w-sm py-6 border-y px-2 transition-colors duration-300"
         :class="isDark ? 'border-white/15' : 'border-neutral-300'">
     
     <!-- HEADER ROW -->
     <div class="flex items-center justify-between mb-5">
-      <!-- WIZARD CHIP WITH HOVER & SCALE -->
-      <button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 active:scale-95 cursor-pointer"
+      <button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 active:scale-95 cursor-pointer shadow-sm"
               :class="isDark 
-                ? 'text-neutral-200 bg-white/10 border border-white/15 hover:bg-white/20 hover:text-white' 
-                : 'text-neutral-800 bg-neutral-200/90 border border-neutral-300 hover:bg-neutral-300/80 hover:text-black shadow-sm'">
-        <svg class="w-3.5 h-3.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                ? 'text-white bg-white/10 border border-white/15 hover:bg-white/20' 
+                : 'text-neutral-900 bg-neutral-200 border border-neutral-300 hover:bg-neutral-300'">
+        <svg class="w-4 h-4" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
         </svg>
         <span>Wizard</span>
       </button>
 
-      <!-- INFO ICON -->
       <button class="w-9 h-9 flex items-center justify-center transition-colors rounded-full hover:bg-black/5"
-              :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-700 hover:text-black'"
+              :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-800 hover:text-black'"
               title="Package details">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
         </svg>
       </button>
@@ -111,34 +118,34 @@
     <!-- HERO ROW -->
     <div class="flex items-start justify-between gap-3 mb-6">
       <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border transition-colors"
-             :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-neutral-300 text-neutral-900 shadow-sm'">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <div class="w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 border transition-colors shadow-sm"
+             :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-neutral-300 text-neutral-900'">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         </div>
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-widest block transition-colors"
+          <span class="text-xs font-extrabold uppercase tracking-widest block transition-colors"
                 :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">MLS PHOTOS</span>
-          <h3 class="text-xl font-extrabold leading-tight transition-colors"
+          <h3 class="text-2xl font-black leading-tight transition-colors"
               :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</h3>
         </div>
       </div>
 
-      <!-- TIGHTENED HERO PRICE (FIXED CENTS & UNIFIED $) -->
+      <!-- TIGHTENED HERO PRICE & OPTIONAL RED ACCENT -->
       <div class="flex flex-col items-end shrink-0">
-        <div class="font-extrabold text-3xl tracking-tight flex items-baseline leading-none select-none transition-colors"
-             :class="isDark ? 'text-white' : 'text-neutral-900'">
-          <span class="text-base font-bold mr-0.5 self-start mt-0.5">$</span>
+        <div class="font-black text-3xl tracking-tight inline-flex items-baseline leading-none select-none transition-colors"
+             :class="redHero 
+               ? 'text-red-600' 
+               : (isDark ? 'text-white' : 'text-neutral-900')">
+          <span class="text-lg font-extrabold mr-0.5">$</span>
           <span class="tabular-nums" x-text="priceDollars"></span>
-          <span class="text-xs font-bold tabular-nums ml-0.5" 
-                :class="isDark ? 'text-neutral-300' : 'text-neutral-700'"
-                x-text="'.' + priceCents"></span>
+          <span class="text-sm font-extrabold tabular-nums ml-0.5" x-text="'.' + priceCents"></span>
         </div>
         
         <!-- TAX TOGGLE -->
         <label class="flex items-center gap-2 mt-2 cursor-pointer select-none">
-          <span class="text-[11px] font-bold transition-colors"
+          <span class="text-xs font-bold transition-colors"
                 :class="isDark ? 'text-neutral-400' : 'text-neutral-700'" 
                 x-text="includeTax ? 'Inc. Tax' : 'No Tax'"></span>
           <input type="checkbox" x-model="includeTax" class="sr-only">
@@ -161,71 +168,71 @@
       <template x-for="t in [{imgs: 25, price: 139}, {imgs: 36, price: 179}, {imgs: 40, price: 189}, {imgs: 50, price: 224}]" :key="t.imgs">
         <button @click="selectTier(t.imgs)"
                 :class="isDark 
-                  ? (effectiveTier.imgs === t.imgs ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' : 'bg-neutral-900/40 text-neutral-500 border-white/10 hover:border-white/20')
+                  ? (effectiveTier.imgs === t.imgs ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' : 'bg-neutral-900/40 text-neutral-400 border-white/10 hover:border-white/20')
                   : (effectiveTier.imgs === t.imgs ? 'bg-neutral-900 text-white border-neutral-900 ring-1 ring-neutral-900/20 shadow-md' : 'bg-white text-neutral-900 border-neutral-300 hover:border-neutral-400 shadow-sm')"
-                class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
+                class="py-3 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
           
-          <span class="text-xs font-bold leading-tight" 
+          <span class="text-xs font-extrabold leading-tight" 
                 :class="isDark 
                   ? (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-400') 
                   : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-900')" 
                 x-text="t.imgs + ' Imgs'"></span>
           
           <div class="flex items-baseline justify-center mt-0.5 leading-none">
-            <span class="text-[10px] font-bold mr-[1px]" 
+            <span class="text-xs font-bold mr-[1px]" 
                   :class="isDark 
                     ? (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-400') 
-                    : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-600')">$</span>
-            <span class="text-sm font-extrabold" 
+                    : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-700')">$</span>
+            <span class="text-base font-black" 
                   :class="isDark 
-                    ? (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-300') 
-                    : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-800')" 
+                    ? (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-200') 
+                    : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-900')" 
                   x-text="t.price"></span>
           </div>
         </button>
       </template>
     </div>
 
-    <!-- FINTECH GROUPED INSET LINE ITEMS -->
+    <!-- LINE ITEMS CONTAINER -->
     <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300"
          :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
       
-      <!-- Base Package Row -->
+      <!-- Base Package -->
       <div class="p-3.5 flex items-center justify-between">
-        <span class="text-xs font-medium transition-colors"
-              :class="isDark ? 'text-neutral-400' : 'text-neutral-600'" 
+        <span class="text-sm font-semibold transition-colors"
+              :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" 
               x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
         
-        <div class="flex items-baseline leading-none text-xs font-bold transition-colors"
-             :class="isDark ? 'text-neutral-400' : 'text-neutral-700'">
-          <span class="text-[10px] mr-[1px]">$</span>
+        <div class="flex items-baseline text-sm font-bold transition-colors"
+             :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+          <span class="mr-[1px]">$</span>
           <span x-text="effectiveTier.price"></span>
         </div>
       </div>
 
-      <!-- Dynamic Overage Row -->
+      <!-- Overage Row -->
       <div class="p-3.5 flex items-center justify-between transition-colors duration-200"
            :class="extras > 0 
-             ? (isDark ? 'bg-white/5' : 'bg-neutral-100/80') 
+             ? (isDark ? 'bg-white/5' : 'bg-neutral-100') 
              : ''">
         
-        <span class="text-xs transition-colors" 
+        <span class="text-sm transition-colors" 
               :class="extras > 0 
-                ? (isDark ? 'text-white font-extrabold' : 'text-black font-extrabold') 
-                : (isDark ? 'text-neutral-500 font-medium' : 'text-neutral-500 font-medium')" 
+                ? (isDark ? 'text-white font-black' : 'text-black font-black') 
+                : (isDark ? 'text-neutral-400 font-semibold' : 'text-neutral-600 font-semibold')" 
               x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
         
-        <span class="text-xs font-bold transition-colors" 
+        <span class="text-sm font-bold transition-colors" 
               :class="extras > 0 
-                ? (isDark ? 'text-white font-extrabold' : 'text-black font-extrabold') 
-                : (isDark ? 'text-neutral-500 font-medium' : 'text-neutral-500 font-medium')" 
+                ? (isDark ? 'text-white font-black' : 'text-black font-black') 
+                : (isDark ? 'text-neutral-400 font-semibold' : 'text-neutral-600 font-semibold')" 
               x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
       </div>
     </div>
 
     <!-- STEPPER ROW -->
     <div class="flex items-center justify-between py-1 mb-6">
-      <span class="text-xs font-bold transition-colors" :class="isDark ? 'text-neutral-300' : 'text-neutral-900'">Total Image Count</span>
+      <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Image Count</span>
       
       <div class="flex items-center p-1 rounded-2xl border transition-colors"
            :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
@@ -233,22 +240,22 @@
         <button @click="updateCount('down')" :disabled="count <= 25"
                 :class="count <= 25 
                   ? 'opacity-20 cursor-not-allowed' 
-                  : (isDark ? 'hover:bg-neutral-800 text-neutral-300' : 'hover:bg-neutral-100 text-neutral-900')"
-                class="w-9 h-9 rounded-xl font-extrabold text-base flex items-center justify-center transition-all active:scale-95">-</button>
+                  : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                class="w-10 h-10 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">-</button>
         
         <input type="number" x-model.number="count"
-               class="w-9 h-9 bg-transparent text-center text-xs font-extrabold focus:outline-none tabular-nums transition-colors"
+               class="w-10 h-10 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors"
                :class="isDark ? 'text-white' : 'text-neutral-900'" />
         
         <button @click="updateCount('up')" :disabled="count >= 150"
                 :class="count >= 150 
                   ? 'opacity-20 cursor-not-allowed' 
-                  : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-neutral-900')"
-                class="w-9 h-9 rounded-xl font-extrabold text-base flex items-center justify-center transition-all active:scale-95">+</button>
+                  : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                class="w-10 h-10 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">+</button>
       </div>
     </div>
 
-    <!-- PRIMARY CTA BUTTON -->
+    <!-- CTA BUTTON -->
     <button @click="triggerCart()" :disabled="state !== 'idle'"
             :class="isDark 
               ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
@@ -258,11 +265,9 @@
       <template x-if="state !== 'success'">
         <div class="flex items-center justify-between w-full">
           <div class="w-6"></div>
-          
           <svg class="w-7 h-7" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
           </svg>
-          
           <svg class="w-5 h-5" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
@@ -272,14 +277,12 @@
       <template x-if="state === 'success'">
         <div class="flex items-center justify-between w-full">
           <div class="w-6"></div>
-          
           <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
                :class="isDark ? 'bg-white text-black' : 'bg-black text-white'">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
           </div>
-          
           <svg class="w-5 h-5" :class="isDark ? 'text-white' : 'text-black'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
