@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full Shoot - Gold Standard Pro Edition</title>
+  <title>Full Shoot - Final UI Polish</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
         flashingTier: null,
         includeTax: false,
         taxRate: 0.08,
-        count: 33,
+        count: 26,
         previousTierImgs: 25,
         maxCount: 150,
         extraCost: 5,
@@ -61,9 +61,8 @@
           return amount.toFixed(2);
         },
 
-        get priceDollars() { return this.finalTotal.split('.')[0].padStart(3, '0'); },
+        get priceDollars() { return this.finalTotal.split('.')[0].split(''); },
         get priceCents() { return this.finalTotal.split('.')[1]; },
-        getDigit(str, index) { return parseInt(str[index]) || 0; },
 
         validateInput() {
           let val = parseInt(this.count);
@@ -92,193 +91,196 @@
         }
       }">
 
-  <!-- TOAST NOTIFICATION -->
+  <!-- FLOATING TOAST -->
   <aside x-show="toast" 
          x-transition:enter="transition ease-out duration-300 transform"
-         x-transition:enter-start="-translate-y-3 opacity-0 scale-95"
+         x-transition:enter-start="-translate-y-4 opacity-0 scale-95"
          x-transition:enter-end="translate-y-0 opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-200 transform"
          x-transition:leave-start="translate-y-0 opacity-100"
-         x-transition:leave-end="-translate-y-2 opacity-0"
+         x-transition:leave-end="-translate-y-4 opacity-0"
          x-cloak
-         class="absolute -top-12 left-0 right-0 mx-auto w-max bg-neutral-900 border border-white/20 px-4 py-1.5 rounded-full shadow-2xl flex items-center gap-2 text-xs font-semibold text-white z-50">
-      <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
-      <span>Added to cart • <span class="text-neutral-300 tabular-nums" x-text="'$' + finalTotal"></span></span>
+         class="fixed top-6 left-0 right-0 mx-auto w-max bg-neutral-900/90 backdrop-blur-xl border border-white/20 px-4 py-2 rounded-full shadow-2xl flex items-center gap-2.5 text-xs font-semibold text-white z-50">
+      <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+      <span>Added to cart • <span class="text-neutral-300 tabular-nums font-bold" x-text="'$' + finalTotal"></span></span>
   </aside>
 
   <!-- CARD CONTAINER -->
-  <main class="w-full max-w-sm relative bg-[#0A0A0A] p-6 rounded-3xl border border-white/10 shadow-2xl transition-all duration-300">
+  <main class="w-full max-w-sm relative bg-[#0D0D0D] p-6 rounded-[28px] border border-white/10 shadow-2xl backdrop-blur-2xl">
     
     <!-- 1. Header Controls -->
-    <div class="flex items-center justify-between mb-4">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/5 border border-white/10 text-neutral-400 uppercase tracking-wider">
-        🪄 Wizard Pro
+    <div class="flex items-center justify-between mb-5">
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium text-neutral-400 bg-white/5 border border-white/10">
+        <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+        </svg>
+        <span>Wizard</span>
       </span>
-      <button class="w-6 h-6 rounded-full border border-white/10 flex items-center justify-center text-xs text-neutral-400 hover:border-white/30 transition-colors">
-        ⓘ
+      <button class="w-11 h-11 -mr-2.5 -mt-2 rounded-full flex items-center justify-center text-xs text-neutral-400 hover:text-white transition-colors" title="Package details">
+        <span class="w-6 h-6 rounded-full border border-white/15 flex items-center justify-center">ⓘ</span>
       </button>
     </div>
 
     <!-- 2. Hero Row -->
-    <div class="flex items-start justify-between gap-3 mb-5">
+    <div class="flex items-start justify-between gap-3 mb-6">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-black border border-white/15 flex items-center justify-center text-white shrink-0">
+        <div class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white shrink-0">
           <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         </div>
         <div>
           <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest block">MLS PHOTOS</span>
-          <h3 class="text-base font-extrabold text-white leading-tight">Full Shoot</h3>
+          <h3 class="text-lg font-extrabold text-white leading-tight">Full Shoot</h3>
         </div>
       </div>
 
-      <!-- HERO PRICE -->
+      <!-- Hero Price -->
       <div class="flex flex-col items-end shrink-0">
-        <div class="text-red-500 font-extrabold text-3xl tracking-tighter flex items-start leading-none select-none">
-          <span class="text-xs font-bold leading-none mt-0.5 mr-[1px]">$</span>
+        <div class="text-white font-extrabold text-3xl tracking-tight flex items-start leading-none select-none">
+          <span class="text-sm font-bold leading-none mt-0.5 mr-0.5 text-white">$</span>
           
           <div class="flex items-baseline leading-none">
-            <div class="w-[0.52em] h-[1em] overflow-hidden inline-flex justify-center leading-none">
-              <div class="flex flex-col transition-transform duration-300 ease-out" 
-                   :style="`transform: translateY(-${getDigit(priceDollars, 0) * 1}em);`">
-                <template x-for="n in 10" :key="n-1"><span class="h-[1em] flex items-center justify-center" x-text="n-1"></span></template>
-              </div>
-            </div>
-
-            <div class="w-[0.52em] h-[1em] overflow-hidden inline-flex justify-center leading-none">
-              <div class="flex flex-col transition-transform duration-300 ease-out" 
-                   :style="`transform: translateY(-${getDigit(priceDollars, 1) * 1}em);`">
-                <template x-for="n in 10" :key="n-1"><span class="h-[1em] flex items-center justify-center" x-text="n-1"></span></template>
-              </div>
-            </div>
-
-            <div class="w-[0.52em] h-[1em] overflow-hidden inline-flex justify-center leading-none">
-              <div class="flex flex-col transition-transform duration-300 ease-out" 
-                   :style="`transform: translateY(-${getDigit(priceDollars, 2) * 1}em);`">
-                <template x-for="n in 10" :key="n-1"><span class="h-[1em] flex items-center justify-center" x-text="n-1"></span></template>
-              </div>
-            </div>
+            <template x-for="(char, i) in priceDollars" :key="i">
+              <span class="tabular-nums text-white" x-text="char"></span>
+            </template>
           </div>
 
-          <div class="flex items-baseline text-xs font-bold leading-none ml-[1px] self-end mb-0.5">
-            <span class="mr-[1px]">.</span>
-            <div class="w-[0.52em] h-[1em] overflow-hidden inline-flex justify-center leading-none">
-              <div class="flex flex-col transition-transform duration-300 ease-out" 
-                   :style="`transform: translateY(-${getDigit(priceCents, 0) * 1}em);`">
-                <template x-for="n in 10" :key="n-1"><span class="h-[1em] flex items-center justify-center" x-text="n-1"></span></template>
-              </div>
-            </div>
-            <div class="w-[0.52em] h-[1em] overflow-hidden inline-flex justify-center leading-none">
-              <div class="flex flex-col transition-transform duration-300 ease-out" 
-                   :style="`transform: translateY(-${getDigit(priceCents, 1) * 1}em);`">
-                <template x-for="n in 10" :key="n-1"><span class="h-[1em] flex items-center justify-center" x-text="n-1"></span></template>
-              </div>
-            </div>
+          <div class="flex items-baseline text-xs font-bold leading-none ml-0.5 self-end mb-0.5 text-neutral-400">
+            <span>.</span>
+            <span class="tabular-nums" x-text="priceCents"></span>
           </div>
         </div>
         
         <!-- Tax Switcher -->
-        <label class="flex items-center gap-1.5 mt-2 cursor-pointer select-none">
+        <label class="flex items-center gap-2 mt-2 cursor-pointer select-none">
           <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider" x-text="includeTax ? 'Inc. Tax' : 'No Tax'"></span>
           <input type="checkbox" x-model="includeTax" class="sr-only">
-          <div class="w-6 h-3.5 bg-neutral-800 rounded-full border border-white/10 transition-colors relative"
-               :class="includeTax ? 'bg-white/20 border-white/30' : 'bg-neutral-800'">
-            <div class="w-2.5 h-2.5 bg-neutral-400 rounded-full absolute top-0.5 left-0.5 transition-transform"
-                 :class="includeTax ? 'translate-x-2.5 bg-white' : 'translate-x-0'"></div>
+          <div class="w-8 h-4 bg-neutral-800 rounded-full border border-white/10 transition-colors relative"
+               :class="includeTax ? 'bg-white/30 border-white/40' : 'bg-neutral-800'">
+            <div class="w-3 h-3 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform shadow-md"
+                 :class="includeTax ? 'translate-x-4' : 'translate-x-0'"></div>
           </div>
         </label>
       </div>
     </div>
 
-    <!-- 3. Tier Buttons -->
-    <div class="grid grid-cols-2 gap-2 mb-4">
+    <!-- 3. 4-Up Horizontal Track -->
+    <div class="grid grid-cols-4 gap-1.5 mb-5 tabular-nums">
       <template x-for="t in [{imgs: 25, price: 139}, {imgs: 36, price: 179}, {imgs: 40, price: 189}, {imgs: 50, price: 224}]" :key="t.imgs">
         <button @click="selectTier(t.imgs)"
-                :class="effectiveTier.imgs === t.imgs ? 'bg-white text-black border-white shadow-lg' : 'bg-neutral-900 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white'"
-                :style="flashingTier === t.imgs ? 'box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 0 16px rgba(255, 255, 255, 0.4);' : ''"
-                class="py-2.5 px-3 rounded-2xl border flex flex-col items-center justify-center transition-all duration-300 active:scale-95 relative">
-          <span class="text-xs font-bold" :class="effectiveTier.imgs === t.imgs ? 'text-black' : 'text-neutral-300'" x-text="t.imgs + ' Images'"></span>
+                :class="effectiveTier.imgs === t.imgs ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' : 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white'"
+                class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
           
-          <div class="mt-0.5 flex items-center gap-1">
-            <template x-if="flashingTier === t.imgs">
-              <svg class="w-3.5 h-3.5 text-black shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            </template>
-            <span class="text-sm font-extrabold" 
-                  :class="effectiveTier.imgs === t.imgs ? 'text-black' : 'text-white'"
-                  x-text="flashingTier === t.imgs ? 'Upgraded!' : '$' + t.price"></span>
+          <span class="text-[11px] font-bold leading-tight" :class="effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-300'" x-text="t.imgs + ' Imgs'"></span>
+          
+          <div class="flex items-start justify-center mt-0.5 leading-none">
+            <span class="text-[9px] font-bold text-white mt-[1px] mr-[1px]">$</span>
+            <span class="text-xs font-extrabold text-white" x-text="t.price"></span>
           </div>
+
         </button>
       </template>
     </div>
 
-    <!-- 4. Line-Item Breakdown -->
-    <div class="py-3 border-y border-white/10 space-y-2 mb-4 text-xs tabular-nums">
-      <div class="flex justify-between text-neutral-400">
-        <span>Base Package</span>
-        <span class="text-white font-semibold" x-text="effectiveTier.imgs + ' Images ($' + effectiveTier.price + ')'"></span>
+    <!-- 4. Line Items with Refined Active/Inactive Color States -->
+    <div class="space-y-2 mb-5 tabular-nums">
+      <!-- Base Package Row -->
+      <div class="bg-neutral-900/90 border border-white/10 p-3.5 rounded-2xl flex items-center justify-between">
+        <span class="text-xs font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        
+        <div class="flex items-start leading-none">
+          <span class="text-[10px] font-bold text-white mt-[1px] mr-[1px]">$</span>
+          <span class="text-xs font-extrabold text-white" x-text="effectiveTier.price"></span>
+        </div>
       </div>
 
-      <div class="flex justify-between items-center">
-        <span class="text-neutral-400" 
-              x-text="extras > 0 ? '$5/extra × ' + extras : (count < effectiveTier.imgs ? 'Included Capacity' : '$5/extra')">
-        </span>
-
-        <span class="font-bold transition-all" 
-              :class="extras === 0 ? 'text-neutral-500 font-normal' : 'text-white'"
-              x-text="extras > 0 ? '+$' + extraTotal : (count < effectiveTier.imgs ? count + '/' + effectiveTier.imgs : '-')">
-        </span>
+      <!-- Extras Row with Exact Color Mapping -->
+      <div class="bg-neutral-900/90 border p-3.5 rounded-2xl flex items-center justify-between transition-all duration-200"
+           :class="extras > 0 ? 'border-red-500/40 bg-red-500/5' : 'border-white/10'">
+        
+        <div class="flex items-center text-xs font-bold">
+          <span class="text-white font-extrabold">$5</span>
+          <span :class="extras > 0 ? 'text-white' : 'text-neutral-400'"
+                x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
+        </div>
+        
+        <div class="flex items-start leading-none font-extrabold text-xs">
+          <template x-if="extras > 0">
+            <div class="flex items-center">
+              <span class="text-white">+</span>
+              <span class="text-white text-[10px] font-bold mt-[1px] mx-[0.5px]">$</span>
+              <span class="text-red-500 font-extrabold" x-text="extraTotal"></span>
+            </div>
+          </template>
+          
+          <template x-if="extras === 0">
+            <span class="text-neutral-500 font-bold">$0</span>
+          </template>
+        </div>
       </div>
     </div>
 
     <!-- 5. Stepper Row -->
-    <div class="flex items-center justify-between py-1 mb-4">
-      <span class="text-xs font-semibold text-neutral-300">Image Count</span>
+    <div class="flex items-center justify-between py-1 mb-5">
+      <span class="text-xs font-bold text-neutral-300">Total Image Count</span>
       <div class="flex items-center gap-1 bg-neutral-900 p-1 rounded-2xl border border-white/10">
         <button @click="updateCount('down')" 
                 :disabled="count <= 25"
-                :class="count <= 25 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-neutral-700 active:scale-95 text-white'"
-                class="w-8 h-8 rounded-xl bg-neutral-800 font-bold text-sm flex items-center justify-center transition-all duration-150">
+                :class="count <= 25 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-neutral-800 active:scale-95 text-white'"
+                class="w-10 h-10 rounded-xl font-bold text-base flex items-center justify-center transition-all">
           -
         </button>
         
         <input type="number" 
                x-model.number="count"
                @blur="validateInput()"
+               @focus="$el.scrollIntoView({behavior: 'smooth'})"
                @keydown.enter="$event.target.blur()"
-               class="w-14 h-8 bg-transparent text-center text-xs font-bold text-white focus:outline-none focus:bg-neutral-800 rounded-lg tabular-nums" />
+               class="w-12 h-10 bg-transparent text-center text-xs font-bold text-white focus:outline-none focus:bg-neutral-800/80 rounded-lg tabular-nums" />
 
         <button @click="updateCount('up')"
                 :disabled="count >= maxCount"
-                :class="count >= maxCount ? 'opacity-20 cursor-not-allowed' : 'hover:bg-neutral-700 active:scale-95 text-white'"
-                class="w-8 h-8 rounded-xl bg-neutral-800 text-white font-bold text-sm flex items-center justify-center hover:bg-neutral-700 active:scale-95 transition-all duration-150">
+                :class="count >= maxCount ? 'opacity-20 cursor-not-allowed' : 'hover:bg-neutral-800 active:scale-95 text-white'"
+                class="w-10 h-10 rounded-xl font-bold text-base flex items-center justify-center transition-all">
           +
         </button>
       </div>
     </div>
 
-    <!-- 6. CTA Button -->
+    <!-- 6. Matched CTA Button -->
     <button @click="triggerSequence()" :disabled="state !== 'idle'"
-            :class="state === 'success' ? 'bg-black border-[2.5px] border-white text-white' : 'bg-white border-[2.5px] border-black text-black active:scale-[0.98]'"
-            class="relative w-full h-12 rounded-2xl flex items-center justify-between px-5 transition-all duration-300 group disabled:pointer-events-none z-10">
+            :class="state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200 active:scale-[0.98]'"
+            class="relative w-full h-13 py-3.5 px-5 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-xl disabled:pointer-events-none">
       
-      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <svg x-show="state !== 'success'" class="w-6 h-6 text-black transition-transform duration-200 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-        
-        <div x-show="state === 'success'" x-cloak class="w-6 h-6 rounded-full bg-white text-black flex items-center justify-center shadow-sm">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      <!-- Default State: White Pill with Cart Icon and Chevron -->
+      <template x-if="state !== 'success'">
+        <div class="flex items-center justify-between w-full relative">
+          <div class="w-5"></div> <!-- Spacer for perfect centering -->
+          <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
         </div>
-      </div>
+      </template>
 
-      <div class="ml-auto transition-all duration-300">
-        <svg class="w-6 h-6" :class="state === 'success' ? 'text-white' : 'text-black'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-      </div>
+      <!-- Active/Confirmed State: Dark Pill with White Check Circle and Chevron -->
+      <template x-if="state === 'success'">
+        <div class="flex items-center justify-between w-full relative">
+          <div class="w-5"></div> <!-- Spacer for perfect centering -->
+          <div class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+            <svg class="w-3.5 h-3.5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </div>
+      </template>
+
     </button>
 
   </main>
