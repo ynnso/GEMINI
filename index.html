@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pixel-Perfect Layout Switcher - Top Flush Superscript</title>
+  <title>Inverted Extra Active State + Upgrade Toast</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,6 +35,13 @@
           return { imgs: 25, price: 139 };
         },
 
+        get nextTier() {
+          if (this.effectiveTier.imgs === 25) return { imgs: 36, price: 179 };
+          if (this.effectiveTier.imgs === 36) return { imgs: 40, price: 189 };
+          if (this.effectiveTier.imgs === 40) return { imgs: 50, price: 224 };
+          return null;
+        },
+
         get extras() { return Math.max(0, this.count - this.effectiveTier.imgs); },
         get extraTotal() { return this.extras * this.extraCost; },
         get rawTotal() { return this.effectiveTier.price + this.extraTotal; },
@@ -45,6 +52,12 @@
 
         get priceDollars() { return this.finalTotal.split('.')[0]; },
         get priceCents() { return this.finalTotal.split('.')[1]; },
+
+        get showUpgradeToast() {
+          if (!this.nextTier) return false;
+          // Show toast when extra photos cost comes within $15 of upgrading
+          return this.rawTotal >= (this.nextTier.price - 10);
+        },
 
         updateCount(dir) {
           if (dir === 'up' && this.count < 150) this.count++;
@@ -113,11 +126,9 @@
       </button>
     </div>
 
-    <!-- 2. HERO ROW (TITLE CASE & FLUSH TOP SUPERSCRIPT $) -->
+    <!-- 2. HERO ROW -->
     <div class="mb-6">
       <div class="flex items-stretch justify-between gap-2">
-        
-        <!-- House Icon + Title Block (TITLE CASE: MLS Photos) -->
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors"
                :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-neutral-300 text-neutral-900 shadow-sm'">
@@ -134,7 +145,6 @@
           </div>
         </div>
 
-        <!-- Hero Price Block with Top-Flush Superscript $ -->
         <div class="flex flex-col items-end justify-center select-none">
           <div class="text-[42px] font-black leading-[0.85] tracking-tight flex items-baseline transition-colors tabular-nums"
                :class="redHero ? 'text-red-600' : (isDark ? 'text-white' : 'text-neutral-900')">
@@ -145,7 +155,6 @@
         </div>
       </div>
 
-      <!-- Tax Toggle Below Price -->
       <div class="flex justify-end mt-2">
         <label class="flex items-center gap-1.5 cursor-pointer select-none">
           <span class="text-[11px] font-bold transition-colors"
@@ -196,8 +205,22 @@
       </template>
     </div>
 
-    <!-- 4. INSET LINE ITEMS -->
-    <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300"
+    <!-- 4. BREAKPOINT UPGRADE TOAST BANNER -->
+    <div x-show="showUpgradeToast" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-1 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         class="mb-2 p-2.5 rounded-2xl border flex items-center justify-between text-xs font-bold transition-all"
+         :class="isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' : 'bg-amber-50 border-amber-300 text-amber-900 shadow-sm'">
+      <div class="flex items-center gap-1.5">
+        <span>💡</span>
+        <span>Upgrade to <strong x-text="nextTier?.imgs + ' Photos'"></strong> for better value!</span>
+      </div>
+      <button @click="selectTier(nextTier.imgs)" class="underline hover:opacity-80 font-black shrink-0 ml-2">Switch</button>
+    </div>
+
+    <!-- 5. INSET LINE ITEMS WITH INVERTED ACTIVE EXTRA MODE -->
+    <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300 overflow-hidden"
          :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
       
       <!-- Base Package Row -->
@@ -213,24 +236,22 @@
         </div>
       </div>
 
-      <!-- Extra Photo Overage Row -->
-      <div class="p-3.5 flex items-center justify-between transition-colors duration-200"
+      <!-- Extra Photo Row: Fully Inverted Color Fill When Extras Active -->
+      <div class="p-3.5 flex items-center justify-between transition-all duration-300"
            :class="extras > 0 
-             ? (isDark ? 'bg-white/5' : 'bg-neutral-100') 
-             : ''">
+             ? (isDark 
+                 ? 'bg-white text-black font-black' 
+                 : 'bg-black text-white font-black') 
+             : (isDark 
+                 ? 'bg-transparent text-neutral-400 font-semibold' 
+                 : 'bg-transparent text-neutral-600 font-semibold')">
         
-        <div class="text-sm transition-colors flex items-center" 
-              :class="extras > 0 
-                ? (isDark ? 'text-white font-black' : 'text-black font-black') 
-                : (isDark ? 'text-neutral-400 font-semibold' : 'text-neutral-600 font-semibold')">
+        <div class="text-sm transition-colors flex items-center">
           <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup>
           <span x-text="extras > 0 ? '5 / Extra Photo × ' + extras : '5 / Extra Photo'"></span>
         </div>
         
-        <div class="flex items-center text-sm font-bold transition-colors" 
-             :class="extras > 0 
-               ? (isDark ? 'text-white font-black' : 'text-black font-black') 
-               : (isDark ? 'text-neutral-400 font-semibold' : 'text-neutral-600 font-semibold')">
+        <div class="flex items-center text-sm font-bold transition-colors">
           <template x-if="extras > 0">
             <div>
               <span>+</span><sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup><span x-text="extraTotal"></span>
@@ -245,7 +266,7 @@
       </div>
     </div>
 
-    <!-- 5. STEPPER ROW -->
+    <!-- 6. STEPPER ROW -->
     <div class="flex items-center justify-between py-1 mb-6">
       <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Image Count</span>
       
@@ -270,7 +291,338 @@
       </div>
     </div>
 
-    <!-- 6. PRIMARY CTA BUTTON -->
+    <!-- 7. PRIMARY CTA BUTTON -->
+    <button @click="triggerCart()" :disabled="state !== 'idle'"
+            :class="isDark 
+              ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
+              : (state === 'success' ? 'bg-white border-2 border-black text-black' : 'bg-black text-white hover:bg-neutral-800')"
+            class="relative w-full h-12 px-6 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-2xl active:scale-[0.98] disabled:pointer-events-none">
+      
+      <template x-if="state !== 'success'">
+        <div class="flex items-center justify-between w-full">
+          <div class="w-6"></div>
+          <svg class="w-7 h-7" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+          </svg>
+          <svg class="w-5 h-5" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </div>
+      </template>
+
+      <template x-if="state === 'success'">
+        <div class="flex items-center justify-between w-full">
+          <div class="w-6"></div>
+          <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+               :class="isDark ? 'bg-white text-black' : 'bg-black text-white'">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+          <svg class="w-5 h-5" :class="isDark ? 'text-white' : 'text-black'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          </svg>
+        </div>
+      </template>
+
+    </button>
+
+  </main>
+</body>
+</html><!DOCTYPE html>
+<html lang="en" class="h-full antialiased" x-data="{ isDark: true, redHero: true }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inverted Extra Active State + Upgrade Toast</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+    [x-cloak] { display: none !important; }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+  </style>
+</head>
+<body class="min-h-full p-4 flex flex-col items-center justify-start gap-4 transition-colors duration-300"
+      x-data="{ 
+        state: 'idle',
+        includeTax: false,
+        taxRate: 0.08,
+        count: 26,
+        extraCost: 5,
+
+        selectTier(c) { this.count = c; },
+
+        get effectiveTier() {
+          if (this.count >= 47) return { imgs: 50, price: 224 };
+          if (this.count >= 38) return { imgs: 40, price: 189 };
+          if (this.count >= 33) return { imgs: 36, price: 179 };
+          return { imgs: 25, price: 139 };
+        },
+
+        get nextTier() {
+          if (this.effectiveTier.imgs === 25) return { imgs: 36, price: 179 };
+          if (this.effectiveTier.imgs === 36) return { imgs: 40, price: 189 };
+          if (this.effectiveTier.imgs === 40) return { imgs: 50, price: 224 };
+          return null;
+        },
+
+        get extras() { return Math.max(0, this.count - this.effectiveTier.imgs); },
+        get extraTotal() { return this.extras * this.extraCost; },
+        get rawTotal() { return this.effectiveTier.price + this.extraTotal; },
+        get finalTotal() { 
+          const amount = this.includeTax ? this.rawTotal * (1 + this.taxRate) : this.rawTotal;
+          return amount.toFixed(2);
+        },
+
+        get priceDollars() { return this.finalTotal.split('.')[0]; },
+        get priceCents() { return this.finalTotal.split('.')[1]; },
+
+        get showUpgradeToast() {
+          if (!this.nextTier) return false;
+          // Show toast when extra photos cost comes within $15 of upgrading
+          return this.rawTotal >= (this.nextTier.price - 10);
+        },
+
+        updateCount(dir) {
+          if (dir === 'up' && this.count < 150) this.count++;
+          if (dir === 'down' && this.count > 25) this.count--;
+        },
+
+        triggerCart() {
+          if (this.state !== 'idle') return;
+          this.state = 'success';
+          if (window.navigator && window.navigator.vibrate) {
+            window.navigator.vibrate(40);
+          }
+          setTimeout(() => { this.state = 'idle'; }, 2500);
+        }
+      }">
+
+  <!-- CONTROL PANEL HEADER -->
+  <header class="w-full max-w-sm flex flex-col gap-2 z-50 p-3 rounded-2xl border transition-colors duration-300"
+          :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-300 shadow-md'">
+    
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme</span>
+      <div class="flex items-center gap-1 p-1 rounded-xl border transition-colors"
+           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
+        <button @click="isDark = true"
+                :class="isDark ? 'bg-white text-black font-extrabold shadow-sm' : 'text-neutral-500 hover:text-black'"
+                class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all">🌙 Dark</button>
+        <button @click="isDark = false"
+                :class="!isDark ? 'bg-black text-white font-extrabold shadow-sm' : 'text-neutral-400 hover:text-white'"
+                class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all">☀️ Light</button>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between border-t pt-2" :class="isDark ? 'border-white/10' : 'border-neutral-200'">
+      <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Hero Accent</span>
+      <button @click="redHero = !redHero"
+              :class="redHero ? 'bg-red-600 text-white font-extrabold' : (isDark ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-200 text-neutral-800')"
+              class="px-3 py-1 rounded-lg text-xs font-bold transition-all">
+        <span x-text="redHero ? 'Red Hero Active' : 'Default Color'"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CARD CONTAINER -->
+  <main class="w-full max-w-sm py-6 border-y px-2 transition-colors duration-300"
+        :class="isDark ? 'border-white/15' : 'border-neutral-300'">
+    
+    <!-- 1. TOP CONTROL ROW -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold border transition-all tracking-tight shrink-0"
+           :class="isDark 
+             ? 'text-neutral-300 bg-white/5 border-white/10' 
+             : 'text-neutral-800 bg-neutral-200/80 border-neutral-300 shadow-sm'">
+        <svg class="w-2.5 h-2.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+        </svg>
+        <span>Wizard</span>
+      </div>
+
+      <button class="w-6 h-6 flex items-center justify-center transition-colors rounded-full"
+              :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'"
+              title="Package details">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- 2. HERO ROW -->
+    <div class="mb-6">
+      <div class="flex items-stretch justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors"
+               :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-neutral-300 text-neutral-900 shadow-sm'">
+            <svg class="w-[26px] h-[26px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          
+          <div class="flex flex-col justify-between py-0.5">
+            <span class="text-xs font-bold leading-none block mb-1"
+                  :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
+            <h1 class="text-[28px] font-black leading-none transition-colors"
+                :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</h1>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-end justify-center select-none">
+          <div class="text-[42px] font-black leading-[0.85] tracking-tight flex items-baseline transition-colors tabular-nums"
+               :class="redHero ? 'text-red-600' : (isDark ? 'text-white' : 'text-neutral-900')">
+            <sup class="text-base font-extrabold relative top-[-0.05em] mr-[1px] self-start leading-none">$</sup>
+            <span x-text="priceDollars"></span>
+            <sub class="text-xs font-extrabold relative bottom-[0.05em] ml-[1px] leading-none" x-text="'.' + priceCents"></sub>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-2">
+        <label class="flex items-center gap-1.5 cursor-pointer select-none">
+          <span class="text-[11px] font-bold transition-colors"
+                :class="isDark ? 'text-neutral-400' : 'text-neutral-600'" 
+                x-text="includeTax ? 'Inc. Tax' : 'No Tax'"></span>
+          <input type="checkbox" x-model="includeTax" class="sr-only">
+          <div class="w-7 h-3.5 rounded-full border relative transition-colors"
+               :class="isDark 
+                 ? (includeTax ? 'bg-white/30 border-white/40' : 'bg-neutral-800 border-white/10') 
+                 : (includeTax ? 'bg-black border-black' : 'bg-neutral-300 border-neutral-400')">
+            <div class="w-2.5 h-2.5 rounded-full absolute top-[1px] left-[1px] transition-transform"
+                 :class="[
+                   includeTax ? 'translate-x-3.5' : 'translate-x-0',
+                   isDark ? 'bg-white' : (includeTax ? 'bg-white' : 'bg-neutral-700')
+                 ]"></div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- 3. TIER SELECTOR TRACK -->
+    <div class="grid grid-cols-4 gap-1.5 mb-6 tabular-nums">
+      <template x-for="t in [{imgs: 25, price: 139}, {imgs: 36, price: 179}, {imgs: 40, price: 189}, {imgs: 50, price: 224}]" :key="t.imgs">
+        <button @click="selectTier(t.imgs)"
+                :class="isDark 
+                  ? (effectiveTier.imgs === t.imgs ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' : 'bg-neutral-900/50 text-neutral-400 border-white/10 hover:border-white/20')
+                  : (effectiveTier.imgs === t.imgs ? 'bg-neutral-900 text-white border-neutral-900 ring-1 ring-neutral-900/20 shadow-md' : 'bg-white text-neutral-900 border-neutral-300 hover:border-neutral-400 shadow-sm')"
+                class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
+          
+          <span class="text-xs font-extrabold leading-tight" 
+                :class="isDark 
+                  ? (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-400') 
+                  : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-800')" 
+                x-text="t.imgs + ' Imgs'"></span>
+          
+          <div class="flex items-center justify-center mt-0.5 leading-none">
+            <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]" 
+                 :class="isDark 
+                   ? (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-500') 
+                   : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-600')">$</sup>
+            <span class="text-base font-black" 
+                  :class="isDark 
+                    ? (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-400') 
+                    : (effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-900')" 
+                  x-text="t.price"></span>
+          </div>
+        </button>
+      </template>
+    </div>
+
+    <!-- 4. BREAKPOINT UPGRADE TOAST BANNER -->
+    <div x-show="showUpgradeToast" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-1 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         class="mb-2 p-2.5 rounded-2xl border flex items-center justify-between text-xs font-bold transition-all"
+         :class="isDark ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' : 'bg-amber-50 border-amber-300 text-amber-900 shadow-sm'">
+      <div class="flex items-center gap-1.5">
+        <span>💡</span>
+        <span>Upgrade to <strong x-text="nextTier?.imgs + ' Photos'"></strong> for better value!</span>
+      </div>
+      <button @click="selectTier(nextTier.imgs)" class="underline hover:opacity-80 font-black shrink-0 ml-2">Switch</button>
+    </div>
+
+    <!-- 5. INSET LINE ITEMS WITH INVERTED ACTIVE EXTRA MODE -->
+    <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300 overflow-hidden"
+         :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+      
+      <!-- Base Package Row -->
+      <div class="p-3.5 flex items-center justify-between">
+        <span class="text-sm font-semibold transition-colors"
+              :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" 
+              x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        
+        <div class="flex items-center text-sm font-bold transition-colors"
+             :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+          <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup>
+          <span x-text="effectiveTier.price"></span>
+        </div>
+      </div>
+
+      <!-- Extra Photo Row: Fully Inverted Color Fill When Extras Active -->
+      <div class="p-3.5 flex items-center justify-between transition-all duration-300"
+           :class="extras > 0 
+             ? (isDark 
+                 ? 'bg-white text-black font-black' 
+                 : 'bg-black text-white font-black') 
+             : (isDark 
+                 ? 'bg-transparent text-neutral-400 font-semibold' 
+                 : 'bg-transparent text-neutral-600 font-semibold')">
+        
+        <div class="text-sm transition-colors flex items-center">
+          <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup>
+          <span x-text="extras > 0 ? '5 / Extra Photo × ' + extras : '5 / Extra Photo'"></span>
+        </div>
+        
+        <div class="flex items-center text-sm font-bold transition-colors">
+          <template x-if="extras > 0">
+            <div>
+              <span>+</span><sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup><span x-text="extraTotal"></span>
+            </div>
+          </template>
+          <template x-if="extras === 0">
+            <div>
+              <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup><span>0</span>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. STEPPER ROW -->
+    <div class="flex items-center justify-between py-1 mb-6">
+      <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Image Count</span>
+      
+      <div class="flex items-center p-1 rounded-2xl border transition-colors"
+           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+        
+        <button @click="updateCount('down')" :disabled="count <= 25"
+                :class="count <= 25 
+                  ? 'opacity-20 cursor-not-allowed' 
+                  : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">-</button>
+        
+        <input type="number" x-model.number="count"
+               class="w-9 h-9 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors"
+               :class="isDark ? 'text-white' : 'text-neutral-900'" />
+        
+        <button @click="updateCount('up')" :disabled="count >= 150"
+                :class="count >= 150 
+                  ? 'opacity-20 cursor-not-allowed' 
+                  : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">+</button>
+      </div>
+    </div>
+
+    <!-- 7. PRIMARY CTA BUTTON -->
     <button @click="triggerCart()" :disabled="state !== 'idle'"
             :class="isDark 
               ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
