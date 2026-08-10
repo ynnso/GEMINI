@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full Shoot - Mobile Optimization Explorer</title>
+  <title>Full Shoot - 10 Hierarchy Redesigns</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,26 +18,26 @@
     input[type=number] { -moz-appearance: textfield; }
   </style>
 </head>
-<body class="min-h-full bg-[#050505] text-white p-3 flex flex-col items-center justify-start gap-4"
+<body class="min-h-full bg-[#050505] text-white p-4 flex flex-col items-center justify-start gap-4"
       x-data="{ 
         activeDesign: 1,
         state: 'idle',
-        count: 26,
         includeTax: false,
         taxRate: 0.08,
+        count: 26,
         extraCost: 5,
 
         designs: [
-          '1. Full-Width Edge Dividers',
-          '2. Segmented High-Contrast Inset',
-          '3. Large Numeric HUD Rows',
-          '4. Stacked Line-Item Rows',
-          '5. Ultra-Clean Minimalist Rule',
-          '6. Fintech Grouped Rows',
-          '7. Monospace Operator Console',
-          '8. iOS Standard Grouped Rows',
-          '9. Bold Floating Row Cards',
-          '10. High-Visibility Micro-Border Strip'
+          '1. Clean Borderless Stack',
+          '2. Fintech Grouped Inset',
+          '3. High-Contrast Slate Dividers',
+          '4. Monospace Operator Console',
+          '5. iOS Segmented Rounded List',
+          '6. Full-Width Bleed Minimalist',
+          '7. Dual-Tone High-Density Rows',
+          '8. Subtle Border Focus Rows',
+          '9. Compact HUD Strip Rows',
+          '10. Bordered Glassmorphism Slate'
         ],
 
         selectTier(c) { this.count = c; },
@@ -75,17 +75,16 @@
         }
       }">
 
-  <!-- TOP CONCEPT SWITCHER CONTROL -->
+  <!-- TOP SWITCHER CONTROL -->
   <header class="w-full max-w-sm flex flex-col gap-2 z-50 bg-[#0A0A0A] p-3 rounded-2xl border border-white/10 shadow-2xl">
     <div class="flex items-center justify-between">
-      <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Redesign Explorer</span>
+      <span class="text-xs font-bold text-neutral-400 uppercase tracking-wider">Hierarchy Explorer</span>
       <div class="flex items-center gap-1.5">
         <button @click="activeDesign = activeDesign > 1 ? activeDesign - 1 : 10" class="w-7 h-7 rounded-lg bg-neutral-800 border border-white/10 flex items-center justify-center text-xs font-bold active:scale-95">←</button>
         <span class="text-xs font-extrabold text-white bg-white/10 px-2.5 py-1 rounded-md tabular-nums" x-text="activeDesign + ' / 10'"></span>
         <button @click="activeDesign = activeDesign < 10 ? activeDesign + 1 : 1" class="w-7 h-7 rounded-lg bg-neutral-800 border border-white/10 flex items-center justify-center text-xs font-bold active:scale-95">→</button>
       </div>
     </div>
-
     <select x-model.number="activeDesign" class="w-full bg-neutral-900 text-white text-xs font-bold px-3 py-2 rounded-xl border border-white/10 focus:outline-none cursor-pointer">
       <template x-for="(d, i) in designs" :key="i">
         <option :value="i + 1" x-text="d"></option>
@@ -94,11 +93,11 @@
   </header>
 
   <!-- MOBILE CARD CONTAINER -->
-  <main class="w-full max-w-sm bg-[#0D0D0D] border border-white/10 rounded-[28px] p-5 shadow-2xl relative overflow-hidden">
+  <main class="w-full max-w-sm bg-[#0D0D0D] border border-white/10 rounded-[28px] p-6 shadow-2xl relative overflow-hidden">
     
-    <!-- HEADER ROW -->
+    <!-- HEADER -->
     <div class="flex items-center justify-between mb-5">
-      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-neutral-300 bg-white/5 border border-white/10">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-neutral-400 bg-white/5 border border-white/10">
         <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
         </svg>
@@ -107,7 +106,7 @@
       <button class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-xs text-neutral-400 hover:text-white">ⓘ</button>
     </div>
 
-    <!-- HERO TITLE & HERO PRICE ROW -->
+    <!-- HERO -->
     <div class="flex items-start justify-between gap-3 mb-6">
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white shrink-0">
@@ -121,7 +120,6 @@
         </div>
       </div>
 
-      <!-- HERO PRICE (SCALED UP, WHITE $) -->
       <div class="flex flex-col items-end shrink-0">
         <div class="text-white font-extrabold text-3xl tracking-tight flex items-start leading-none select-none">
           <span class="text-base font-bold leading-none mt-0.5 mr-0.5 text-white">$</span>
@@ -133,7 +131,7 @@
         </div>
         
         <label class="flex items-center gap-2 mt-2 cursor-pointer select-none">
-          <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider" x-text="includeTax ? 'Inc. Tax' : 'No Tax'"></span>
+          <span class="text-[11px] font-semibold text-neutral-400" x-text="includeTax ? 'Inc. Tax' : 'No Tax'"></span>
           <input type="checkbox" x-model="includeTax" class="sr-only">
           <div class="w-8 h-4 bg-neutral-800 rounded-full border border-white/10 relative" :class="includeTax ? 'bg-white/30 border-white/40' : 'bg-neutral-800'">
             <div class="w-3 h-3 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform" :class="includeTax ? 'translate-x-4' : 'translate-x-0'"></div>
@@ -142,196 +140,185 @@
       </div>
     </div>
 
-    <!-- 4-UP TIER SELECTOR TRACK -->
+    <!-- TIERS -->
     <div class="grid grid-cols-4 gap-1.5 mb-6 tabular-nums">
       <template x-for="t in [{imgs: 25, price: 139}, {imgs: 36, price: 179}, {imgs: 40, price: 189}, {imgs: 50, price: 224}]" :key="t.imgs">
         <button @click="selectTier(t.imgs)"
-                :class="effectiveTier.imgs === t.imgs ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' : 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white'"
+                :class="effectiveTier.imgs === t.imgs ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' : 'bg-neutral-900/40 text-neutral-500 border-white/5 hover:border-white/20'"
                 class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all">
-          <span class="text-xs font-bold leading-tight" :class="effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-300'" x-text="t.imgs + ' Imgs'"></span>
+          <span class="text-xs font-bold leading-tight" :class="effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-500'" x-text="t.imgs + ' Imgs'"></span>
           <div class="flex items-start justify-center mt-0.5 leading-none">
-            <span class="text-[10px] font-bold text-white mt-[1px] mr-[1px]">$</span>
-            <span class="text-sm font-extrabold text-white" x-text="t.price"></span>
+            <span class="text-[10px] font-bold mt-[1px] mr-[1px]" :class="effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-500'">$</span>
+            <span class="text-sm font-extrabold" :class="effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-500'" x-text="t.price"></span>
           </div>
         </button>
       </template>
     </div>
 
-    <!-- 10 DESIGN SWITCHER VARIATIONS (LINE ITEMS & CARDS) -->
+    <!-- 10 REDESIGNED LINE-ITEM VARIATIONS -->
 
-    <!-- DESIGN 1: FULL-WIDTH EDGE DIVIDERS (NO INNER CARDS) -->
-    <section x-show="activeDesign === 1" class="border-y border-white/15 py-3 space-y-3 mb-6 tabular-nums" x-cloak>
+    <!-- 1. Clean Borderless Stack -->
+    <section x-show="activeDesign === 1" class="space-y-2 mb-6 tabular-nums" x-cloak>
+      <div class="bg-neutral-900/50 p-3.5 rounded-2xl flex items-center justify-between">
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
+        </div>
+      </div>
+      <div class="bg-neutral-900/50 p-3.5 rounded-2xl flex items-center justify-between transition-all" :class="extras > 0 ? 'bg-white/5 border border-white/20' : ''">
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+    </section>
+
+    <!-- 2. Fintech Grouped Inset -->
+    <section x-show="activeDesign === 2" class="bg-neutral-900 rounded-2xl border border-white/10 divide-y divide-white/10 mb-6 tabular-nums" x-cloak>
+      <div class="p-3.5 flex items-center justify-between">
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
+        </div>
+      </div>
+      <div class="p-3.5 flex items-center justify-between" :class="extras > 0 ? 'bg-white/5' : ''">
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+    </section>
+
+    <!-- 3. High-Contrast Slate Dividers -->
+    <section x-show="activeDesign === 3" class="border-y border-white/15 py-3 space-y-3 mb-6 tabular-nums" x-cloak>
       <div class="flex justify-between items-center">
-        <span class="text-sm font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-sm font-extrabold text-white" x-text="'$' + effectiveTier.price"></span>
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
+        </div>
       </div>
       <div class="flex justify-between items-center pt-2.5 border-t border-white/10">
-        <div class="flex items-center gap-1 text-sm font-bold">
-          <span class="text-white font-extrabold">$5</span>
-          <span class="text-neutral-300" x-text="extras > 0 ? '/Extra Photo × ' + extras : '/Extra Photo'"></span>
-        </div>
-        <span class="text-sm font-extrabold text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
       </div>
     </section>
 
-    <!-- DESIGN 2: SEGMENTED HIGH-CONTRAST INSET -->
-    <section x-show="activeDesign === 2" class="bg-neutral-900/90 border border-white/15 p-4 rounded-2xl space-y-3 mb-6 tabular-nums" x-cloak>
+    <!-- 4. Monospace Operator Console -->
+    <section x-show="activeDesign === 4" class="font-mono bg-black border border-white/15 p-3.5 rounded-2xl space-y-2.5 mb-6 tabular-nums text-xs" x-cloak>
+      <div class="flex justify-between items-center text-neutral-500">
+        <span x-text="'BASE_PKG_' + effectiveTier.imgs"></span>
+        <span x-text="'$' + effectiveTier.price"></span>
+      </div>
+      <div class="flex justify-between items-center pt-2 border-t border-white/10" :class="extras > 0 ? 'text-white font-bold' : 'text-neutral-500'">
+        <span x-text="extras > 0 ? `$5_EXTRA_X_${extras}` : '$5_EXTRA_PHOTO'"></span>
+        <span x-text="extras > 0 ? `+$${extraTotal}` : '$0'"></span>
+      </div>
+    </section>
+
+    <!-- 5. iOS Segmented Rounded List -->
+    <section x-show="activeDesign === 5" class="bg-neutral-900/80 border border-white/10 divide-y divide-white/10 rounded-2xl mb-6 tabular-nums" x-cloak>
+      <div class="p-3.5 flex justify-between items-center">
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
+        </div>
+      </div>
+      <div class="p-3.5 flex justify-between items-center">
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+    </section>
+
+    <!-- 6. Full-Width Bleed Minimalist -->
+    <section x-show="activeDesign === 6" class="py-2 space-y-3 mb-6 tabular-nums" x-cloak>
       <div class="flex justify-between items-center">
-        <span class="text-sm font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-sm font-extrabold text-white" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="flex justify-between items-center pt-3 border-t border-white/10">
-        <div class="flex items-center text-sm font-bold">
-          <span class="text-white font-extrabold">$5</span>
-          <span class="text-neutral-300" x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
         </div>
-        <span class="text-sm font-extrabold text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
-      </div>
-    </section>
-
-    <!-- DESIGN 3: LARGE NUMERIC HUD ROWS -->
-    <section x-show="activeDesign === 3" class="space-y-2 mb-6 tabular-nums" x-cloak>
-      <div class="bg-neutral-900 border border-white/10 p-3.5 rounded-2xl flex justify-between items-center">
-        <span class="text-sm font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-base font-black text-white" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="bg-neutral-900 border border-white/10 p-3.5 rounded-2xl flex justify-between items-center">
-        <div class="text-sm font-bold text-white">
-          <span>$5</span>
-          <span class="text-neutral-300" x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
-        </div>
-        <span class="text-base font-black text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
-      </div>
-    </section>
-
-    <!-- DESIGN 4: STACKED LINE-ITEM ROWS -->
-    <section x-show="activeDesign === 4" class="space-y-2 mb-6 tabular-nums" x-cloak>
-      <div class="bg-white/5 border border-white/10 p-3.5 rounded-2xl flex justify-between items-center">
-        <span class="text-sm font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-sm font-extrabold text-white" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="bg-white/5 border border-white/10 p-3.5 rounded-2xl flex justify-between items-center">
-        <div class="text-sm font-bold text-white">
-          <span>$5</span>
-          <span x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
-        </div>
-        <span class="text-sm font-extrabold text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
-      </div>
-    </section>
-
-    <!-- DESIGN 5: ULTRA-CLEAN MINIMALIST RULE -->
-    <section x-show="activeDesign === 5" class="py-2 space-y-3 mb-6 tabular-nums" x-cloak>
-      <div class="flex justify-between items-center">
-        <span class="text-sm font-bold text-neutral-200" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-sm font-extrabold text-white" x-text="'$' + effectiveTier.price"></span>
       </div>
       <div class="border-t border-white/10 pt-3 flex justify-between items-center">
-        <div class="text-sm font-bold">
-          <span class="text-white">$5</span>
-          <span class="text-neutral-400" x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+    </section>
+
+    <!-- 7. Dual-Tone High-Density Rows -->
+    <section x-show="activeDesign === 7" class="space-y-2 mb-6 tabular-nums" x-cloak>
+      <div class="bg-neutral-900 border border-white/10 p-3.5 rounded-xl flex justify-between items-center">
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
         </div>
-        <span class="text-sm font-extrabold text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+      <div class="bg-neutral-900 border border-white/10 p-3.5 rounded-xl flex justify-between items-center">
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
       </div>
     </section>
 
-    <!-- DESIGN 6: FINTECH GROUPED ROWS -->
-    <section x-show="activeDesign === 6" class="bg-neutral-900 rounded-2xl border border-white/10 divide-y divide-white/10 mb-6 tabular-nums" x-cloak>
-      <div class="p-3.5 flex justify-between items-center">
-        <span class="text-sm font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-sm font-extrabold text-white" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="p-3.5 flex justify-between items-center">
-        <div class="text-sm font-bold">
-          <span class="text-white">$5</span>
-          <span class="text-neutral-300" x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
+    <!-- 8. Subtle Border Focus Rows -->
+    <section x-show="activeDesign === 8" class="space-y-2 mb-6 tabular-nums" x-cloak>
+      <div class="bg-neutral-900/40 border border-white/5 p-3.5 rounded-2xl flex justify-between items-center">
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
         </div>
-        <span class="text-sm font-extrabold text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+      <div class="bg-neutral-900/40 border p-3.5 rounded-2xl flex justify-between items-center transition-all" :class="extras > 0 ? 'border-white/30 bg-white/5' : 'border-white/5'">
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
       </div>
     </section>
 
-    <!-- DESIGN 7: MONOSPACE OPERATOR CONSOLE -->
-    <section x-show="activeDesign === 7" class="font-mono bg-black border border-white/15 p-3.5 rounded-2xl space-y-2.5 mb-6 tabular-nums text-xs" x-cloak>
-      <div class="flex justify-between items-center text-neutral-200">
-        <span x-text="'BASE_PACKAGE_' + effectiveTier.imgs + '_PHOTOS'"></span>
-        <span class="text-white font-bold" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="flex justify-between items-center pt-2 border-t border-white/10">
-        <span class="text-white" x-text="extras > 0 ? `$5_EXTRA_PHOTO_X_${extras}` : '$5_EXTRA_PHOTO'"></span>
-        <span class="text-white font-bold" x-text="extras > 0 ? `+$${extraTotal}` : '$0'"></span>
-      </div>
-    </section>
-
-    <!-- DESIGN 8: IOS STANDARD GROUPED ROWS -->
-    <section x-show="activeDesign === 8" class="bg-neutral-900/80 border border-white/10 divide-y divide-white/10 rounded-2xl mb-6 tabular-nums" x-cloak>
-      <div class="p-3.5 flex justify-between items-center">
-        <span class="text-sm font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-sm font-extrabold text-white" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="p-3.5 flex justify-between items-center">
-        <div class="text-sm font-bold">
-          <span class="text-white">$5</span>
-          <span class="text-neutral-300" x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
+    <!-- 9. Compact HUD Strip Rows -->
+    <section x-show="activeDesign === 9" class="space-y-1.5 mb-6 tabular-nums" x-cloak>
+      <div class="bg-neutral-900/80 px-3.5 py-2.5 rounded-xl flex items-center justify-between border border-white/5">
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
         </div>
-        <span class="text-sm font-extrabold text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+      <div class="bg-neutral-900/80 px-3.5 py-2.5 rounded-xl flex items-center justify-between border border-white/5" :class="extras > 0 ? 'border-white/20' : ''">
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
       </div>
     </section>
 
-    <!-- DESIGN 9: BOLD FLOATING ROW CARDS -->
-    <section x-show="activeDesign === 9" class="space-y-2 mb-6 tabular-nums" x-cloak>
-      <div class="bg-neutral-900 border border-white/15 p-4 rounded-2xl flex justify-between items-center">
-        <span class="text-sm font-bold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-base font-extrabold text-white" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="bg-neutral-900 border border-white/15 p-4 rounded-2xl flex justify-between items-center">
-        <div class="text-sm font-bold text-white">
-          <span>$5</span>
-          <span class="text-neutral-300" x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
-        </div>
-        <span class="text-base font-extrabold text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
-      </div>
-    </section>
-
-    <!-- DESIGN 10: HIGH-VISIBILITY MICRO-BORDER STRIP -->
-    <section x-show="activeDesign === 10" class="border-y-2 border-white/20 py-3 space-y-3 mb-6 tabular-nums" x-cloak>
+    <!-- 10. Bordered Glassmorphism Slate -->
+    <section x-show="activeDesign === 10" class="bg-white/5 border border-white/10 backdrop-blur-xl p-4 rounded-2xl space-y-3 mb-6 tabular-nums" x-cloak>
       <div class="flex justify-between items-center">
-        <span class="text-sm font-extrabold text-white" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
-        <span class="text-base font-black text-white" x-text="'$' + effectiveTier.price"></span>
-      </div>
-      <div class="flex justify-between items-center border-t border-white/10 pt-2.5">
-        <div class="text-sm font-extrabold text-white">
-          <span>$5</span>
-          <span x-text="extras > 0 ? ' /Extra Photo × ' + extras : ' /Extra Photo'"></span>
+        <span class="text-xs font-medium text-neutral-400" x-text="'Base Package ' + effectiveTier.imgs + ' Photos'"></span>
+        <div class="flex items-start leading-none text-neutral-400 text-xs font-bold">
+          <span class="text-[10px] mt-[1px] mr-[1px]">$</span><span x-text="effectiveTier.price"></span>
         </div>
-        <span class="text-base font-black text-white" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
+      </div>
+      <div class="flex justify-between items-center pt-2.5 border-t border-white/15">
+        <span class="text-xs" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '$5 /Extra Photo × ' + extras : '$5 /Extra Photo'"></span>
+        <span class="text-xs font-bold" :class="extras > 0 ? 'text-white font-extrabold' : 'text-neutral-500 font-medium'" x-text="extras > 0 ? '+$' + extraTotal : '$0'"></span>
       </div>
     </section>
 
-    <!-- STEPPER CONTROL ROW -->
+    <!-- STEPPER -->
     <div class="flex items-center justify-between py-1 mb-6">
-      <span class="text-sm font-bold text-neutral-300">Total Image Count</span>
-      <div class="flex items-center gap-1 bg-neutral-900 p-1 rounded-2xl border border-white/10">
+      <span class="text-xs font-bold text-neutral-300">Total Image Count</span>
+      <div class="flex items-center bg-neutral-900 p-1 rounded-2xl border border-white/10">
         <button @click="updateCount('down')" :disabled="count <= 25"
                 :class="count <= 25 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-neutral-800 active:scale-95 text-white'"
-                class="w-10 h-10 rounded-xl font-bold text-lg flex items-center justify-center transition-all">-</button>
+                class="w-9 h-9 rounded-xl font-bold text-base flex items-center justify-center transition-all">-</button>
         <input type="number" x-model.number="count"
-               class="w-12 h-10 bg-transparent text-center text-sm font-bold text-white focus:outline-none tabular-nums" />
+               class="w-9 h-9 bg-transparent text-center text-xs font-extrabold text-white focus:outline-none tabular-nums" />
         <button @click="updateCount('up')" :disabled="count >= 150"
                 :class="count >= 150 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-neutral-800 active:scale-95 text-white'"
-                class="w-10 h-10 rounded-xl font-bold text-lg flex items-center justify-center transition-all">+</button>
+                class="w-9 h-9 rounded-xl font-bold text-base flex items-center justify-center transition-all">+</button>
       </div>
     </div>
 
-    <!-- REFINED CTA BUTTON (SHOPPING CART & CHECKMARK CONFIRMATION) -->
+    <!-- LOCKED-HEIGHT CTA BUTTON (FIXED THICKNESS) -->
     <button @click="triggerCart()" :disabled="state !== 'idle'"
             :class="state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200 active:scale-[0.98]'"
-            class="relative w-full h-14 py-3.5 px-6 rounded-full flex items-center justify-center transition-all duration-200 shadow-2xl disabled:pointer-events-none">
+            class="relative w-full h-12 px-6 rounded-full flex items-center justify-center transition-all duration-200 shadow-2xl disabled:pointer-events-none">
       
-      <!-- DEFAULT STATE: WHITE PILL WITH SHOPPING CART ICON & CHEVRON -->
       <template x-if="state !== 'success'">
         <div class="flex items-center justify-between w-full">
-          <div class="w-5"></div> <!-- Balance spacer -->
-          <!-- CLASSIC SHOPPING CART ICON -->
-          <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <div class="w-6"></div>
+          <svg class="w-7 h-7 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
           </svg>
           <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -340,12 +327,11 @@
         </div>
       </template>
 
-      <!-- CONFIRMED STATE: DARK PILL WITH FILLED WHITE CHECKMARK & CHEVRON -->
       <template x-if="state === 'success'">
         <div class="flex items-center justify-between w-full">
-          <div class="w-5"></div> <!-- Balance spacer -->
-          <div class="w-7 h-7 rounded-full bg-white flex items-center justify-center">
-            <svg class="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+          <div class="w-6"></div>
+          <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-lg">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
             </svg>
           </div>
