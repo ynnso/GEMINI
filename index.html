@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Optimized Mobile Full Shoot Engine</title>
+  <title>Light & Dark Mode Tier Selector Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,8 +31,8 @@
         state: 'idle',
         includeTax: false,
         taxRate: 0.0825,
-        count: 33,
-        selectedBase: 25,
+        count: 47,
+        selectedBase: 40,
         extraCost: 5,
 
         selectTier(c) { 
@@ -99,7 +99,7 @@
         }
       }">
 
-  <!-- HEADER CONTROL SWITCHER WITH EXPANDED TOUCH TARGETS -->
+  <!-- HEADER CONTROL SWITCHER -->
   <header class="w-full max-w-sm flex items-center justify-between p-3 rounded-2xl border transition-colors duration-300"
           :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-300 shadow-md'">
     <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme</span>
@@ -185,27 +185,58 @@
       </div>
     </div>
 
-    <!-- TIER SELECTOR TRACK -->
+    <!-- FIXED LIGHT / DARK TIER SELECTOR TRACK -->
     <div class="grid grid-cols-4 gap-1.5 mb-6 tabular-nums">
       <template x-for="t in [{imgs: 25, price: 139}, {imgs: 36, price: 179}, {imgs: 40, price: 189}, {imgs: 50, price: 224}]" :key="t.imgs">
         <button @click="selectTier(t.imgs)"
                 :class="[
-                  targetUpgradeTier === t.imgs ? 'animate-pulse-red ring-2 ring-red-500 border-red-500 bg-neutral-900' : '',
-                  effectiveTier.imgs === t.imgs ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' : '',
-                  targetUpgradeTier && targetUpgradeTier !== t.imgs && effectiveTier.imgs !== t.imgs ? 'opacity-40 border-white/10' : '',
-                  !targetUpgradeTier && effectiveTier.imgs !== t.imgs ? 'bg-neutral-900/50 text-neutral-400 border-white/10 hover:border-white/20' : ''
+                  /* Target Upgrade Pulsing Card */
+                  targetUpgradeTier === t.imgs 
+                    ? 'animate-pulse-red ring-2 ring-red-500 border-red-500 bg-black text-white' 
+                    : '',
+
+                  /* Active Selected Base Tier Card */
+                  effectiveTier.imgs === t.imgs && targetUpgradeTier !== t.imgs
+                    ? (isDark 
+                        ? 'bg-white/10 border-white text-white ring-1 ring-white/50 shadow-lg' 
+                        : 'bg-white border-neutral-900 text-neutral-900 ring-1 ring-neutral-900/20 shadow-md') 
+                    : '',
+
+                  /* Dimmed State when upgrade target is present */
+                  targetUpgradeTier && targetUpgradeTier !== t.imgs && effectiveTier.imgs !== t.imgs 
+                    ? 'opacity-40 border-transparent bg-transparent' 
+                    : '',
+
+                  /* Standard Inactive Base Tier Cards */
+                  !targetUpgradeTier && effectiveTier.imgs !== t.imgs 
+                    ? (isDark 
+                        ? 'bg-neutral-900/50 text-neutral-400 border-white/10 hover:border-white/20' 
+                        : 'bg-neutral-200/60 text-neutral-600 border-neutral-300 hover:border-neutral-400') 
+                    : ''
                 ]"
                 class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
           
           <span class="text-xs font-extrabold leading-tight transition-colors" 
-                :class="targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs ? 'text-white font-black' : 'text-neutral-400'" 
+                :class="[
+                  targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs 
+                    ? (isDark ? 'text-white font-black' : (targetUpgradeTier === t.imgs ? 'text-white font-black' : 'text-neutral-900 font-black'))
+                    : (isDark ? 'text-neutral-400' : 'text-neutral-600')
+                ]" 
                 x-text="t.imgs + ' Imgs'"></span>
           
           <div class="flex items-center justify-center mt-0.5 leading-none">
             <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px] transition-colors" 
-                 :class="targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-500'">$</sup>
+                 :class="[
+                   targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs 
+                     ? (isDark ? 'text-white' : (targetUpgradeTier === t.imgs ? 'text-white' : 'text-neutral-900'))
+                     : (isDark ? 'text-neutral-500' : 'text-neutral-500')
+                 ]">$</sup>
             <span class="text-base font-black transition-colors" 
-                  :class="targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs ? 'text-white' : 'text-neutral-400'" 
+                  :class="[
+                    targetUpgradeTier === t.imgs || effectiveTier.imgs === t.imgs 
+                      ? (isDark ? 'text-white' : (targetUpgradeTier === t.imgs ? 'text-white' : 'text-neutral-900'))
+                      : (isDark ? 'text-neutral-400' : 'text-neutral-600')
+                  ]" 
                   x-text="t.price"></span>
           </div>
         </button>
