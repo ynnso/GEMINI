@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MLS Photo Calculator - Ultra-Compact Popover</title>
+  <title>Photo Calculator - HIG Spacing Refinements</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,20 +13,33 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif; }
     .tabular-nums { font-variant-numeric: tabular-nums; }
     [x-cloak] { display: none !important; }
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     input[type=number] { -moz-appearance: textfield; }
+
+    @keyframes subtle-pulse-white {
+      0%, 100% { border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+      50% { border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 12px 0 rgba(255, 255, 255, 0.25); }
+    }
+
+    @keyframes subtle-pulse-red-light {
+      0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 10px 0 rgba(239, 68, 68, 0.2); }
+    }
+
+    .animate-pulse-dark { animation: subtle-pulse-white 2s infinite ease-in-out; }
+    .animate-pulse-light { animation: subtle-pulse-red-light 1.8s infinite ease-in-out; }
   </style>
 </head>
 <body class="min-h-full p-4 flex flex-col items-center justify-center transition-colors duration-300"
       x-data="{ 
         state: 'idle',
-        isOpen: true,
+        dropdownOpen: false,
         includeTax: false,
         taxRate: 0.0825,
         count: 25,
         selectedBase: 25,
         selectedSqFt: '0-1999',
-        selectedLabel: '0 – 1,999 Sq Ft',
         extraCost: 5,
 
         sqFtOptions: [
@@ -51,17 +64,18 @@
 
         get holdsSelection() { return this.selectedSqFt !== ''; },
 
-        selectOption(opt) {
-          if (window.navigator && window.navigator.vibrate) {
-            window.navigator.vibrate(30);
-          }
-          this.selectedSqFt = opt.value;
-          this.selectedLabel = opt.label;
-          
-          setTimeout(() => {
-            this.isOpen = false;
-          }, 100);
+        get selectedSqFtLabel() {
+          const found = this.sqFtOptions.find(o => o.value === this.selectedSqFt);
+          return found ? found.label : 'Select Sq Ft';
+        },
 
+        selectSqFt(val) {
+          this.selectedSqFt = val;
+          this.dropdownOpen = false;
+          this.handleSqFtChange();
+        },
+
+        handleSqFtChange() {
           this.selectedBase = 25;
           if (this.count < 25) this.count = 25;
           this.evaluateCheapestBase();
@@ -98,8 +112,24 @@
           else this.selectedBase = bestTier;
         },
 
+        sanitizeInput() {
+          let val = parseInt(this.count, 10);
+          if (isNaN(val) || val < 25) val = 25;
+          if (val > 150) val = 150;
+          this.count = val;
+          this.evaluateCheapestBase();
+        },
+
         get effectiveTier() {
           return { imgs: this.selectedBase, price: this.holdsSelection ? this.getTierPrice(this.selectedBase) : 0 };
+        },
+
+        get targetUpgradeTier() {
+          if (!this.holdsSelection) return null;
+          if (this.selectedBase === 25 && this.count === 33) return 36;
+          if (this.selectedBase === 36 && this.count === 38) return 40;
+          if (this.selectedBase === 40 && this.count === 47) return 50;
+          return null;
         },
 
         get extras() { return Math.max(0, this.count - this.effectiveTier.imgs); },
@@ -124,164 +154,341 @@
             this.count--;
             this.evaluateCheapestBase();
           }
+        },
+
+        triggerCart() {
+          if (!this.holdsSelection || this.state !== 'idle') return;
+          this.state = 'success';
+          if (window.navigator && window.navigator.vibrate) {
+            window.navigator.vibrate(40);
+          }
+          setTimeout(() => { this.state = 'idle'; }, 2500);
         }
       }">
 
-  <!-- MAIN CONTAINER CARD -->
-  <main class="w-full max-w-sm p-4 rounded-3xl border transition-colors duration-300 relative shadow-2xl"
-        :class="isDark ? 'bg-[#121212] border-white/10 text-white' : 'bg-white border-black/10 text-neutral-900'">
+  <!-- MAIN CARD CONTAINER -->
+  <main class="w-full max-w-sm py-6 border-y px-2 transition-colors duration-300"
+        :class="isDark ? 'border-white/15' : 'border-neutral-300'">
 
     <!-- HERO HEADER -->
-    <div class="mb-4 flex items-end justify-between gap-2 pb-0.5">
+    <div class="mb-5 flex items-end justify-between gap-2 pb-0.5">
+      
+      <!-- LEFT TITLE & ICON BLOCK -->
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border transition-colors"
-             :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-black/10 text-neutral-900'">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border transition-colors"
+             :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-neutral-300 text-neutral-900 shadow-sm'">
+          <svg class="w-[26px] h-[26px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         </div>
         <div class="flex flex-col justify-center">
-          <span class="text-[12px] font-extrabold leading-none uppercase tracking-widest mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
-          <h1 class="text-[26px] font-black leading-none tracking-tight">Full Shoot</h1>
+          <span class="text-[13px] font-extrabold leading-none uppercase tracking-widest mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
+          <h1 class="text-[28px] font-black leading-none tracking-tight transition-colors" :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</h1>
         </div>
       </div>
 
-      <!-- PRICE DISPLAY -->
+      <!-- RIGHT PRICE & AIRTIGHT MICROBADGE -->
       <div class="flex items-baseline gap-1.5 select-none tabular-nums">
-        <button @click="includeTax = !includeTax" class="p-1 -m-1 cursor-pointer active:scale-90 transition-transform self-baseline">
-          <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
-                :class="[includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10' : 'bg-black/5 text-neutral-500 border-black/10')]">
+        
+        <button @click="includeTax = !includeTax"
+                :disabled="!holdsSelection"
+                title="Toggle Sales Tax"
+                class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+          <span class="inline-flex items-center justify-center px-1 py-0 rounded-[3px] text-[9px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                :class="[
+                  includeTax 
+                    ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_4px_rgba(52,211,153,0.3)]' 
+                    : (isDark 
+                        ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' 
+                        : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
+                ]">
             TAX
           </span>
         </button>
 
-        <div class="text-[26px] font-black leading-none tracking-tighter flex items-baseline">
-          <span class="text-sm font-black -mr-[0.5px] self-start pt-[2px] leading-none opacity-90">$</span>
+        <!-- HERO PRICE DISPLAY -->
+        <div class="text-[28px] font-black leading-none tracking-tighter flex items-baseline transition-colors"
+             :class="isDark ? 'text-white' : 'text-neutral-900'">
+          <template x-if="holdsSelection">
+            <span class="text-[14px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span>
+          </template>
           <span x-text="priceDollars" class="leading-none"></span>
-          <span class="text-xl font-black leading-none -ml-[0.5px] opacity-90" x-text="priceCents"></span>
+          <span class="text-[14px] font-black leading-none opacity-90 self-baseline" x-text="priceCents"></span>
         </div>
+
       </div>
+
     </div>
 
-    <!-- SQ FT SELECTOR & COMPACT POPOVER CONTAINER -->
-    <div class="relative mb-3">
+    <!-- CUSTOM HIG DROPDOWN CONTAINER -->
+    <div class="mb-4 relative" @click.outside="dropdownOpen = false">
       
-      <!-- TRIGGER BUTTON -->
-      <button @click="isOpen = !isOpen" 
-              class="w-full h-11 rounded-xl border flex items-center justify-between px-3.5 text-[15px] font-bold transition-all active:scale-[0.99] shadow-sm"
-              :class="isDark ? 'bg-white/5 border-white/15 text-white' : 'bg-neutral-100 border-black/10 text-neutral-900'">
-        <span class="w-full text-center pl-4" x-text="selectedLabel"></span>
-        <svg class="w-4 h-4 shrink-0 transition-transform duration-300" :class="isOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <!-- DROPDOWN TRIGGER BUTTON -->
+      <button type="button"
+              @click="dropdownOpen = !dropdownOpen"
+              class="w-full h-12 px-4 rounded-xl text-[17px] font-bold border flex items-center justify-between transition-all duration-200 focus:outline-none shadow-sm"
+              :class="[
+                !holdsSelection 
+                  ? (isDark 
+                      ? 'animate-pulse-dark bg-neutral-900 text-white border-white/30' 
+                      : 'animate-pulse-light bg-white text-red-600 border-red-500/80') 
+                  : (isDark 
+                      ? 'bg-neutral-900/90 text-white border-white/20 hover:border-white/40' 
+                      : 'bg-white text-neutral-900 border-neutral-300 hover:border-neutral-400')
+              ]">
+        <span class="w-full text-center" x-text="selectedSqFtLabel"></span>
+        
+        <svg class="w-4 h-4 shrink-0 transition-transform duration-200"
+             :class="[
+               dropdownOpen ? 'rotate-180' : 'rotate-0',
+               !holdsSelection && !isDark ? 'text-red-500' : (isDark ? 'text-white' : 'text-neutral-600')
+             ]" 
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
         </svg>
       </button>
 
-      <!-- TIGHTENED POPOVER OVERLAY (ALL TILES VISIBLE WITHOUT SCROLLING) -->
-      <div x-show="isOpen" x-cloak
-           @click.outside="isOpen = false"
-           x-transition:enter="transition ease-out duration-200"
-           x-transition:enter-start="opacity-0 -translate-y-2 scale-95"
-           x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-           x-transition:leave="transition ease-in duration-150"
-           x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-           x-transition:leave-end="opacity-0 -translate-y-1.5 scale-[0.97]"
-           class="absolute z-50 top-full mt-1.5 left-0 w-full rounded-2xl p-1.5 backdrop-blur-2xl border origin-top shadow-2xl"
-           :class="isDark ? 'bg-[#18181B]/98 border-white/15 text-white shadow-black/90' : 'bg-white/98 border-black/10 text-neutral-900 shadow-xl'">
+      <!-- FLOATING MENU PANEL (ADDED HIGH Z-INDEX & SHADOW ELEVATION) -->
+      <div x-show="dropdownOpen"
+           x-cloak
+           x-transition:enter="transition ease-out duration-150 transform"
+           x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+           x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+           x-transition:leave="transition ease-in duration-100 transform"
+           x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+           x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+           class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl overflow-hidden"
+           :class="isDark ? 'bg-neutral-900/98 border-white/20 text-white shadow-black/80' : 'bg-white/98 border-neutral-200 text-neutral-900 shadow-neutral-400/50'">
         
-        <div class="py-1 text-center text-[11px] font-black uppercase tracking-widest text-neutral-400 mb-0.5">
+        <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center"
+             :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">
           Select Sq Ft
         </div>
-        
-        <!-- COMPACT 7-TIER LIST -->
-        <div class="space-y-0.5">
+
+        <div class="space-y-0.5 max-h-60 overflow-y-auto">
           <template x-for="opt in sqFtOptions" :key="opt.value">
-            <button @click="selectOption(opt)" 
-                    class="w-full h-9 px-3 rounded-lg flex items-center justify-center text-center text-[14px] font-semibold transition-all relative active:scale-[0.98]"
+            <button type="button"
+                    @click="selectSqFt(opt.value)"
+                    class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150"
                     :class="[
-                      selectedSqFt === opt.value 
-                        ? (isDark ? 'bg-white/10 text-white font-black' : 'bg-black/5 text-black font-black')
-                        : (isDark ? 'hover:bg-white/5 text-neutral-300' : 'hover:bg-black/5 text-neutral-700')
+                      selectedSqFt === opt.value
+                        ? (isDark ? 'bg-white/10 text-white font-extrabold' : 'bg-neutral-100 text-black font-extrabold')
+                        : (isDark ? 'hover:bg-white/5 text-neutral-300 hover:text-white' : 'hover:bg-neutral-50 text-neutral-700 hover:text-black')
                     ]">
-              <span x-text="opt.label"></span>
+              <span class="w-full text-center" x-text="opt.label"></span>
+              
               <template x-if="selectedSqFt === opt.value">
-                <svg class="w-3.5 h-3.5 text-emerald-500 absolute right-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
               </template>
             </button>
           </template>
         </div>
+
       </div>
+
     </div>
 
-    <!-- TIER TILES -->
-    <div class="grid grid-cols-4 gap-1.5 mb-3 tabular-nums">
-      <template x-for="tImg in [25, 36, 40, 50]" :key="tImg">
-        <button @click="selectTier(tImg)"
-                :class="[
-                  selectedBase === tImg ? (isDark ? 'bg-white text-black font-extrabold shadow-lg' : 'bg-neutral-900 text-white font-extrabold shadow-md') : (isDark ? 'bg-white/5 text-neutral-400 border-white/10' : 'bg-neutral-100 text-neutral-600 border-black/10')
-                ]"
-                class="py-2 px-1 rounded-xl border flex flex-col items-center justify-center text-center transition-all active:scale-95">
-          <span class="text-[14px] font-bold leading-tight" x-text="tImg"></span>
-          <div class="flex items-center justify-center mt-0.5 leading-none">
-            <span class="text-[10px] font-bold mr-[1px]">$</span>
-            <span class="text-[12px] font-extrabold" x-text="getTierPrice(tImg)"></span>
+    <!-- MAIN INTERACTIVE SECTION -->
+    <div :class="!holdsSelection && 'opacity-30 pointer-events-none select-none'">
+      
+      <!-- PHOTO TIER TILES (EXPANDED TO py-3 / 46px FOR HIG TOUCH TARGETS) -->
+      <div class="grid grid-cols-4 gap-1.5 mb-4 tabular-nums">
+        <template x-for="tImg in [25, 36, 40, 50]" :key="tImg">
+          <button @click="selectTier(tImg)"
+                  :disabled="!holdsSelection"
+                  :class="[
+                    targetUpgradeTier === tImg 
+                      ? 'bg-emerald-400 text-black font-black ring-2 ring-black' 
+                      : '',
+
+                    !targetUpgradeTier && effectiveTier.imgs === tImg && holdsSelection
+                      ? (isDark 
+                          ? 'bg-white text-black font-extrabold shadow-lg border-white' 
+                          : 'bg-neutral-900 text-white font-extrabold shadow-md border-neutral-900') 
+                      : '',
+
+                    targetUpgradeTier && targetUpgradeTier !== tImg 
+                      ? (isDark ? 'opacity-20 border-transparent bg-transparent' : 'opacity-25 border-transparent bg-transparent') 
+                      : '',
+
+                    !targetUpgradeTier && effectiveTier.imgs !== tImg 
+                      ? (isDark 
+                          ? 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20' 
+                          : 'bg-neutral-200/50 text-neutral-600 border-neutral-300 hover:border-neutral-400') 
+                      : ''
+                  ]"
+                  class="py-3 px-1 rounded-xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
+            
+            <span class="text-[15px] font-bold leading-tight" 
+                  x-text="tImg"></span>
+            
+            <div class="flex items-start justify-center mt-0.5 leading-none">
+              <template x-if="holdsSelection">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+              </template>
+              <span class="text-[13px] font-extrabold leading-none" 
+                    x-text="getTierPrice(tImg)"></span>
+            </div>
+          </button>
+        </template>
+      </div>
+
+      <!-- INSET LINE ITEMS -->
+      <div class="rounded-xl border divide-y mb-4 tabular-nums transition-colors duration-300 overflow-hidden"
+           :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+        
+        <!-- Base Package Row -->
+        <div class="px-3.5 h-[48px] flex items-center justify-between">
+          <span class="text-[15px] font-semibold transition-colors"
+                :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" 
+                x-text="'Base ' + (holdsSelection ? effectiveTier.imgs : 25) + ' Photos'"></span>
+          
+          <div class="flex items-start text-[15px] font-bold transition-colors"
+               :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+            <template x-if="holdsSelection">
+              <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+            </template>
+            <span class="leading-none" x-text="holdsSelection ? effectiveTier.price : '--'"></span>
           </div>
-        </button>
-      </template>
-    </div>
+        </div>
 
-    <!-- INSET BREAKDOWN -->
-    <div class="rounded-2xl border divide-y mb-3 tabular-nums overflow-hidden"
-         :class="isDark ? 'bg-white/5 border-white/10 divide-white/10' : 'bg-neutral-50 border-black/10 divide-neutral-200'">
-      <div class="px-3.5 h-[42px] flex items-center justify-between">
-        <span class="text-[14px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="'Base ' + effectiveTier.imgs + ' Photos'"></span>
-        <div class="flex items-center text-[14px] font-bold">
-          <span class="text-[11px] font-bold mr-[1px]">$</span>
-          <span x-text="effectiveTier.price"></span>
+        <!-- TOAST CONTAINER ROW -->
+        <div @click="targetUpgradeTier && selectTier(targetUpgradeTier)"
+             class="px-3.5 h-[48px] flex items-center justify-center transition-all duration-300"
+             :class="[
+               targetUpgradeTier 
+                 ? 'bg-emerald-400 text-black rounded-b-xl cursor-pointer hover:opacity-95 active:scale-[0.99]'
+                 : (extras > 0 && holdsSelection
+                     ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') 
+                     : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold'))
+             ]">
+          
+          <template x-if="!targetUpgradeTier">
+            <div class="flex items-center justify-between w-full">
+              <div class="text-[15px] transition-colors flex items-start">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="extras > 0 && holdsSelection ? '5 / Extra × ' + extras : '5 / Extra'"></span>
+              </div>
+              
+              <div class="flex items-center text-[15px] font-bold transition-colors">
+                <template x-if="extras > 0 && holdsSelection">
+                  <div class="flex items-start">
+                    <span class="leading-none mr-[0.5px]">+</span>
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none" x-text="extraTotal"></span>
+                  </div>
+                </template>
+                <template x-if="extras === 0 || !holdsSelection">
+                  <div class="flex items-start">
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none">0</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <!-- UPGRADE BANNER -->
+          <template x-if="targetUpgradeTier">
+            <div class="flex items-center justify-center gap-2 w-full select-none text-center">
+              <svg class="w-4 h-4 shrink-0 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
+              </svg>
+              <span class="text-[15px] font-black tracking-tight leading-none text-black">
+                <span x-text="targetUpgradeTier"></span> Upgrade – Same Price!
+              </span>
+            </div>
+          </template>
+        </div>
+
+      </div>
+
+      <!-- STEPPER & CTA -->
+      <div class="flex items-center justify-between gap-2 mb-4">
+        <span class="text-[16px] font-bold transition-colors" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
+        
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center rounded-xl border p-1 transition-colors h-11"
+               :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+            <button @click="updateCount('down')" :disabled="!holdsSelection || count <= 25"
+                    :class="!holdsSelection || count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black')"
+                    class="w-7 h-7 rounded-lg font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
+            
+            <input type="number" 
+                   x-model.number="count"
+                   @change="sanitizeInput()"
+                   @blur="sanitizeInput()"
+                   :disabled="!holdsSelection"
+                   min="25"
+                   max="150"
+                   class="w-10 h-7 bg-transparent text-center text-[15px] font-black focus:outline-none tabular-nums transition-colors"
+                   :class="isDark ? 'text-white' : 'text-neutral-900'" />
+            
+            <button @click="updateCount('up')" :disabled="!holdsSelection || count >= 150"
+                    :class="!holdsSelection || count >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black')"
+                    class="w-7 h-7 rounded-lg font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
+          </div>
+
+          <button @click="triggerCart()" 
+                  :disabled="!holdsSelection || state !== 'idle'"
+                  :class="[
+                    !holdsSelection 
+                      ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') 
+                      : (state === 'success'
+                          ? 'bg-emerald-400 text-black font-black'
+                          : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'))
+                  ]"
+                  class="h-11 px-4 rounded-xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+            
+            <template x-if="state !== 'success'">
+              <svg class="w-[26px] h-[26px]" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+              </svg>
+            </template>
+
+            <template x-if="state === 'success'">
+              <svg class="w-[26px] h-[26px] text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+              </svg>
+            </template>
+          </button>
         </div>
       </div>
 
-      <div class="px-3.5 h-[42px] flex items-center justify-between">
-        <div class="text-[14px] flex items-center">
-          <span class="text-[11px] font-bold mr-[1px]">$</span>
-          <span x-text="extras > 0 ? '5 / Extra × ' + extras : '5 / Extra'"></span>
-        </div>
-        <div class="flex items-center text-[14px] font-bold">
-          <span>+</span><span class="text-[11px] font-bold mr-[1px]">$</span><span x-text="extraTotal"></span>
-        </div>
-      </div>
     </div>
 
-    <!-- STEPPER & CTA -->
-    <div class="flex items-center justify-between gap-2 mb-3">
-      <span class="text-[15px] font-bold">Total Photos</span>
-      <div class="flex items-center gap-2 shrink-0">
-        <div class="flex items-center rounded-xl border p-1 h-10"
-             :class="isDark ? 'bg-white/5 border-white/10' : 'bg-neutral-100 border-black/10'">
-          <button @click="updateCount('down')" :disabled="count <= 25" class="w-6 h-6 rounded-lg font-bold text-base flex items-center justify-center active:scale-90">-</button>
-          <input type="number" x-model.number="count" class="w-9 h-6 bg-transparent text-center text-[14px] font-black focus:outline-none tabular-nums" />
-          <button @click="updateCount('up')" :disabled="count >= 150" class="w-6 h-6 rounded-lg font-bold text-base flex items-center justify-center active:scale-90">+</button>
-        </div>
+    <!-- FOOTER WIZARD & THEME TOGGLE (EXPANDED TO pt-3.5 FOR BREATHING ROOM) -->
+    <div class="flex items-center justify-between pt-3.5">
+      <div class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold border transition-all tracking-tight shrink-0 cursor-pointer"
+           :class="isDark ? 'text-neutral-400 bg-white/5 border-white/10 hover:border-white/30' : 'text-neutral-700 bg-neutral-200/60 border-neutral-300 hover:border-neutral-400 shadow-sm'">
+        <svg class="w-3.5 h-3.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+        </svg>
+        <span>Wizard</span>
+      </div>
 
-        <button class="h-10 px-4 rounded-xl flex items-center justify-center transition-all active:scale-95 shadow-md"
-                :class="isDark ? 'bg-white text-black' : 'bg-black text-white'">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
-            <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" />
-            <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-            <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+      <button @click="isDark = !isDark" 
+              class="w-8 h-8 flex items-center justify-center transition-colors rounded-lg"
+              :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'"
+              :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+        <template x-if="isDark">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m8.966-8.966h-2.25m-13.5 0H3m15.364-6.364l-1.591 1.591M6.758 17.242l-1.591 1.591m12.728 0l-1.591-1.591M6.758 6.758L5.167 5.167M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z" />
           </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="flex items-center justify-between pt-2 border-t" :class="isDark ? 'border-white/10' : 'border-black/10'">
-      <button @click="isOpen = !isOpen" class="text-[12px] font-bold text-neutral-400 hover:text-white">
-        Toggle Dropdown
-      </button>
-      <button @click="isDark = !isDark" class="w-7 h-7 flex items-center justify-center text-base">
-        <span x-text="isDark ? '☀️' : '🌙'"></span>
+        </template>
+        <template x-if="!isDark">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+          </svg>
+        </template>
       </button>
     </div>
 
