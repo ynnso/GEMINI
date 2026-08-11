@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Required Sq Ft Unlock Component</title>
+  <title>Clean Photo Calculator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,8 +27,20 @@
       50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 10px 0 rgba(239, 68, 68, 0.2); }
     }
 
+    @keyframes pulse-emerald-glow {
+      0%, 100% { 
+        border-color: rgba(16, 185, 129, 0.85); 
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); 
+      }
+      50% { 
+        border-color: rgba(16, 185, 129, 1); 
+        box-shadow: 0 0 16px 3px rgba(16, 185, 129, 0.45); 
+      }
+    }
+
     .animate-pulse-dark { animation: subtle-pulse-white 2s infinite ease-in-out; }
     .animate-pulse-light { animation: subtle-pulse-red-light 1.8s infinite ease-in-out; }
+    .animate-pulse-green { animation: pulse-emerald-glow 1.8s infinite ease-in-out; }
 
     select.text-center-select {
       text-align-last: center;
@@ -41,9 +53,9 @@
         state: 'idle',
         includeTax: false,
         taxRate: 0.0825,
-        count: 25,
+        count: 33,
         selectedBase: 25,
-        selectedSqFt: '', // Fixed: Defaults to unselected to demand user interaction
+        selectedSqFt: '0-1999',
         extraCost: 5,
 
         sqFtOptions: [
@@ -171,18 +183,18 @@
         }
       }">
 
-  <!-- TOP HEADER CONTROL -->
+  <!-- TOP CONTROL HEADER -->
   <header class="w-full max-w-sm flex items-center justify-between p-3 rounded-2xl border transition-colors duration-300"
           :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-300 shadow-md'">
-    <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme</span>
+    <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme Mode</span>
     <div class="flex items-center gap-1 p-1 rounded-xl border transition-colors"
          :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
       <button @click="isDark = true"
               :class="isDark ? 'bg-white text-black font-extrabold shadow-sm' : 'text-neutral-500 hover:text-black'"
-              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all">🌙 Dark</button>
+              class="relative px-3 py-1 rounded-lg text-xs font-bold transition-all">🌙 Dark</button>
       <button @click="isDark = false"
               :class="!isDark ? 'bg-black text-white font-extrabold shadow-sm' : 'text-neutral-400 hover:text-white'"
-              class="relative px-3 py-1.5 rounded-lg text-xs font-bold transition-all">☀️ Light</button>
+              class="relative px-3 py-1 rounded-lg text-xs font-bold transition-all">☀️ Light</button>
     </div>
   </header>
 
@@ -237,9 +249,9 @@
       </div>
     </div>
 
-    <!-- REQUIRED PULSING SELECT SQ FT FIELD -->
+    <!-- PROPERTY SIZE SELECTOR -->
     <div class="mb-5">
-      <label class="block text-center text-xs font-black uppercase tracking-wider mb-2"
+      <label class="block text-center text-xs font-black tracking-wider mb-2"
              :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Property Size</label>
       
       <div class="relative">
@@ -270,7 +282,7 @@
       </div>
     </div>
 
-    <!-- MAIN INTERACTIVE SECTION (LOCKED UNTIL SQ FT IS SELECTED) -->
+    <!-- MAIN INTERACTIVE SECTION -->
     <div :class="!holdsSelection && 'opacity-30 pointer-events-none select-none'">
       
       <!-- PHOTO TIER TILES -->
@@ -280,7 +292,7 @@
                   :disabled="!holdsSelection"
                   :class="[
                     targetUpgradeTier === tImg 
-                      ? 'animate-pulse-red ring-2 ring-red-500 border-red-500 bg-black text-white' 
+                      ? 'animate-pulse-green ring-2 ring-emerald-500 border-emerald-500 bg-black text-white' 
                       : '',
 
                     !targetUpgradeTier && effectiveTier.imgs === tImg && holdsSelection
@@ -301,7 +313,7 @@
                   ]"
                   class="py-2.5 px-1 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95">
             
-            <span class="text-xs font-extrabold leading-tight transition-colors" 
+            <span class="text-sm font-black leading-tight transition-colors" 
                   :class="[
                     targetUpgradeTier === tImg 
                       ? 'text-white font-black' 
@@ -309,7 +321,7 @@
                           ? (isDark ? 'text-white font-black' : 'text-neutral-900 font-black') 
                           : (isDark ? 'text-neutral-400' : 'text-neutral-600'))
                   ]" 
-                  x-text="tImg + ' Imgs'"></span>
+                  x-text="tImg"></span>
             
             <div class="flex items-center justify-center mt-0.5 leading-none">
               <template x-if="holdsSelection"><sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup></template>
@@ -331,11 +343,11 @@
       <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300 overflow-hidden"
            :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
         
-        <!-- Base Package Row -->
+        <!-- Base Package Row ("Base 25 Photos") -->
         <div class="p-3.5 flex items-center justify-between">
           <span class="text-sm font-semibold transition-colors"
                 :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" 
-                x-text="'Base Package ' + (holdsSelection ? effectiveTier.imgs : 25) + ' Photos'"></span>
+                x-text="'Base ' + (holdsSelection ? effectiveTier.imgs : 25) + ' Photos'"></span>
           
           <div class="flex items-center text-sm font-bold transition-colors"
                :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
@@ -344,12 +356,14 @@
           </div>
         </div>
 
-        <!-- Extra Photo Row / Same Price Banner -->
+        <!-- TOAST CONTAINER ROW ("$5 / Extra") -->
         <div @click="targetUpgradeTier && selectTier(targetUpgradeTier)"
-             class="p-3.5 flex items-center justify-between transition-all duration-300 h-[52px]"
+             class="p-3.5 flex items-center justify-center transition-all duration-300 h-[52px]"
              :class="[
                targetUpgradeTier 
-                 ? 'bg-white text-red-600 cursor-pointer hover:bg-neutral-100 active:scale-[0.99]' 
+                 ? (isDark 
+                     ? 'bg-white text-black border-[2.5px] border-emerald-500 animate-pulse-green rounded-b-2xl cursor-pointer hover:bg-neutral-100 active:scale-[0.99]' 
+                     : 'bg-black text-white border-[2.5px] border-emerald-500 animate-pulse-green rounded-b-2xl cursor-pointer hover:bg-neutral-900 active:scale-[0.99]')
                  : (extras > 0 && holdsSelection
                      ? (isDark ? 'bg-white text-black font-black' : 'bg-black text-white font-black') 
                      : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold'))
@@ -359,7 +373,7 @@
             <div class="flex items-center justify-between w-full">
               <div class="text-sm transition-colors flex items-center">
                 <sup class="text-[10px] font-bold top-[-0.2em] mr-[1px]">$</sup>
-                <span x-text="extras > 0 && holdsSelection ? '5 / Extra Photo × ' + extras : '5 / Extra Photo'"></span>
+                <span x-text="extras > 0 && holdsSelection ? '5 / Extra × ' + extras : '5 / Extra'"></span>
               </div>
               
               <div class="flex items-center text-sm font-bold transition-colors">
@@ -377,21 +391,21 @@
             </div>
           </template>
 
+          <!-- UPGRADE BANNER -->
           <template x-if="targetUpgradeTier">
-            <div class="flex items-center justify-between w-full select-none text-red-600 pr-2.5">
-              <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-                </svg>
-
-                <span class="text-[18px] font-black tracking-tight leading-none">
-                  Same price! Get <span x-text="targetUpgradeTier"></span> Upgrade
-                </span>
-              </div>
-
-              <svg class="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            <div class="flex items-center justify-center gap-2.5 w-full select-none text-center">
+              
+              <svg class="w-5 h-5 shrink-0" 
+                   :class="isDark ? 'text-black' : 'text-white'" 
+                   fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
               </svg>
+
+              <span class="text-[17px] font-black tracking-tight leading-none" 
+                    :class="isDark ? 'text-black' : 'text-white'">
+                <span x-text="targetUpgradeTier"></span> Upgrade – Same Price!
+              </span>
+
             </div>
           </template>
         </div>
@@ -399,8 +413,8 @@
       </div>
 
       <!-- STEPPER ROW -->
-      <div class="flex items-center justify-between py-1 mb-6">
-        <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Image Count</span>
+      <div class="flex items-center justify-between py-1 mb-6 px-3.5">
+        <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Photos</span>
         
         <div class="flex items-center p-1 rounded-2xl border transition-colors"
              :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
@@ -470,7 +484,7 @@
 
     </button>
 
-    <!-- FOOTER WIZARD & INFO FOOTER ROW -->
+    <!-- FOOTER WIZARD & INFO -->
     <div class="flex items-center justify-between pt-1">
       <div class="relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold border transition-all tracking-tight shrink-0 cursor-pointer"
            :class="isDark ? 'text-neutral-300 bg-white/5 border-white/10 hover:border-white/30' : 'text-neutral-800 bg-neutral-200/80 border-neutral-300 hover:border-neutral-400 shadow-sm'">
