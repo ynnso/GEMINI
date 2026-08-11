@@ -41,7 +41,7 @@
         state: 'idle',
         includeTax: false,
         taxRate: 0.0825,
-        count: 33,
+        count: 25,
         selectedBase: 25,
         selectedSqFt: '0-1999',
         extraCost: 5,
@@ -163,58 +163,58 @@
   <main class="w-full max-w-sm py-6 border-y px-2 transition-colors duration-300"
         :class="isDark ? 'border-white/15' : 'border-neutral-300'">
 
-    <!-- HERO TOP SECTION -->
-    <div class="mb-5">
-      <div class="flex items-stretch justify-between gap-2">
-        <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors"
-               :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-neutral-300 text-neutral-900 shadow-sm'">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-          </div>
-          <div class="flex flex-col justify-between py-0.5">
-            <span class="text-xs font-semibold leading-none block mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
-            <h1 class="text-2xl font-black leading-none transition-colors" :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</h1>
-          </div>
+    <!-- RESTRUCTURED HERO TOP SECTION -->
+    <div class="mb-5 flex items-stretch justify-between gap-2">
+      
+      <!-- LEFT TITLE & ICON BLOCK -->
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border transition-colors"
+             :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-white border-neutral-300 text-neutral-900 shadow-sm'">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
         </div>
-
-        <div class="flex flex-col items-end justify-center select-none">
-          <div class="text-4xl font-black leading-none tracking-tight flex items-baseline transition-colors tabular-nums"
-               :class="isDark ? 'text-white' : 'text-neutral-900'">
-            <template x-if="holdsSelection"><span class="text-base font-bold mr-[1px] self-start leading-none">$</span></template>
-            <span x-text="priceDollars"></span>
-            <span class="text-xs font-bold leading-none ml-[1px]" x-text="priceCents"></span>
-          </div>
+        <div class="flex flex-col justify-between py-0.5">
+          <span class="text-xs font-bold leading-none uppercase tracking-wider mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
+          <h1 class="text-3xl font-black leading-none tracking-tight transition-colors" :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</h1>
         </div>
       </div>
 
-      <!-- Tax Toggle -->
-      <div class="flex justify-end mt-2" :class="!holdsSelection && 'opacity-30 pointer-events-none'">
-        <label class="relative flex items-center gap-1.5 cursor-pointer select-none py-1">
-          <span class="text-[11px] font-semibold transition-colors"
-                :class="isDark ? 'text-neutral-400' : 'text-neutral-600'" 
-                x-text="includeTax ? 'Inc. Tax (8.25%)' : 'No Tax'"></span>
-          <input type="checkbox" x-model="includeTax" :disabled="!holdsSelection" class="sr-only">
-          <div class="w-7 h-3.5 rounded-full border relative transition-colors"
-               :class="isDark 
-                 ? (includeTax ? 'bg-white/30 border-white/40' : 'bg-neutral-800 border-white/10') 
-                 : (includeTax ? 'bg-black border-black' : 'bg-neutral-300 border-neutral-400')">
-            <div class="w-2.5 h-2.5 rounded-full absolute top-[1px] left-[1px] transition-transform"
-                 :class="[
-                   includeTax ? 'translate-x-3.5' : 'translate-x-0',
-                   isDark ? 'bg-white' : (includeTax ? 'bg-white' : 'bg-neutral-700')
-                 ]"></div>
-          </div>
-        </label>
+      <!-- RIGHT PRICE & SNUG TAX BLOCK -->
+      <div class="flex flex-col items-end justify-between select-none">
+        <!-- TIGHTENED HERO PRICE DISPLAY -->
+        <div class="text-4xl font-black leading-none tracking-tighter flex items-baseline transition-colors tabular-nums"
+             :class="isDark ? 'text-white' : 'text-neutral-900'">
+          <template x-if="holdsSelection"><span class="text-lg font-extrabold -mr-[1px] self-start pt-1 leading-none">$</span></template>
+          <span x-text="priceDollars" class="leading-none"></span>
+          <span class="text-2xl font-black leading-none -ml-[1px]" x-text="priceCents"></span>
+        </div>
+
+        <!-- Snug Tax Switch -->
+        <div class="mt-1" :class="!holdsSelection && 'opacity-30 pointer-events-none'">
+          <label class="relative flex items-center gap-1.5 cursor-pointer select-none">
+            <span class="text-[11px] font-bold transition-colors"
+                  :class="isDark ? 'text-neutral-400' : 'text-neutral-600'" 
+                  x-text="includeTax ? 'Inc. Tax (8.25%)' : 'No Tax'"></span>
+            <input type="checkbox" x-model="includeTax" :disabled="!holdsSelection" class="sr-only">
+            <div class="w-7 h-3.5 rounded-full border relative transition-colors"
+                 :class="isDark 
+                   ? (includeTax ? 'bg-white/30 border-white/40' : 'bg-neutral-800 border-white/10') 
+                   : (includeTax ? 'bg-black border-black' : 'bg-neutral-300 border-neutral-400')">
+              <div class="w-2.5 h-2.5 rounded-full absolute top-[1px] left-[1px] transition-transform"
+                   :class="[
+                     includeTax ? 'translate-x-3.5' : 'translate-x-0',
+                     isDark ? 'bg-white' : (includeTax ? 'bg-white' : 'bg-neutral-700')
+                   ]"></div>
+            </div>
+          </label>
+        </div>
       </div>
+
     </div>
 
-    <!-- PROPERTY SIZE SELECTOR -->
-    <div class="mb-5">
-      <label class="block text-center text-xs font-bold tracking-wider mb-2"
-             :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Property Size</label>
-      
+    <!-- CLEAN PROPERTY SIZE SELECTOR -->
+    <div class="mb-4">
       <div class="relative">
         <select x-model="selectedSqFt" 
                 @change="handleSqFtChange()"
@@ -247,7 +247,7 @@
     <div :class="!holdsSelection && 'opacity-30 pointer-events-none select-none'">
       
       <!-- PHOTO TIER TILES -->
-      <div class="grid grid-cols-4 gap-1.5 mb-5 tabular-nums">
+      <div class="grid grid-cols-4 gap-1.5 mb-4 tabular-nums">
         <template x-for="tImg in [25, 36, 40, 50]" :key="tImg">
           <button @click="selectTier(tImg)"
                   :disabled="!holdsSelection"
@@ -301,7 +301,7 @@
       </div>
 
       <!-- INSET LINE ITEMS -->
-      <div class="rounded-2xl border divide-y mb-5 tabular-nums transition-colors duration-300 overflow-hidden"
+      <div class="rounded-2xl border divide-y mb-4 tabular-nums transition-colors duration-300 overflow-hidden"
            :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
         
         <!-- Base Package Row -->
@@ -444,13 +444,11 @@
               class="w-8 h-8 flex items-center justify-center transition-colors rounded-full"
               :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'"
               :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-        <!-- Sun Icon (shown when Dark to switch to Light) -->
         <template x-if="isDark">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m8.966-8.966h-2.25m-13.5 0H3m15.364-6.364l-1.591 1.591M6.758 17.242l-1.591 1.591m12.728 0l-1.591-1.591M6.758 6.758L5.167 5.167M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z" />
           </svg>
         </template>
-        <!-- Moon Icon (shown when Light to switch to Dark) -->
         <template x-if="!isDark">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
