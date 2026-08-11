@@ -1,553 +1,83 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full antialiased" x-data="{ isDark: true, style: 'n01' }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
+<html lang="en" class="h-full antialiased bg-[#050505] text-white">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>30 All-New Clean Hero Redesigns</title>
+  <title>Full Component Card</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Syne:wght@800;900&family=Space+Grotesk:wght@700;900&family=Cinzel:wght@800;900&family=DM+Mono:wght@500&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-syne { font-family: 'Syne', sans-serif; }
-    .font-space { font-family: 'Space Grotesk', sans-serif; }
-    .font-cinzel { font-family: 'Cinzel', serif; }
-    .font-dm-mono { font-family: 'DM Mono', monospace; }
-    .font-outfit { font-family: 'Outfit', sans-serif; }
     .tabular-nums { font-variant-numeric: tabular-nums; }
-    [x-cloak] { display: none !important; }
-
-    /* Custom Geometric Clip Paths */
-    .clip-ticket-notch { clip-path: polygon(0 0, 100% 0, 100% calc(50% - 6px), calc(100% - 8px) 50%, 100% calc(50% + 6px), 100% 100%, 0 100%, 0 calc(50% + 6px), 8px 50%, 0 calc(50% - 6px)); }
-    .clip-chevron { clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%); }
-    .clip-inverted-triangle { clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%); }
-    .clip-step-card { clip-path: polygon(0 0, 70% 0, 70% 20%, 100% 20%, 100% 100%, 0 100%); }
-
-    /* Micro Background Textures */
-    .bg-dot-matrix { background-image: radial-gradient(rgba(239, 68, 68, 0.25) 1px, transparent 1px); background-size: 8px 8px; }
-    .bg-cross-lines { background-image: linear-gradient(0deg, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 10px 10px; }
   </style>
 </head>
-<body class="min-h-full p-4 flex flex-col items-center justify-center transition-colors duration-300">
+<body class="min-h-full p-4 flex flex-col items-center justify-center"
+      x-data="{ 
+        sqft: '0 – 1,999 Sq Ft',
+        selectedPhotos: 25,
+        basePrice: 139,
+        photos: [
+          { count: 25, price: 139 },
+          { count: 36, price: 169 },
+          { count: 40, price: 189 },
+          { count: 50, price: 219 }
+        ]
+      }">
 
-  <!-- 30-VARIANT SELECTOR SWITCHER -->
-  <header class="mb-6 flex flex-wrap items-center justify-center gap-1.5 p-2 rounded-2xl border text-[11px] font-bold transition-colors max-w-md w-full"
-          :class="isDark ? 'bg-neutral-900 border-white/10 text-neutral-300' : 'bg-white border-neutral-300 text-neutral-700 shadow-sm'">
-    <span class="px-2 text-[10px] uppercase tracking-widest font-black text-red-600">Variant:</span>
+  <!-- FULL RESTORED COMPONENT CARD -->
+  <div class="w-full max-w-sm bg-neutral-900 border border-white/10 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
     
-    <select x-model="style" class="bg-transparent font-black cursor-pointer focus:outline-none text-xs px-2 py-1 rounded-lg border w-full sm:w-auto"
-            :class="isDark ? 'border-white/20 text-white bg-neutral-800' : 'border-neutral-300 text-neutral-900 bg-neutral-100'">
-      <option value="n01">01. Oversized Dollar Anchor</option>
-      <option value="n02">02. Ticket Stub Notch Cut</option>
-      <option value="n03">03. Vertical Split Column</option>
-      <option value="n04">04. Red Circle Keycap Badge</option>
-      <option value="n05">05. Architectural Corner Brackets</option>
-      <option value="n06">06. Floating Pill Monolith</option>
-      <option value="n07">07. Dot Matrix Background Tile</option>
-      <option value="n08">08. Double Border Frame</option>
-      <option value="n09">09. Top Ribbon Flag Banner</option>
-      <option value="n10">10. Stepped Edge Card</option>
-      <option value="n11">11. Chevron Arrow Tail</option>
-      <option value="n12">12. Oversized Centered Stack</option>
-      <option value="n13">13. Inverted Triangle Base</option>
-      <option value="n14">14. Crosshair Line Grid</option>
-      <option value="n15">15. Horizontal Stripe Barcode</option>
-      <option value="n16">16. Minimalist Red Dot Lead</option>
-      <option value="n17">17. Brutalist Offset Yellow Shadow</option>
-      <option value="n18">18. High-Fashion Stretched Serif</option>
-      <option value="n19">19. Floating Glass Ring</option>
-      <option value="n20">20. Micro-Capsule Header Bar</option>
-      <option value="n21">21. Floating Circular Price Coin</option>
-      <option value="n22">22. Monospaced Terminal Strip</option>
-      <option value="n23">23. Double Line Bracket Box</option>
-      <option value="n24">24. Offset Red Left Stripe</option>
-      <option value="n25">25. Soft Radial Glow Spot</option>
-      <option value="n26">26. Bold Syne Text Block</option>
-      <option value="n27">27. Dark Mode Red Inner Border</option>
-      <option value="n28">28. Floating Bottom Tag</option>
-      <option value="n29">29. Space Grotesk Box</option>
-      <option value="n30">30. Clean Staggered Rows</option>
-    </select>
-  </header>
+    <!-- Ambient Red Background Glow -->
+    <div class="absolute -top-12 -left-12 w-32 h-32 bg-red-600/20 rounded-full blur-2xl pointer-events-none"></div>
 
-  <!-- MAIN CARD CONTAINER -->
-  <main class="w-full max-w-sm py-4 border-y transition-all duration-300 relative"
-        :class="isDark ? 'border-white/15' : 'border-neutral-300'">
-
-    <!-- 01. OVERSIZED DOLLAR ANCHOR -->
-    <template x-if="style === 'n01'">
-      <div class="mb-5 p-4 rounded-2xl border flex items-end justify-between transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div>
-          <span class="text-[8px] font-black uppercase tracking-[0.25em] text-red-500 block mb-1">MLS PHOTOS</span>
-          <h1 class="text-2xl font-black tracking-tight leading-none">Full Shoot</h1>
-        </div>
-        <div class="flex items-baseline font-black leading-none tabular-nums text-red-600">
-          <span class="text-4xl -mr-1">$</span>
-          <span class="text-3xl" :class="isDark ? 'text-white' : 'text-black'">139</span>
-          <span class="text-sm font-bold opacity-60" :class="isDark ? 'text-white' : 'text-black'">.00</span>
-        </div>
+    <!-- Restored Clean Header Unit -->
+    <header class="flex items-center justify-between pb-4 mb-4 border-b border-white/10 relative z-10">
+      <div>
+        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-red-500 block mb-0.5">MLS Photos</span>
+        <h1 class="text-xl font-black tracking-tight text-white">Full Shoot</h1>
       </div>
-    </template>
-
-    <!-- 02. TICKET STUB NOTCH CUT -->
-    <template x-if="style === 'n02'">
-      <div class="mb-5 p-4 bg-red-600 text-white clip-ticket-notch flex items-center justify-between shadow-lg">
-        <div class="pl-2">
-          <span class="text-[8px] font-black uppercase tracking-widest opacity-80 block mb-0.5">MLS PHOTOS</span>
-          <h1 class="text-lg font-black tracking-tight">Full Shoot</h1>
-        </div>
-        <div class="pr-2 text-2xl font-black tracking-tighter tabular-nums">
-          <span class="text-sm opacity-80">$</span>139<span class="text-sm opacity-80">.00</span>
-        </div>
+      <div class="text-3xl font-black tracking-tight text-white tabular-nums">
+        <span class="text-lg font-bold text-red-500">$</span><span x-text="basePrice"></span><span class="text-sm font-bold opacity-60">.00</span>
       </div>
-    </template>
+    </header>
 
-    <!-- 03. VERTICAL SPLIT COLUMN -->
-    <template x-if="style === 'n03'">
-      <div class="mb-5 p-4 rounded-2xl border transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="flex justify-between items-start mb-3">
-          <span class="px-2 py-0.5 rounded-md bg-red-600/10 text-red-500 border border-red-500/20 text-[8px] font-black uppercase tracking-widest">
-            MLS Photos
-          </span>
-          <div class="text-3xl font-black tracking-tighter tabular-nums text-red-600">
-            $<span :class="isDark ? 'text-white' : 'text-black'">139</span><span class="text-sm opacity-60" :class="isDark ? 'text-white' : 'text-black'">.00</span>
-          </div>
-        </div>
-        <h1 class="text-xl font-black tracking-tight leading-none">Full Shoot</h1>
-      </div>
-    </template>
-
-    <!-- 04. RED CIRCLE KEYCAP BADGE -->
-    <template x-if="style === 'n04'">
-      <div class="mb-5 p-3 rounded-2xl border flex items-center justify-between transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-md shadow-red-600/40">
-            $
-          </div>
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block leading-none mb-1">MLS PHOTOS</span>
-            <h1 class="text-base font-black tracking-tight leading-none">Full Shoot</h1>
-          </div>
-        </div>
-        <div class="text-2xl font-black tracking-tighter tabular-nums pr-1">
-          139<span class="text-xs font-bold opacity-60">.00</span>
-        </div>
-      </div>
-    </template>
-
-    <!-- 05. ARCHITECTURAL CORNER BRACKETS -->
-    <template x-if="style === 'n05'">
-      <div class="mb-5 p-4 relative transition-all border-x-2 border-red-600"
-           :class="isDark ? 'bg-neutral-900/50' : 'bg-neutral-100'">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight uppercase">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            <span class="text-base font-bold opacity-60">$</span>139<span class="text-base font-bold opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 06. FLOATING PILL MONOLITH -->
-    <template x-if="style === 'n06'">
-      <div class="mb-5 p-2 rounded-full border flex items-center justify-between transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-md'">
-        <div class="px-4 py-1.5 rounded-full bg-red-600 text-white font-black text-xs uppercase tracking-wider">
-          MLS Photos
-        </div>
-        <h1 class="text-sm font-black tracking-tight px-2">Full Shoot</h1>
-        <div class="px-4 py-1.5 rounded-full bg-black text-white dark:bg-white dark:text-black font-black text-sm tabular-nums">
-          $139.00
-        </div>
-      </div>
-    </template>
-
-    <!-- 07. DOT MATRIX BACKGROUND TILE -->
-    <template x-if="style === 'n07'">
-      <div class="mb-5 p-4 rounded-2xl border bg-dot-matrix relative overflow-hidden transition-all"
-           :class="isDark ? 'bg-neutral-950 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-1">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            <span class="text-base font-extrabold text-red-600">$</span>139<span class="text-base font-extrabold opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 08. DOUBLE BORDER FRAME -->
-    <template x-if="style === 'n08'">
-      <div class="mb-5 p-1 rounded-2xl border border-red-600">
-        <div class="p-3.5 rounded-xl border flex items-center justify-between"
-             :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-200'">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block leading-none mb-1">MLS PHOTOS</span>
-            <h1 class="text-lg font-black tracking-tight leading-none">Full Shoot</h1>
-          </div>
-          <div class="text-2xl font-black tracking-tighter tabular-nums">
-            <span class="text-xs font-bold opacity-60">$</span>139<span class="text-xs font-bold opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 09. TOP RIBBON FLAG BANNER -->
-    <template x-if="style === 'n09'">
-      <div class="mb-5 rounded-2xl border overflow-hidden transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="bg-red-600 text-white px-3 py-1 flex items-center justify-between text-[8px] font-black uppercase tracking-widest">
-          <span>MLS PHOTOS</span>
-          <span>GUARANTEED RATE</span>
-        </div>
-        <div class="p-4 flex items-center justify-between tabular-nums">
-          <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          <div class="text-3xl font-black tracking-tighter">
-            $<span class="text-2xl">139</span>.00
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 10. STEPPED EDGE CARD -->
-    <template x-if="style === 'n10'">
-      <div class="mb-5 p-4 bg-red-600 text-white clip-step-card shadow-lg">
-        <span class="text-[8px] font-black uppercase tracking-widest opacity-80 block mb-1">MLS PHOTOS</span>
-        <div class="flex items-end justify-between mt-2">
-          <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            $139<span class="text-base opacity-80">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 11. CHEVRON ARROW TAIL -->
-    <template x-if="style === 'n11'">
-      <div class="mb-5 h-16 bg-red-600 text-white clip-chevron p-3.5 flex items-center justify-between pr-10 shadow-md">
-        <div>
-          <span class="text-[8px] font-black uppercase tracking-widest opacity-80 block leading-none mb-0.5">MLS PHOTOS</span>
-          <h1 class="text-base font-black tracking-tight leading-none">Full Shoot</h1>
-        </div>
-        <div class="text-2xl font-black tracking-tighter tabular-nums">
-          $139.00
-        </div>
-      </div>
-    </template>
-
-    <!-- 12. OVERSIZED CENTERED STACK -->
-    <template x-if="style === 'n12'">
-      <div class="mb-5 p-5 rounded-2xl border text-center transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <span class="text-[8px] font-black uppercase tracking-[0.3em] text-red-500 block mb-1">MLS PHOTOS</span>
-        <h1 class="text-2xl font-black tracking-tight mb-2">Full Shoot</h1>
-        <div class="w-12 h-0.5 bg-red-600 mx-auto mb-3"></div>
-        <div class="text-4xl font-black tracking-tighter tabular-nums">
-          <span class="text-xl font-bold text-red-600">$</span>139<span class="text-xl font-bold opacity-60">.00</span>
-        </div>
-      </div>
-    </template>
-
-    <!-- 13. INVERTED TRIANGLE BASE -->
-    <template x-if="style === 'n13'">
-      <div class="mb-5 p-5 bg-black text-white border border-white/20 clip-inverted-triangle text-center pb-8 shadow-xl">
-        <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-1">MLS PHOTOS</span>
-        <h1 class="text-xl font-black uppercase tracking-tight mb-1">Full Shoot</h1>
-        <div class="text-3xl font-black tracking-tighter tabular-nums text-red-500">
-          $<span class="text-white">139</span>.00
-        </div>
-      </div>
-    </template>
-
-    <!-- 14. CROSSHAIR LINE GRID -->
-    <template x-if="style === 'n14'">
-      <div class="mb-5 p-4 rounded-2xl border bg-cross-lines relative transition-all"
-           :class="isDark ? 'bg-neutral-950 border-white/10' : 'bg-neutral-50 border-neutral-300 shadow-sm'">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            <span class="text-base font-bold opacity-60">$</span>139<span class="text-base font-bold opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 15. HORIZONTAL STRIPE BARCODE -->
-    <template x-if="style === 'n15'">
-      <div class="mb-5 p-4 rounded-2xl border relative overflow-hidden transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-red-600 via-white to-red-600"></div>
-        <div class="flex items-center justify-between mt-1">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            <span class="text-base font-bold opacity-60">$</span>139<span class="text-base font-bold opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 16. MINIMALIST RED DOT LEAD -->
-    <template x-if="style === 'n16'">
-      <div class="mb-5 pb-3 border-b flex items-center justify-between transition-all"
-           :class="isDark ? 'border-white/15' : 'border-neutral-300'">
-        <div class="flex items-center gap-2.5">
-          <span class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></span>
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block leading-none">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight leading-none mt-1">Full Shoot</h1>
-          </div>
-        </div>
-        <div class="text-3xl font-black tracking-tighter tabular-nums">
-          <span class="text-base font-bold opacity-60">$</span>139<span class="text-base font-bold opacity-60">.00</span>
-        </div>
-      </div>
-    </template>
-
-    <!-- 17. BRUTALIST OFFSET YELLOW SHADOW -->
-    <template x-if="style === 'n17'">
-      <div class="mb-5 p-4 rounded-xl border-2 border-black bg-white text-black shadow-[4px_4px_0px_0px_#ef4444] font-space">
-        <span class="bg-red-600 text-white px-2 py-0.5 text-[8px] font-black uppercase tracking-wider block w-max mb-1">MLS PHOTOS</span>
-        <div class="flex items-end justify-between">
-          <h1 class="text-2xl font-black uppercase tracking-tight leading-none">Full Shoot</h1>
-          <div class="text-3xl font-black tracking-tighter leading-none bg-yellow-300 px-2 py-1 border border-black tabular-nums">
-            $139.00
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 18. HIGH-FASHION STRETCHED SERIF -->
-    <template x-if="style === 'n18'">
-      <div class="mb-5 font-cinzel p-4 rounded-2xl border text-center transition-all"
-           :class="isDark ? 'bg-black border-white/20' : 'bg-white border-black shadow-md'">
-        <span class="text-[8px] font-bold tracking-[0.4em] text-red-600 uppercase block mb-1">MLS PHOTOS</span>
-        <h1 class="text-2xl font-bold uppercase tracking-widest mb-2">Full Shoot</h1>
-        <div class="text-3xl font-bold tracking-tight tabular-nums">
-          $<span class="text-2xl">139</span>.00
-        </div>
-      </div>
-    </template>
-
-    <!-- 19. FLOATING GLASS RING -->
-    <template x-if="style === 'n19'">
-      <div class="mb-5 p-4 rounded-3xl border backdrop-blur-2xl flex items-center justify-between shadow-xl transition-all"
-           :class="isDark ? 'bg-white/5 border-white/15' : 'bg-white/70 border-neutral-300'">
-        <div>
-          <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-          <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-        </div>
-        <div class="w-16 h-16 rounded-full bg-red-600 text-white flex flex-col items-center justify-center font-black text-xs shrink-0 shadow-lg shadow-red-600/40 tabular-nums">
-          <span>$139</span>
-          <span class="text-[8px] font-normal opacity-80">.00</span>
-        </div>
-      </div>
-    </template>
-
-    <!-- 20. MICRO-CAPSULE HEADER BAR -->
-    <template x-if="style === 'n20'">
-      <div class="mb-5 p-3 rounded-2xl border flex items-center justify-between transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-1 rounded-md bg-red-600 text-white text-[8px] font-black uppercase">MLS</span>
-          <h1 class="text-base font-black tracking-tight">Full Shoot</h1>
-        </div>
-        <div class="px-3 py-1 rounded-lg bg-black text-white dark:bg-white dark:text-black font-black text-sm tabular-nums">
-          $139.00
-        </div>
-      </div>
-    </template>
-
-    <!-- 21. FLOATING CIRCULAR PRICE COIN -->
-    <template x-if="style === 'n21'">
-      <div class="mb-5 p-4 rounded-2xl border relative transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-1">MLS PHOTOS</span>
-        <h1 class="text-2xl font-black tracking-tight">Full Shoot</h1>
-        <div class="absolute -top-3 right-3 px-3 py-1 rounded-full bg-red-600 text-white font-black text-xs shadow-md tabular-nums">
-          $139.00
-        </div>
-      </div>
-    </template>
-
-    <!-- 22. MONOSPACED TERMINAL STRIP -->
-    <template x-if="style === 'n22'">
-      <div class="mb-5 p-3 rounded-lg border font-dm-mono transition-all"
-           :class="isDark ? 'bg-black border-red-500/40 text-white' : 'bg-neutral-50 border-neutral-300 text-black shadow-sm'">
-        <div class="text-[8px] text-red-500 font-bold uppercase tracking-widest mb-1">SERVICE // MLS_PHOTOS</div>
-        <div class="flex items-baseline justify-between">
-          <h1 class="text-base font-bold uppercase">Full Shoot</h1>
-          <div class="text-2xl font-bold tracking-tighter tabular-nums">
-            $139<span class="text-sm opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 23. DOUBLE LINE BRACKET BOX -->
-    <template x-if="style === 'n23'">
-      <div class="mb-5 p-4 border-2 border-dashed rounded-xl transition-all"
-           :class="isDark ? 'border-white/20 bg-neutral-900' : 'border-neutral-400 bg-white'">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            <span class="text-base font-bold opacity-60">$</span>139<span class="text-base font-bold opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 24. OFFSET RED LEFT STRIPE -->
-    <template x-if="style === 'n24'">
-      <div class="mb-5 rounded-2xl border flex overflow-hidden shadow-sm transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300'">
-        <div class="w-3 bg-red-600 shrink-0"></div>
-        <div class="p-4 flex items-center justify-between grow">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            <span class="text-base font-bold opacity-60">$</span>139<span class="text-base font-bold opacity-60">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 25. SOFT RADIAL GLOW SPOT -->
-    <template x-if="style === 'n25'">
-      <div class="mb-5 p-4 rounded-2xl border relative overflow-hidden transition-all"
-           :class="isDark ? 'bg-black border-white/10' : 'bg-white border-neutral-300 shadow-md'">
-        <div class="absolute top-1/2 -right-10 -translate-y-1/2 w-32 h-32 bg-red-600/30 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="relative z-10 flex items-center justify-between">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tight tabular-nums">
-            $<span class="text-2xl">139</span>.00
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 26. BOLD SYNE TEXT BLOCK -->
-    <template x-if="style === 'n26'">
-      <div class="mb-5 p-4 rounded-2xl font-syne bg-red-600 text-white shadow-xl">
-        <div class="flex items-start justify-between">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest opacity-80 block mb-1">MLS PHOTOS</span>
-            <h1 class="text-2xl font-black uppercase tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            $139
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 27. DARK MODE RED INNER BORDER -->
-    <template x-if="style === 'n27'">
-      <div class="mb-5 p-4 rounded-2xl bg-neutral-900 border-2 border-red-600/50 text-white shadow-lg">
-        <div class="flex items-center justify-between">
-          <div>
-            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-          </div>
-          <div class="text-3xl font-black tracking-tight tabular-nums text-red-500">
-            $<span class="text-white">139</span>.00
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 28. FLOATING BOTTOM TAG -->
-    <template x-if="style === 'n28'">
-      <div class="mb-5 p-4 rounded-2xl border transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[8px] font-black uppercase tracking-widest text-red-500">MLS PHOTOS</span>
-          <h1 class="text-lg font-black tracking-tight">Full Shoot</h1>
-        </div>
-        <div class="w-full py-1.5 rounded-xl bg-red-600 text-white font-black text-center text-xl tabular-nums shadow-md">
-          $139.00
-        </div>
-      </div>
-    </template>
-
-    <!-- 29. SPACE GROTESK BOX -->
-    <template x-if="style === 'n29'">
-      <div class="mb-5 font-space p-4 rounded-xl border-2 border-black dark:border-white transition-all">
-        <span class="text-[8px] font-black uppercase tracking-widest text-red-600 block mb-1">MLS PHOTOS</span>
-        <div class="flex items-end justify-between">
-          <h1 class="text-xl font-black uppercase">Full Shoot</h1>
-          <div class="text-3xl font-black tracking-tighter tabular-nums">
-            $139.00
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- 30. CLEAN STAGGERED ROWS -->
-    <template x-if="style === 'n30'">
-      <div class="mb-5 p-4 rounded-2xl border transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <span class="text-[8px] font-black uppercase tracking-[0.25em] text-red-500 block mb-1">MLS PHOTOS</span>
-        <h1 class="text-2xl font-black tracking-tight mb-2">Full Shoot</h1>
-        <div class="pt-2 border-t flex items-center justify-between" :class="isDark ? 'border-white/10' : 'border-neutral-200'">
-          <span class="text-[9px] font-bold opacity-50 uppercase tracking-widest">Base Rate</span>
-          <div class="text-2xl font-black tracking-tight tabular-nums text-red-600">
-            $<span :class="isDark ? 'text-white' : 'text-black'">139</span><span class="text-xs opacity-60" :class="isDark ? 'text-white' : 'text-black'">.00</span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- CALCULATOR FORM PLACEHOLDER -->
-    <div class="opacity-40 pointer-events-none select-none">
-      <div class="h-10 rounded-xl border mb-3 flex items-center justify-center text-xs font-bold"
-           :class="isDark ? 'border-white/10 bg-white/5' : 'border-neutral-300 bg-neutral-200/50'">
-        0 – 1,999 Sq Ft
-      </div>
-      <div class="grid grid-cols-4 gap-1.5">
-        <div class="h-12 rounded-xl bg-red-600 text-white flex flex-col items-center justify-center text-xs font-bold">
-          <span>25</span>
-          <span>$139</span>
-        </div>
-        <div class="h-12 rounded-xl border flex flex-col items-center justify-center text-xs font-bold" :class="isDark ? 'border-white/10' : 'border-neutral-300'">36</div>
-        <div class="h-12 rounded-xl border flex flex-col items-center justify-center text-xs font-bold" :class="isDark ? 'border-white/10' : 'border-neutral-300'">40</div>
-        <div class="h-12 rounded-xl border flex flex-col items-center justify-center text-xs font-bold" :class="isDark ? 'border-white/10' : 'border-neutral-300'">50</div>
+    <!-- Calculator Selector Step 1: Sq Ft Indicator -->
+    <div class="mb-4">
+      <label class="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-1.5">Coverage Area</label>
+      <div class="w-full h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-between px-3 text-xs font-bold text-neutral-200">
+        <span x-text="sqft"></span>
+        <svg class="w-4 h-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
       </div>
     </div>
 
-    <!-- FOOTER THEME TOGGLE -->
-    <div class="flex items-center justify-between pt-4 mt-4 border-t" :class="isDark ? 'border-white/10' : 'border-neutral-200'">
-      <span class="text-[10px] font-bold opacity-50">30 All-New Clean Redesigns</span>
-      <button @click="isDark = !isDark" 
-              class="w-7 h-7 flex items-center justify-center rounded-lg text-xs"
-              :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'">
-        <span x-text="isDark ? '☀️' : '🌙'"></span>
-      </button>
+    <!-- Calculator Selector Step 2: Photo Count Grid -->
+    <div>
+      <label class="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-1.5">Select Photo Count</label>
+      <div class="grid grid-cols-4 gap-2">
+        <template x-for="item in photos" :key="item.count">
+          <button @click="selectedPhotos = item.count; basePrice = item.price"
+                  class="h-14 rounded-xl border flex flex-col items-center justify-center transition-all duration-150 active:scale-95"
+                  :class="selectedPhotos === item.count 
+                    ? 'bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30' 
+                    : 'bg-white/5 border-white/10 text-neutral-300 hover:border-white/20'">
+            <span class="text-xs font-black" x-text="item.count"></span>
+            <span class="text-[10px] font-extrabold opacity-80" x-text="'$' + item.price"></span>
+          </button>
+        </template>
+      </div>
     </div>
 
-  </main>
+    <!-- Action Button -->
+    <button class="w-full mt-5 py-3 rounded-xl bg-white text-black font-black text-xs uppercase tracking-wider hover:bg-neutral-200 transition-colors">
+      Add To Order
+    </button>
+
+  </div>
+
 </body>
 </html>
