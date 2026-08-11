@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full antialiased" x-data="{ isDark: false }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
+<html lang="en" class="h-full antialiased" x-data="{ isDark: false, layoutMode: 'inline' }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clean Photo Calculator</title>
+  <title>Photo Calculator Layout Switcher</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -183,18 +183,30 @@
         }
       }">
 
-  <!-- TOP CONTROL HEADER -->
+  <!-- CONTROL BAR SWITCHER (THEME + LAYOUT) -->
   <header class="w-full max-w-sm flex items-center justify-between p-3 rounded-2xl border transition-colors duration-300"
           :class="isDark ? 'bg-[#0A0A0A] border-white/10 shadow-2xl' : 'bg-white border-neutral-300 shadow-md'">
-    <span class="text-xs font-bold uppercase tracking-wider" :class="isDark ? 'text-neutral-400' : 'text-neutral-600'">Theme Mode</span>
+    
+    <!-- LAYOUT OPTION SWITCHER -->
+    <div class="flex items-center gap-1 p-1 rounded-xl border transition-colors"
+         :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
+      <button @click="layoutMode = 'inline'"
+              :class="layoutMode === 'inline' ? (isDark ? 'bg-white text-black font-black' : 'bg-black text-white font-black') : 'text-neutral-500'"
+              class="px-2.5 py-1 rounded-lg text-xs transition-all">Inline</button>
+      <button @click="layoutMode = 'stacked'"
+              :class="layoutMode === 'stacked' ? (isDark ? 'bg-white text-black font-black' : 'bg-black text-white font-black') : 'text-neutral-500'"
+              class="px-2.5 py-1 rounded-lg text-xs transition-all">Stacked</button>
+    </div>
+
+    <!-- THEME TOGGLE -->
     <div class="flex items-center gap-1 p-1 rounded-xl border transition-colors"
          :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-200'">
       <button @click="isDark = true"
               :class="isDark ? 'bg-white text-black font-extrabold shadow-sm' : 'text-neutral-500 hover:text-black'"
-              class="relative px-3 py-1 rounded-lg text-xs font-bold transition-all">🌙 Dark</button>
+              class="relative px-2.5 py-1 rounded-lg text-xs font-bold transition-all">🌙</button>
       <button @click="isDark = false"
               :class="!isDark ? 'bg-black text-white font-extrabold shadow-sm' : 'text-neutral-400 hover:text-white'"
-              class="relative px-3 py-1 rounded-lg text-xs font-bold transition-all">☀️ Light</button>
+              class="relative px-2.5 py-1 rounded-lg text-xs font-bold transition-all">☀️</button>
     </div>
   </header>
 
@@ -343,7 +355,7 @@
       <div class="rounded-2xl border divide-y mb-6 tabular-nums transition-colors duration-300 overflow-hidden"
            :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
         
-        <!-- Base Package Row ("Base 25 Photos") -->
+        <!-- Base Package Row -->
         <div class="p-3.5 flex items-center justify-between">
           <span class="text-sm font-semibold transition-colors"
                 :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" 
@@ -356,7 +368,7 @@
           </div>
         </div>
 
-        <!-- TOAST CONTAINER ROW ("$5 / Extra") -->
+        <!-- TOAST CONTAINER ROW -->
         <div @click="targetUpgradeTier && selectTier(targetUpgradeTier)"
              class="p-3.5 flex items-center justify-center transition-all duration-300 h-[52px]"
              :class="[
@@ -394,95 +406,156 @@
           <!-- UPGRADE BANNER -->
           <template x-if="targetUpgradeTier">
             <div class="flex items-center justify-center gap-2.5 w-full select-none text-center">
-              
-              <svg class="w-5 h-5 shrink-0" 
-                   :class="isDark ? 'text-black' : 'text-white'" 
-                   fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+              <svg class="w-5 h-5 shrink-0" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
               </svg>
-
-              <span class="text-[17px] font-black tracking-tight leading-none" 
-                    :class="isDark ? 'text-black' : 'text-white'">
+              <span class="text-[17px] font-black tracking-tight leading-none" :class="isDark ? 'text-black' : 'text-white'">
                 <span x-text="targetUpgradeTier"></span> Upgrade – Same Price!
               </span>
-
             </div>
           </template>
         </div>
 
       </div>
 
-      <!-- STEPPER ROW -->
-      <div class="flex items-center justify-between py-1 mb-6 px-3.5">
-        <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Photos</span>
-        
-        <div class="flex items-center p-1 rounded-2xl border transition-colors"
-             :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+      <!-- ==================== OPTION A: INLINE ROW LAYOUT (BALANCED 1:1 PILLS) ==================== -->
+      <template x-if="layoutMode === 'inline'">
+        <div class="flex items-center justify-between py-1 mb-4 px-1 gap-2">
+          <span class="text-sm font-extrabold transition-colors shrink-0" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Photos</span>
           
-          <button @click="updateCount('down')" :disabled="!holdsSelection || count <= 25"
-                  :class="!holdsSelection || count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
-                  class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">-</button>
-          
-          <input type="number" 
-                 x-model.number="count"
-                 @change="sanitizeInput()"
-                 @blur="sanitizeInput()"
-                 :disabled="!holdsSelection"
-                 min="25"
-                 max="150"
-                 class="w-9 h-9 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors"
-                 :class="isDark ? 'text-white' : 'text-neutral-900'" />
-          
-          <button @click="updateCount('up')" :disabled="!holdsSelection || count >= 150"
-                  :class="!holdsSelection || count >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
-                  class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">+</button>
+          <div class="flex items-center gap-2 shrink-0">
+            <!-- STEPPER CONTAINER (EXACT MATCHING DIMENSIONS: w-28 h-11) -->
+            <div class="w-28 h-11 flex items-center justify-between px-2.5 rounded-2xl border transition-colors shrink-0"
+                 :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+              <button @click="updateCount('down')" :disabled="!holdsSelection || count <= 25"
+                      :class="!holdsSelection || count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                      class="w-6 h-6 rounded-lg font-black text-lg flex items-center justify-center transition-all active:scale-95 shrink-0">-</button>
+              
+              <input type="number" 
+                     x-model.number="count"
+                     @change="sanitizeInput()"
+                     @blur="sanitizeInput()"
+                     :disabled="!holdsSelection"
+                     min="25"
+                     max="150"
+                     class="w-9 h-6 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors shrink-0"
+                     :class="isDark ? 'text-white' : 'text-neutral-900'" />
+              
+              <button @click="updateCount('up')" :disabled="!holdsSelection || count >= 150"
+                      :class="!holdsSelection || count >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                      class="w-6 h-6 rounded-lg font-black text-lg flex items-center justify-center transition-all active:scale-95 shrink-0">+</button>
+            </div>
+
+            <!-- INLINE CTA CART BUTTON (EXACT MATCHING DIMENSIONS: w-28 h-11) -->
+            <button @click="triggerCart()" 
+                    :disabled="!holdsSelection || state !== 'idle'"
+                    :class="[
+                      !holdsSelection 
+                        ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500 border border-white/10' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500 border border-neutral-300') 
+                        : (isDark 
+                            ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
+                            : (state === 'success' ? 'bg-white border-2 border-black text-black' : 'bg-black text-white hover:bg-neutral-800'))
+                    ]"
+                    class="w-28 h-11 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-md active:scale-95 shrink-0">
+              
+              <template x-if="state !== 'success'">
+                <svg class="w-6 h-6" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l2.127 7.976A2.25 2.25 0 009.02 13.5h7.61a2.25 2.25 0 002.18-1.689l1.636-6.136" />
+                  <path d="M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  <path d="M12.5 5.5v4m-2-2h4" stroke-width="2.2" />
+                </svg>
+              </template>
+
+              <template x-if="state === 'success'">
+                <svg class="w-6 h-6" :class="isDark ? 'text-white' : 'text-black'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l2.127 7.976A2.25 2.25 0 009.02 13.5h7.61a2.25 2.25 0 002.18-1.689l1.636-6.136" />
+                  <path d="M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  <path d="M11 7.5l1.5 1.5 3.5-3.5" stroke-width="2.2" />
+                </svg>
+              </template>
+            </button>
+          </div>
         </div>
-      </div>
+      </template>
+
+      <!-- ==================== OPTION B: ORIGINAL STACKED LAYOUT ==================== -->
+      <template x-if="layoutMode === 'stacked'">
+        <div>
+          <!-- STEPPER ROW -->
+          <div class="flex items-center justify-between py-1 mb-6 px-3.5">
+            <span class="text-sm font-extrabold transition-colors" :class="isDark ? 'text-neutral-200' : 'text-neutral-900'">Total Photos</span>
+            
+            <div class="flex items-center p-1 rounded-2xl border transition-colors"
+                 :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+              <button @click="updateCount('down')" :disabled="!holdsSelection || count <= 25"
+                      :class="!holdsSelection || count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                      class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">-</button>
+              
+              <input type="number" 
+                     x-model.number="count"
+                     @change="sanitizeInput()"
+                     @blur="sanitizeInput()"
+                     :disabled="!holdsSelection"
+                     min="25"
+                     max="150"
+                     class="w-9 h-9 bg-transparent text-center text-sm font-black focus:outline-none tabular-nums transition-colors"
+                     :class="isDark ? 'text-white' : 'text-neutral-900'" />
+              
+              <button @click="updateCount('up')" :disabled="!holdsSelection || count >= 150"
+                      :class="!holdsSelection || count >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-neutral-800 text-white' : 'hover:bg-neutral-100 text-black')"
+                      class="w-9 h-9 rounded-xl font-black text-lg flex items-center justify-center transition-all active:scale-95">+</button>
+            </div>
+          </div>
+
+          <!-- FULL-WIDTH STACKED CTA BUTTON -->
+          <button @click="triggerCart()" 
+                  :disabled="!holdsSelection || state !== 'idle'"
+                  :class="[
+                    !holdsSelection 
+                      ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500 border border-white/10' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500 border border-neutral-300') 
+                      : (isDark 
+                          ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
+                          : (state === 'success' ? 'bg-white border-2 border-black text-black' : 'bg-black text-white hover:bg-neutral-800'))
+                  ]"
+                  class="relative w-full h-12 px-6 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-2xl active:scale-[0.98] mb-4">
+            
+            <template x-if="state !== 'success'">
+              <div class="flex items-center justify-between w-full">
+                <div class="w-6"></div>
+                
+                <svg class="w-7 h-7" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l2.127 7.976A2.25 2.25 0 009.02 13.5h7.61a2.25 2.25 0 002.18-1.689l1.636-6.136" />
+                  <path d="M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  <path d="M12.5 5.5v4m-2-2h4" stroke-width="2.2" />
+                </svg>
+
+                <svg class="w-5 h-5" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </div>
+            </template>
+
+            <template x-if="state === 'success'">
+              <div class="flex items-center justify-between w-full">
+                <div class="w-6"></div>
+                
+                <svg class="w-7 h-7" :class="isDark ? 'text-white' : 'text-black'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l2.127 7.976A2.25 2.25 0 009.02 13.5h7.61a2.25 2.25 0 002.18-1.689l1.636-6.136" />
+                  <path d="M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                  <path d="M11 7.5l1.5 1.5 3.5-3.5" stroke-width="2.2" />
+                </svg>
+
+                <svg class="w-5 h-5" :class="isDark ? 'text-white' : 'text-black'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </div>
+            </template>
+
+          </button>
+        </div>
+      </template>
 
     </div>
-
-    <!-- PRIMARY CART CTA BUTTON -->
-    <button @click="triggerCart()" 
-            :disabled="!holdsSelection || state !== 'idle'"
-            :class="[
-              !holdsSelection 
-                ? (isDark 
-                    ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500 border border-white/10' 
-                    : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500 border border-neutral-300') 
-                : (isDark 
-                    ? (state === 'success' ? 'bg-[#0D0D0D] border border-white text-white' : 'bg-white text-black hover:bg-neutral-200') 
-                    : (state === 'success' ? 'bg-white border-2 border-black text-black' : 'bg-black text-white hover:bg-neutral-800'))
-            ]"
-            class="relative w-full h-12 px-6 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-2xl active:scale-[0.98] mb-4">
-      
-      <template x-if="state !== 'success'">
-        <div class="flex items-center justify-between w-full">
-          <div class="w-6"></div>
-          <svg class="w-7 h-7" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-          </svg>
-          <svg class="w-5 h-5" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </div>
-      </template>
-
-      <template x-if="state === 'success'">
-        <div class="flex items-center justify-between w-full">
-          <div class="w-6"></div>
-          <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
-               :class="isDark ? 'bg-white text-black' : 'bg-black text-white'">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-          </div>
-          <svg class="w-5 h-5" :class="isDark ? 'text-white' : 'text-black'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </div>
-      </template>
-
-    </button>
 
     <!-- FOOTER WIZARD & INFO -->
     <div class="flex items-center justify-between pt-1">
