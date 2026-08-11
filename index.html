@@ -1,28 +1,31 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full antialiased" x-data="{ isDark: true, style: 'split' }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
+<html lang="en" class="h-full antialiased" x-data="{ isDark: true, style: 'stripe_neon' }" :class="isDark ? 'bg-[#050505] text-white' : 'bg-neutral-100 text-neutral-900'">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>10 More Wildly Different Hero Redesigns</title>
+  <title>10 Modern Clean Hero Redesigns</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Syne:wght@700;800&family=Cinzel:wght@700;900&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;800;900&family=Cabinet+Grotesk:wght@800;900&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-syne { font-family: 'Syne', sans-serif; }
-    .font-cinzel { font-family: 'Cinzel', serif; }
-    .font-retro { font-family: 'VT323', monospace; }
+    .font-outfit { font-family: 'Outfit', sans-serif; }
+    .font-cabinet { font-family: 'Cabinet Grotesk', sans-serif; }
+    .font-dm-mono { font-family: 'DM Mono', monospace; }
     .tabular-nums { font-variant-numeric: tabular-nums; }
     [x-cloak] { display: none !important; }
 
-    /* Dot grid background texture */
-    .bg-dots-dark { background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px); background-size: 8px 8px; }
-    .bg-dots-light { background-image: radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px); background-size: 8px 8px; }
-    
-    /* Diagonal stripes texture */
-    .bg-stripes { background: repeating-linear-gradient(-45deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.1) 10px, transparent 10px, transparent 20px); }
+    /* Frosted glass shimmer texture */
+    .glass-shimmer {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    }
+
+    /* Metallic sheen texture */
+    .metallic-finish {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 100%);
+    }
   </style>
 </head>
 <body class="min-h-full p-4 flex flex-col items-center justify-center transition-colors duration-300"
@@ -41,246 +44,290 @@
   <!-- 10-VARIANT SWITCHER TOOLBAR -->
   <header class="mb-6 flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-2xl border text-[11px] font-bold transition-colors max-w-lg w-full"
           :class="isDark ? 'bg-neutral-900/90 border-white/10 text-neutral-400' : 'bg-white border-neutral-300 text-neutral-600 shadow-sm'">
-    <span class="px-2 text-[10px] uppercase tracking-widest font-black opacity-50 w-full text-center sm:w-auto">Next Gen Switcher:</span>
+    <span class="px-2 text-[10px] uppercase tracking-widest font-black opacity-50 w-full text-center sm:w-auto">Modern Clean:</span>
     
-    <button @click="style = 'split'" :class="style === 'split' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">11. 50/50 Split</button>
-    <button @click="style = 'tab'" :class="style === 'tab' ? 'bg-white text-black font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">12. Folder Tab</button>
-    <button @click="style = 'retro'" :class="style === 'retro' ? 'bg-red-500 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">13. Arcade CRT</button>
-    <button @click="style = 'cinematic'" :class="style === 'cinematic' ? 'bg-stone-100 text-black font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">14. Cinematic</button>
-    <button @click="style = 'switch'" :class="style === 'switch' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">15. Toggle Deck</button>
-    <button @click="style = 'badge'" :class="style === 'badge' ? 'bg-white text-black font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">16. Oversized Badge</button>
-    <button @click="style = 'texture'" :class="style === 'texture' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">17. Mesh Matrix</button>
-    <button @click="style = 'floating'" :class="style === 'floating' ? 'bg-neutral-800 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">18. Orb Lock</button>
-    <button @click="style = 'editorial'" :class="style === 'editorial' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">19. Massive Syne</button>
-    <button @click="style = 'receipt'" :class="style === 'receipt' ? 'bg-white text-black font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">20. Thermal Slip</button>
+    <button @click="style = 'stripe_neon'" :class="style === 'stripe_neon' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">21. Accent Stripe</button>
+    <button @click="style = 'compact_stack'" :class="style === 'compact_stack' ? 'bg-white text-black font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">22. Micro Stack</button>
+    <button @click="style = 'floating_island'" :class="style === 'floating_island' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">23. Island Bar</button>
+    <button @click="style = 'cabinet_giant'" :class="style === 'cabinet_giant' ? 'bg-neutral-800 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">24. Cabinet Giant</button>
+    <button @click="style = 'frosted_glass'" :class="style === 'frosted_glass' ? 'bg-red-500 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">25. Frosted Sheen</button>
+    <button @click="style = 'segmented_pill'" :class="style === 'segmented_pill' ? 'bg-white text-black font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">26. Dual Capsule</button>
+    <button @click="style = 'outline_minimal'" :class="style === 'outline_minimal' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">27. Micro Line</button>
+    <button @click="style = 'asymmetric_block'" :class="style === 'asymmetric_block' ? 'bg-neutral-800 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">28. Offset Block</button>
+    <button @click="style = 'mono_ticket'" :class="style === 'mono_ticket' ? 'bg-red-600 text-white font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">29. DM Mono</button>
+    <button @click="style = 'halo_glow'" :class="style === 'halo_glow' ? 'bg-white text-black font-extrabold' : 'opacity-70 hover:opacity-100'" class="px-2 py-1 rounded-lg">30. Halo Glow</button>
   </header>
 
   <!-- MAIN CARD CONTAINER -->
   <main class="w-full max-w-sm py-4 border-y transition-all duration-300 relative"
         :class="isDark ? 'border-white/15' : 'border-neutral-300'">
 
-    <!-- VARIANT 11: 50/50 DUAL-TONE SPLIT BLOCK -->
-    <template x-if="style === 'split'">
-      <div class="mb-5 rounded-2xl border overflow-hidden grid grid-cols-2 shadow-lg"
-           :class="isDark ? 'border-white/10' : 'border-neutral-300'">
-        <div class="p-4 bg-red-600 text-white flex flex-col justify-between">
-          <span class="text-[9px] font-black uppercase tracking-widest opacity-80">MLS PHOTOS</span>
-          <h1 class="text-2xl font-black uppercase leading-tight tracking-tight mt-2">Full<br>Shoot</h1>
-        </div>
-        <div class="p-4 flex flex-col justify-between items-end tabular-nums"
-             :class="isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'">
-          <button @click="includeTax = !includeTax"
-                  class="px-2 py-0.5 rounded text-[8px] font-black uppercase border transition-all"
-                  :class="includeTax 
-                    ? 'bg-red-600 text-white border-red-600' 
-                    : (isDark ? 'border-white/20 text-neutral-400' : 'border-black/20 text-neutral-600')">
-            TAX <span x-text="includeTax ? 'ON' : 'OFF'"></span>
-          </button>
-          <div class="text-3xl font-black tracking-tighter text-right mt-3">
-            $<span x-text="priceDollars"></span><span class="text-base font-extrabold opacity-80" x-text="priceCents"></span>
+    <!-- VARIANT 21: ACCENT STRIPE CARD (LEFT RED METRIC PILLAR) -->
+    <template x-if="style === 'stripe_neon'">
+      <div class="mb-5 rounded-2xl border flex overflow-hidden shadow-sm transition-all"
+           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300'">
+        <div class="w-2.5 bg-red-600 shrink-0"></div>
+        <div class="p-3.5 flex items-center justify-between grow">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-red-600/10 text-red-500 border border-red-500/20 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+              </svg>
+            </div>
+            <div>
+              <span class="text-[9px] font-black uppercase tracking-widest text-red-500 block">MLS PHOTOS</span>
+              <h1 class="text-base font-black tracking-tight leading-tight">Full Shoot</h1>
+            </div>
           </div>
-        </div>
-      </div>
-    </template>
 
-    <!-- VARIANT 12: FOLDER TAB METAPHOR -->
-    <template x-if="style === 'tab'">
-      <div class="mb-5 relative pt-3">
-        <!-- Floating tab -->
-        <div class="absolute top-0 left-3 px-3 py-1 rounded-t-xl text-[9px] font-black tracking-widest uppercase bg-red-600 text-white z-10 shadow-sm">
-          MLS MEDIA FILE
-        </div>
-        <div class="p-4 rounded-b-2xl rounded-tr-2xl border transition-all"
-             :class="isDark ? 'bg-neutral-900/90 border-white/10' : 'bg-white border-neutral-300 shadow-md'">
-          <div class="flex items-center justify-between mt-1">
-            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
-            <div class="flex items-center gap-2 tabular-nums">
-              <button @click="includeTax = !includeTax"
-                      class="px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase border"
-                      :class="includeTax ? 'bg-red-600 text-white border-red-600' : 'bg-neutral-200 text-neutral-600 border-neutral-300'">
-                TAX
-              </button>
-              <div class="text-2xl font-black tracking-tight">
-                $<span x-text="priceDollars"></span><span class="text-sm opacity-80" x-text="priceCents"></span>
-              </div>
+          <div class="flex items-center gap-2 tabular-nums">
+            <button @click="includeTax = !includeTax"
+                    class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase transition-all border"
+                    :class="includeTax 
+                      ? 'bg-red-600 text-white border-red-600 shadow-[0_0_8px_rgba(239,68,68,0.4)]' 
+                      : (isDark ? 'bg-white/5 text-neutral-400 border-white/10' : 'bg-neutral-100 text-neutral-600 border-neutral-300')">
+              TAX
+            </button>
+            <div class="text-2xl font-black tracking-tighter">
+              $<span x-text="priceDollars"></span><span class="text-sm font-bold opacity-80" x-text="priceCents"></span>
             </div>
           </div>
         </div>
       </div>
     </template>
 
-    <!-- VARIANT 13: ARCADE CRT SCREEN -->
-    <template x-if="style === 'retro'">
-      <div class="mb-5 p-4 rounded-xl border-2 bg-black text-red-500 font-retro border-red-600 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-        <div class="flex items-center justify-between text-xs tracking-widest border-b border-red-900/50 pb-1 mb-2">
-          <span>* MLS_ARCADE_V1 *</span>
-          <button @click="includeTax = !includeTax" class="hover:underline">
-            [TAX:<span x-text="includeTax ? 'YES' : 'NO'"></span>]
+    <!-- VARIANT 22: MICRO COMPACT STACK (ULTRA-EFFICIENT SPACE SAVER) -->
+    <template x-if="style === 'compact_stack'">
+      <div class="mb-5 p-3 rounded-xl border transition-all"
+           :class="isDark ? 'bg-neutral-900/90 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+        <div class="flex items-center justify-between pb-2 mb-2 border-b" :class="isDark ? 'border-white/10' : 'border-neutral-200'">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-600"></span>
+            <span class="text-[10px] font-bold uppercase tracking-widest opacity-60">MLS Photos • Service Tier</span>
+          </div>
+          <button @click="includeTax = !includeTax"
+                  class="text-[9px] font-black uppercase tracking-wider transition-colors"
+                  :class="includeTax ? 'text-red-500 font-black' : 'opacity-40 hover:opacity-100'">
+            <span x-text="includeTax ? '● Tax On' : '○ Tax Off'"></span>
           </button>
         </div>
-        <div class="flex items-baseline justify-between">
-          <h1 class="text-2xl font-bold tracking-widest uppercase text-white">FULL SHOOT</h1>
-          <div class="text-3xl font-bold text-red-500 tracking-wider">
-            $<span x-text="priceDollars"></span><span class="text-lg" x-text="priceCents"></span>
+
+        <div class="flex items-baseline justify-between tabular-nums">
+          <h1 class="text-lg font-black tracking-tight">Full Shoot</h1>
+          <div class="text-2xl font-black tracking-tight">
+            $<span x-text="priceDollars"></span><span class="text-sm font-extrabold opacity-80" x-text="priceCents"></span>
           </div>
         </div>
       </div>
     </template>
 
-    <!-- VARIANT 14: CINEMATIC MONOCHROME LUXURY -->
-    <template x-if="style === 'cinematic'">
-      <div class="mb-5 p-5 rounded-2xl border text-center transition-all"
-           :class="isDark ? 'bg-stone-950 border-stone-800 text-stone-100' : 'bg-stone-50 border-stone-300 text-stone-900 shadow-sm'">
-        <span class="text-[8px] font-cinzel font-bold tracking-[0.4em] text-red-600 uppercase block mb-1">ARCHITECTURAL MEDIA</span>
-        <h1 class="text-3xl font-cinzel font-bold uppercase tracking-widest mb-3">Full Shoot</h1>
-        
-        <div class="flex items-center justify-center gap-3 tabular-nums border-t pt-3" :class="isDark ? 'border-stone-800' : 'border-stone-200'">
-          <div class="text-3xl font-cinzel font-bold tracking-tight">
-            $<span x-text="priceDollars"></span><span class="text-lg opacity-70" x-text="priceCents"></span>
+    <!-- VARIANT 23: FLOATING ISLAND BAR (ISOLATED FLOATING CONTAINER) -->
+    <template x-if="style === 'floating_island'">
+      <div class="mb-5 p-3.5 rounded-2xl border flex items-center justify-between shadow-lg transition-all"
+           :class="isDark ? 'bg-black border-red-500/30 shadow-[0_4px_20px_rgba(239,68,68,0.15)]' : 'bg-white border-red-200 shadow-md'">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-md shadow-red-600/30">
+            MLS
           </div>
+          <div>
+            <h1 class="text-base font-black tracking-tight leading-tight">Full Shoot</h1>
+            <span class="text-[9px] font-bold text-red-500 uppercase tracking-widest">Base Package</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 tabular-nums">
+          <div class="text-right">
+            <div class="text-2xl font-black tracking-tighter leading-none">
+              $<span x-text="priceDollars"></span><span class="text-sm font-bold opacity-80" x-text="priceCents"></span>
+            </div>
+            <button @click="includeTax = !includeTax"
+                    class="text-[8px] font-black uppercase tracking-widest block ml-auto mt-1"
+                    :class="includeTax ? 'text-red-500 font-black' : 'opacity-40'">
+              <span x-text="includeTax ? 'Tax Included' : '+ Add Tax'"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- VARIANT 24: CABINET GIANT (TYPOGRAPHIC HEAVYWEIGHT) -->
+    <template x-if="style === 'cabinet_giant'">
+      <div class="mb-5 p-4 rounded-2xl border font-outfit transition-all"
+           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-neutral-100 border-neutral-300 shadow-sm'">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[9px] font-black uppercase tracking-widest text-red-500">MLS MEDIA</span>
           <button @click="includeTax = !includeTax"
-                  class="px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest border transition-all"
+                  class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase border transition-all"
+                  :class="includeTax ? 'bg-red-600 text-white border-red-600' : 'border-neutral-400 text-neutral-500'">
+            TAX <span x-text="includeTax ? 'INCL' : 'EXCL'"></span>
+          </button>
+        </div>
+
+        <div class="flex items-end justify-between tabular-nums">
+          <h1 class="text-3xl font-black uppercase tracking-tight leading-none">Full Shoot</h1>
+          <div class="text-3xl font-black tracking-tighter leading-none">
+            $<span x-text="priceDollars"></span><span class="text-lg opacity-80" x-text="priceCents"></span>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- VARIANT 25: FROSTED SHEEN (LUXURY GLASS FINISH) -->
+    <template x-if="style === 'frosted_glass'">
+      <div class="mb-5 p-4 rounded-2xl border glass-shimmer backdrop-blur-xl relative overflow-hidden transition-all shadow-xl"
+           :class="isDark ? 'border-white/20 text-white' : 'bg-white/70 border-neutral-300 text-neutral-900'">
+        
+        <div class="absolute top-0 right-0 w-24 h-24 bg-red-600/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="flex items-center justify-between relative z-10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0"
+                 :class="isDark ? 'bg-white/10 border-white/20' : 'bg-neutral-900 text-white border-neutral-800'">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+            </div>
+            <div>
+              <span class="text-[9px] font-black uppercase tracking-widest opacity-60 block">MLS Photos</span>
+              <h1 class="text-lg font-black tracking-tight">Full Shoot</h1>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 tabular-nums">
+            <button @click="includeTax = !includeTax"
+                    class="px-2 py-0.5 rounded-lg text-[8px] font-black uppercase border transition-all"
+                    :class="includeTax ? 'bg-red-600 text-white border-red-600 shadow-md' : 'bg-white/10 border-white/20 opacity-60'">
+              TAX
+            </button>
+            <div class="text-2xl font-black tracking-tight">
+              $<span x-text="priceDollars"></span><span class="text-sm font-bold opacity-80" x-text="priceCents"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- VARIANT 26: DUAL CAPSULE (SEGMENTED DUAL-PILL CONTROL) -->
+    <template x-if="style === 'segmented_pill'">
+      <div class="mb-5 flex items-center justify-between gap-2">
+        <!-- Title Pill -->
+        <div class="flex items-center gap-2 px-3 py-2 rounded-full border grow"
+             :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-600 shrink-0"></span>
+          <h1 class="text-xs font-black tracking-tight uppercase">Full Shoot</h1>
+        </div>
+
+        <!-- Price & Tax Pill -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border shrink-0 tabular-nums"
+             :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+          <button @click="includeTax = !includeTax"
+                  class="px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase border transition-all"
+                  :class="includeTax ? 'bg-red-600 text-white border-red-600' : 'bg-neutral-200 text-neutral-600 border-neutral-300'">
+            TAX
+          </button>
+          <div class="text-lg font-black tracking-tight">
+            $<span x-text="priceDollars"></span><span class="text-xs opacity-80" x-text="priceCents"></span>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- VARIANT 27: MICRO LINE MINIMAL (ULTRA-FINE BORDERLESS ALIGNMENT) -->
+    <template x-if="style === 'outline_minimal'">
+      <div class="mb-5 pb-2 border-b flex items-center justify-between"
+           :class="isDark ? 'border-red-600/50' : 'border-red-600'">
+        <div class="flex items-center gap-2">
+          <div class="w-1.5 h-6 bg-red-600"></div>
+          <div>
+            <span class="text-[8px] font-black uppercase tracking-widest text-red-500 block">MLS PHOTOS</span>
+            <h1 class="text-lg font-black uppercase tracking-tight leading-none">Full Shoot</h1>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 tabular-nums">
+          <button @click="includeTax = !includeTax"
+                  class="text-[8px] font-black uppercase px-1.5 py-0.5 rounded border transition-all"
                   :class="includeTax ? 'bg-red-600 text-white border-red-600' : 'border-neutral-500 text-neutral-400'">
             TAX
           </button>
+          <div class="text-2xl font-black tracking-tighter">
+            $<span x-text="priceDollars"></span><span class="text-sm font-bold opacity-80" x-text="priceCents"></span>
+          </div>
         </div>
       </div>
     </template>
 
-    <!-- VARIANT 15: INTERACTIVE DECK TOGGLE CARDS -->
-    <template x-if="style === 'switch'">
-      <div class="mb-5 p-4 rounded-2xl border transition-all"
+    <!-- VARIANT 28: OFFSET BLOCK (ASYMMETRIC GRAPHIC GEOMETRY) -->
+    <template x-if="style === 'asymmetric_block'">
+      <div class="mb-5 rounded-2xl border p-4 relative transition-all"
            :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center gap-2">
-            <div class="w-3 h-3 bg-red-600 rounded-sm"></div>
-            <span class="text-[10px] font-black uppercase tracking-wider opacity-60">MLS Photos</span>
-          </div>
-          <h1 class="text-base font-black tracking-tight">Full Shoot</h1>
-        </div>
-
-        <!-- Full-width tactile toggle button -->
-        <button @click="includeTax = !includeTax"
-                class="w-full py-2 px-3 rounded-xl border flex items-center justify-between transition-all active:scale-[0.98]"
-                :class="includeTax 
-                  ? 'bg-red-600 text-white border-red-500 shadow-md' 
-                  : (isDark ? 'bg-white/5 border-white/10 text-neutral-300' : 'bg-neutral-100 border-neutral-200 text-neutral-700')">
-          <span class="text-[10px] font-black uppercase tracking-wider" x-text="includeTax ? 'Price (Tax Included)' : 'Base Price (+ Tax)'"></span>
-          <div class="text-xl font-black tabular-nums">
-            $<span x-text="priceDollars"></span><span class="text-xs opacity-80" x-text="priceCents"></span>
-          </div>
-        </button>
-      </div>
-    </template>
-
-    <!-- VARIANT 16: OVERSIZED BADGE EMBLEM -->
-    <template x-if="style === 'badge'">
-      <div class="mb-5 p-4 rounded-3xl border flex items-center gap-4 transition-all"
-           :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-md'">
-        <!-- Oversized Badge Block -->
-        <div class="w-16 h-16 rounded-2xl bg-red-600 text-white flex flex-col items-center justify-center shrink-0 shadow-lg shadow-red-600/30">
-          <span class="text-[9px] font-black uppercase tracking-widest opacity-80">RATE</span>
-          <span class="text-xl font-black leading-none">$<span x-text="priceDollars"></span></span>
-        </div>
-
-        <div class="flex flex-col justify-between grow">
-          <span class="text-[9px] font-black uppercase tracking-widest text-red-500">MLS PHOTOS</span>
-          <h1 class="text-xl font-black tracking-tight leading-tight">Full Shoot</h1>
-          
-          <button @click="includeTax = !includeTax"
-                  class="mt-1 self-start text-[9px] font-black uppercase tracking-wider transition-all"
-                  :class="includeTax ? 'text-red-500 underline' : 'opacity-50 hover:opacity-100'">
-            <span x-text="includeTax ? 'Tax Included' : '+ Include Sales Tax'"></span>
-          </button>
-        </div>
-      </div>
-    </template>
-
-    <!-- VARIANT 17: MESH MATRIX TEXTURE -->
-    <template x-if="style === 'texture'">
-      <div class="mb-5 p-4 rounded-2xl border transition-all relative overflow-hidden"
-           :class="isDark ? 'bg-neutral-900 border-white/10 bg-dots-dark' : 'bg-white border-neutral-300 bg-dots-light shadow-sm'">
-        <div class="flex items-center justify-between relative z-10">
+        <div class="flex items-start justify-between">
           <div>
-            <div class="inline-block px-2 py-0.5 rounded bg-red-600 text-white text-[8px] font-black uppercase tracking-widest mb-1">
+            <div class="px-2 py-0.5 rounded bg-black text-white dark:bg-white dark:text-black text-[8px] font-black uppercase tracking-widest inline-block mb-1">
               MLS PHOTOS
             </div>
             <h1 class="text-2xl font-black tracking-tight">Full Shoot</h1>
           </div>
 
-          <div class="flex flex-col items-end tabular-nums">
-            <button @click="includeTax = !includeTax"
-                    class="mb-1 px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase border transition-all"
-                    :class="includeTax ? 'bg-red-600 text-white border-red-600' : 'bg-neutral-200 text-neutral-600 border-neutral-300'">
-              TAX
-            </button>
-            <div class="text-3xl font-black tracking-tighter">
-              $<span x-text="priceDollars"></span><span class="text-lg opacity-80" x-text="priceCents"></span>
+          <!-- Elevated Price Tag -->
+          <div class="bg-red-600 text-white p-2.5 rounded-xl shadow-lg text-right tabular-nums">
+            <div class="text-xl font-black leading-none">
+              $<span x-text="priceDollars"></span><span class="text-xs" x-text="priceCents"></span>
             </div>
+            <button @click="includeTax = !includeTax"
+                    class="text-[8px] font-black uppercase tracking-widest block ml-auto mt-1 opacity-90 hover:opacity-100">
+              <span x-text="includeTax ? 'Tax Incl.' : '+ Tax'"></span>
+            </button>
           </div>
         </div>
       </div>
     </template>
 
-    <!-- VARIANT 18: FLOATING ORB LOCK -->
-    <template x-if="style === 'floating'">
-      <div class="mb-5 p-4 rounded-2xl border flex items-center justify-between relative overflow-hidden"
-           :class="isDark ? 'bg-black border-white/15' : 'bg-neutral-900 text-white shadow-xl'">
-        <!-- Red Orb -->
-        <div class="absolute -left-6 -bottom-6 w-24 h-24 bg-red-600/40 rounded-full blur-xl pointer-events-none"></div>
-
-        <div class="relative z-10">
-          <span class="text-[9px] font-black uppercase tracking-widest text-red-400 block mb-0.5">MLS PHOTOS</span>
-          <h1 class="text-xl font-black tracking-tight text-white">Full Shoot</h1>
+    <!-- VARIANT 29: DM MONO TECH TICKET -->
+    <template x-if="style === 'mono_ticket'">
+      <div class="mb-5 p-3.5 rounded-xl border font-dm-mono transition-all"
+           :class="isDark ? 'bg-black border-red-500/40 text-white' : 'bg-neutral-50 border-neutral-300 text-black shadow-sm'">
+        <div class="flex items-center justify-between text-[9px] uppercase tracking-widest text-red-500 font-bold mb-2 pb-1 border-b" :class="isDark ? 'border-red-500/20' : 'border-neutral-200'">
+          <span>SERVICE_ID: MLS-FULL</span>
+          <button @click="includeTax = !includeTax" class="hover:underline">
+            TAX:[<span x-text="includeTax ? 'ON' : 'OFF'"></span>]
+          </button>
         </div>
 
-        <div class="relative z-10 flex items-center gap-2 tabular-nums">
-          <button @click="includeTax = !includeTax"
-                  class="w-8 h-8 rounded-full border flex items-center justify-center text-[9px] font-black uppercase transition-all"
-                  :class="includeTax ? 'bg-red-600 border-red-500 text-white' : 'bg-white/10 border-white/20 text-neutral-400'">
-            TAX
-          </button>
-          <div class="text-2xl font-black text-white tracking-tight">
+        <div class="flex items-baseline justify-between tabular-nums">
+          <h1 class="text-lg font-bold tracking-tight uppercase">Full Shoot</h1>
+          <div class="text-2xl font-bold tracking-tighter">
             $<span x-text="priceDollars"></span><span class="text-sm opacity-80" x-text="priceCents"></span>
           </div>
         </div>
       </div>
     </template>
 
-    <!-- VARIANT 19: MASSIVE SYNE TYPOGRAPHY HEADER -->
-    <template x-if="style === 'editorial'">
-      <div class="mb-5 font-syne border-b-4 pb-3" :class="isDark ? 'border-red-600' : 'border-black'">
-        <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest mb-1 opacity-60">
-          <span>MLS PHOTOS</span>
-          <button @click="includeTax = !includeTax" :class="includeTax && 'text-red-600 font-extrabold'">
-            TAX [<span x-text="includeTax ? 'INCL' : 'EXCL'"></span>]
-          </button>
-        </div>
-        <div class="flex items-end justify-between gap-2">
-          <h1 class="text-3xl font-extrabold uppercase tracking-tighter leading-none">Full Shoot</h1>
-          <div class="text-3xl font-extrabold tracking-tighter tabular-nums leading-none">
-            $<span x-text="priceDollars"></span>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- VARIANT 20: THERMAL PRINT RECEIPT SLIP -->
-    <template x-if="style === 'receipt'">
-      <div class="mb-5 p-4 rounded-lg bg-white text-black font-mono-tech border-2 border-dashed border-neutral-400 shadow-md">
-        <div class="text-center border-b-2 border-black pb-2 mb-2">
-          <span class="text-[10px] font-bold tracking-widest uppercase block">*** MLS MEDIA SLIP ***</span>
-          <h1 class="text-lg font-black uppercase">Full Shoot Package</h1>
-        </div>
+    <!-- VARIANT 30: HALO GLOW (BACKLIT AMBIENT AURA) -->
+    <template x-if="style === 'halo_glow'">
+      <div class="mb-5 p-4 rounded-2xl border relative transition-all"
+           :class="isDark ? 'bg-neutral-950 border-white/10' : 'bg-white border-neutral-300 shadow-md'">
         
-        <div class="flex items-center justify-between text-sm font-bold tabular-nums">
-          <button @click="includeTax = !includeTax"
-                  class="text-[10px] font-black uppercase px-1.5 py-0.5 border border-black"
-                  :class="includeTax ? 'bg-black text-white' : 'bg-neutral-100'">
-            TAX: <span x-text="includeTax ? '8.25%' : '0%'"></span>
-          </button>
-          <div class="text-2xl font-black">
-            $<span x-text="priceDollars"></span><span class="text-sm" x-text="priceCents"></span>
+        <!-- Red Halo Backlight -->
+        <div class="absolute -top-10 -left-10 w-32 h-32 bg-red-600/25 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="relative z-10 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black uppercase tracking-widest text-red-500 block mb-0.5">MLS PHOTOS</span>
+            <h1 class="text-xl font-black tracking-tight">Full Shoot</h1>
+          </div>
+
+          <div class="flex items-center gap-2 tabular-nums">
+            <button @click="includeTax = !includeTax"
+                    class="px-2 py-1 rounded-lg text-[8px] font-black uppercase border transition-all"
+                    :class="includeTax 
+                      ? 'bg-red-600 text-white border-red-500 shadow-[0_0_12px_rgba(239,68,68,0.5)]' 
+                      : (isDark ? 'bg-white/5 border-white/10 text-neutral-400' : 'bg-neutral-100 border-neutral-300 text-neutral-600')">
+              TAX
+            </button>
+            <div class="text-2xl font-black tracking-tight">
+              $<span x-text="priceDollars"></span><span class="text-sm font-bold opacity-80" x-text="priceCents"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -305,7 +352,7 @@
 
     <!-- FOOTER WIZARD & THEME TOGGLE -->
     <div class="flex items-center justify-between pt-4 mt-4 border-t" :class="isDark ? 'border-white/10' : 'border-neutral-200'">
-      <span class="text-[10px] font-bold opacity-50">Variants 11–20 Showcase</span>
+      <span class="text-[10px] font-bold opacity-50">Variants 21–30 Showcase</span>
       <button @click="isDark = !isDark" 
               class="w-7 h-7 flex items-center justify-center rounded-lg text-xs"
               :class="isDark ? 'text-neutral-400 hover:text-white' : 'text-neutral-500 hover:text-black'">
