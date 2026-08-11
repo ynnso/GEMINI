@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MLS Photo Calculator - Fully Refined</title>
+  <title>MLS Photo Calculator - Complete Fix</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,14 +13,17 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif; }
     .tabular-nums { font-variant-numeric: tabular-nums; }
     [x-cloak] { display: none !important; }
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    input[type=number] { -moz-appearance: textfield; }
+    
+    /* Custom Scrollbar Styling */
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
   </style>
 </head>
 <body class="min-h-full p-4 flex flex-col items-center justify-center transition-colors duration-300"
       x-data="{ 
         state: 'idle',
-        isOpen: false,
+        isOpen: true,
         includeTax: false,
         taxRate: 0.0825,
         count: 25,
@@ -52,9 +55,17 @@
         get holdsSelection() { return this.selectedSqFt !== ''; },
 
         selectOption(opt) {
+          if (window.navigator && window.navigator.vibrate) {
+            window.navigator.vibrate(30);
+          }
           this.selectedSqFt = opt.value;
           this.selectedLabel = opt.label;
-          this.isOpen = false;
+          
+          /* 100ms UX Confirmation Delay before snap collapse */
+          setTimeout(() => {
+            this.isOpen = false;
+          }, 100);
+
           this.selectedBase = 25;
           if (this.count < 25) this.count = 25;
           this.evaluateCheapestBase();
@@ -91,24 +102,8 @@
           else this.selectedBase = bestTier;
         },
 
-        sanitizeInput() {
-          let val = parseInt(this.count, 10);
-          if (isNaN(val) || val < 25) val = 25;
-          if (val > 150) val = 150;
-          this.count = val;
-          this.evaluateCheapestBase();
-        },
-
         get effectiveTier() {
           return { imgs: this.selectedBase, price: this.holdsSelection ? this.getTierPrice(this.selectedBase) : 0 };
-        },
-
-        get targetUpgradeTier() {
-          if (!this.holdsSelection) return null;
-          if (this.selectedBase === 25 && this.count === 33) return 36;
-          if (this.selectedBase === 36 && this.count === 38) return 40;
-          if (this.selectedBase === 40 && this.count === 47) return 50;
-          return null;
         },
 
         get extras() { return Math.max(0, this.count - this.effectiveTier.imgs); },
@@ -133,19 +128,10 @@
             this.count--;
             this.evaluateCheapestBase();
           }
-        },
-
-        triggerCart() {
-          if (!this.holdsSelection || this.state !== 'idle') return;
-          this.state = 'success';
-          if (window.navigator && window.navigator.vibrate) {
-            window.navigator.vibrate(40);
-          }
-          setTimeout(() => { this.state = 'idle'; }, 2500);
         }
       }">
 
-  <!-- MAIN CARD CONTAINER -->
+  <!-- MAIN CONTAINER CARD -->
   <main class="w-full max-w-sm p-5 rounded-3xl border transition-colors duration-300 relative shadow-2xl"
         :class="isDark ? 'bg-[#121212] border-white/10 text-white' : 'bg-white border-black/10 text-neutral-900'">
 
@@ -164,16 +150,11 @@
         </div>
       </div>
 
-      <!-- PRICE & TAX CHIP -->
+      <!-- PRICE DISPLAY -->
       <div class="flex items-baseline gap-1.5 select-none tabular-nums">
-        <button @click="includeTax = !includeTax"
-                class="p-1 -m-1 cursor-pointer outline-none active:scale-90 transition-transform self-baseline">
+        <button @click="includeTax = !includeTax" class="p-1 -m-1 cursor-pointer active:scale-90 transition-transform self-baseline">
           <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[11px] font-black uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
-                :class="[
-                  includeTax 
-                    ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50' 
-                    : (isDark ? 'bg-white/5 text-neutral-400 border-white/10' : 'bg-black/5 text-neutral-500 border-black/10')
-                ]">
+                :class="[includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10' : 'bg-black/5 text-neutral-500 border-black/10')]">
             TAX
           </span>
         </button>
@@ -186,8 +167,10 @@
       </div>
     </div>
 
-    <!-- SQ FT POPOVER SELECTOR -->
+    <!-- SQ FT SELECTOR & DROPDOWN CONTAINER -->
     <div class="relative mb-4">
+      
+      <!-- TRIGGER BUTTON -->
       <button @click="isOpen = !isOpen" 
               class="w-full h-12 rounded-xl border flex items-center justify-between px-4 text-[17px] font-bold transition-all active:scale-[0.99] shadow-sm"
               :class="isDark ? 'bg-white/5 border-white/15 text-white' : 'bg-neutral-100 border-black/10 text-neutral-900'">
@@ -197,7 +180,7 @@
         </svg>
       </button>
 
-      <!-- DROPDOWN OVERLAY -->
+      <!-- EXPANDED POPOVER OVERLAY WITH SCROLL & TIMING PHYSICS -->
       <div x-show="isOpen" x-cloak
            @click.outside="isOpen = false"
            x-transition:enter="transition ease-out duration-200"
@@ -205,15 +188,16 @@
            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
            x-transition:leave="transition ease-in duration-150"
            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-           x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
-           class="absolute z-50 top-full mt-2 left-0 w-full rounded-2xl p-2 backdrop-blur-2xl border max-h-60 overflow-y-auto origin-top shadow-2xl"
-           :class="isDark ? 'bg-[#18181B]/95 border-white/15 text-white' : 'bg-white/95 border-black/10 text-neutral-900'">
+           x-transition:leave-end="opacity-0 -translate-y-1.5 scale-[0.97]"
+           class="absolute z-50 top-full mt-2 left-0 w-full rounded-2xl p-2 backdrop-blur-2xl border max-h-80 overflow-y-auto overscroll-contain custom-scroll origin-top shadow-2xl"
+           :class="isDark ? 'bg-[#18181B]/95 border-white/15 text-white shadow-black/90' : 'bg-white/95 border-black/10 text-neutral-900 shadow-xl'">
         
         <div class="py-2 text-center text-[13px] font-extrabold text-neutral-400 border-b mb-1"
              :class="isDark ? 'border-white/10' : 'border-black/5'">
           Select Sq Ft
         </div>
         
+        <!-- FULL 7-TIER LIST WITH NO CUTOFF -->
         <div class="space-y-1">
           <template x-for="opt in sqFtOptions" :key="opt.value">
             <button @click="selectOption(opt)" 
@@ -240,9 +224,7 @@
       <template x-for="tImg in [25, 36, 40, 50]" :key="tImg">
         <button @click="selectTier(tImg)"
                 :class="[
-                  targetUpgradeTier === tImg ? 'bg-emerald-400 text-black font-black ring-2 ring-black' : '',
-                  !targetUpgradeTier && effectiveTier.imgs === tImg ? (isDark ? 'bg-white text-black font-extrabold shadow-lg' : 'bg-neutral-900 text-white font-extrabold shadow-md') : '',
-                  !targetUpgradeTier && effectiveTier.imgs !== tImg ? (isDark ? 'bg-white/5 text-neutral-400 border-white/10' : 'bg-neutral-100 text-neutral-600 border-black/10') : ''
+                  selectedBase === tImg ? (isDark ? 'bg-white text-black font-extrabold shadow-lg' : 'bg-neutral-900 text-white font-extrabold shadow-md') : (isDark ? 'bg-white/5 text-neutral-400 border-white/10' : 'bg-neutral-100 text-neutral-600 border-black/10')
                 ]"
                 class="py-2.5 px-1 rounded-xl border flex flex-col items-center justify-center text-center transition-all active:scale-95">
           <span class="text-[15px] font-bold leading-tight" x-text="tImg"></span>
@@ -265,31 +247,14 @@
         </div>
       </div>
 
-      <div @click="targetUpgradeTier && selectTier(targetUpgradeTier)"
-           class="px-3.5 h-[48px] flex items-center justify-center transition-all"
-           :class="[
-             targetUpgradeTier 
-               ? 'bg-emerald-400 text-black rounded-b-xl cursor-pointer' 
-               : (extras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : 'bg-transparent text-neutral-400')
-           ]">
-        <template x-if="!targetUpgradeTier">
-          <div class="flex items-center justify-between w-full">
-            <div class="text-[15px] flex items-center">
-              <span class="text-[12px] font-bold mr-[1px]">$</span>
-              <span x-text="extras > 0 ? '5 / Extra × ' + extras : '5 / Extra'"></span>
-            </div>
-            <div class="flex items-center text-[15px] font-bold">
-              <span>+</span><span class="text-[12px] font-bold mr-[1px]">$</span><span x-text="extraTotal"></span>
-            </div>
-          </div>
-        </template>
-        <template x-if="targetUpgradeTier">
-          <div class="flex items-center justify-center gap-2 w-full text-center">
-            <span class="text-[15px] font-black leading-none text-black">
-              <span x-text="targetUpgradeTier"></span> Upgrade – Same Price!
-            </span>
-          </div>
-        </template>
+      <div class="px-3.5 h-[48px] flex items-center justify-between">
+        <div class="text-[15px] flex items-center">
+          <span class="text-[12px] font-bold mr-[1px]">$</span>
+          <span x-text="extras > 0 ? '5 / Extra × ' + extras : '5 / Extra'"></span>
+        </div>
+        <div class="flex items-center text-[15px] font-bold">
+          <span>+</span><span class="text-[12px] font-bold mr-[1px]">$</span><span x-text="extraTotal"></span>
+        </div>
       </div>
     </div>
 
@@ -299,17 +264,13 @@
       <div class="flex items-center gap-2 shrink-0">
         <div class="flex items-center rounded-xl border p-1 h-11"
              :class="isDark ? 'bg-white/5 border-white/10' : 'bg-neutral-100 border-black/10'">
-          <button @click="updateCount('down')" :disabled="count <= 25"
-                  class="w-7 h-7 rounded-lg font-bold text-lg flex items-center justify-center active:scale-90">-</button>
-          <input type="number" x-model.number="count" @change="sanitizeInput()" @blur="sanitizeInput()"
-                 class="w-10 h-7 bg-transparent text-center text-[15px] font-black focus:outline-none tabular-nums" />
-          <button @click="updateCount('up')" :disabled="count >= 150"
-                  class="w-7 h-7 rounded-lg font-bold text-lg flex items-center justify-center active:scale-90">+</button>
+          <button @click="updateCount('down')" :disabled="count <= 25" class="w-7 h-7 rounded-lg font-bold text-lg flex items-center justify-center active:scale-90">-</button>
+          <input type="number" x-model.number="count" class="w-10 h-7 bg-transparent text-center text-[15px] font-black focus:outline-none tabular-nums" />
+          <button @click="updateCount('up')" :disabled="count >= 150" class="w-7 h-7 rounded-lg font-bold text-lg flex items-center justify-center active:scale-90">+</button>
         </div>
 
-        <button @click="triggerCart()"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black' : 'bg-black text-white')"
-                class="h-11 px-4 rounded-xl flex items-center justify-center transition-all active:scale-95 shadow-md">
+        <button class="h-11 px-4 rounded-xl flex items-center justify-center transition-all active:scale-95 shadow-md"
+                :class="isDark ? 'bg-white text-black' : 'bg-black text-white'">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
             <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" />
             <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
@@ -319,12 +280,11 @@
       </div>
     </div>
 
-    <!-- FOOTER TOGGLES -->
+    <!-- FOOTER -->
     <div class="flex items-center justify-between pt-2 border-t" :class="isDark ? 'border-white/10' : 'border-black/10'">
-      <div class="px-3 py-1.5 rounded-lg text-[13px] font-bold border shrink-0"
-           :class="isDark ? 'text-neutral-400 bg-white/5 border-white/10' : 'text-neutral-700 bg-neutral-100 border-black/10'">
-        <span>Wizard</span>
-      </div>
+      <button @click="isOpen = !isOpen" class="text-[13px] font-bold text-neutral-400 hover:text-white">
+        Toggle Sq Ft Dropdown
+      </button>
       <button @click="isDark = !isDark" class="w-8 h-8 flex items-center justify-center text-lg">
         <span x-text="isDark ? '☀️' : '🌙'"></span>
       </button>
