@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>S2S Field App with Updated Mini Shoot Pricing</title>
+  <title>S2S Field App - Reshoot & Ranch Pricing Sheets</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -50,7 +50,7 @@
 <body class="w-full min-h-screen transition-colors duration-300"
       :class="isDark ? 'bg-black text-white' : 'bg-neutral-100 text-neutral-900'"
       x-data="{
-        activeSheet: null,
+        activeSheet: 'ranch',
         activeTab: 'photos',
         
         state: 'idle',
@@ -61,8 +61,7 @@
         clearedCache: [],
         cartItems: [
           { id: 1, title: 'MLS Photos: Full Shoot', desc: '2,000 – 2,999 Sq Ft', price: 206, icon: 'camera', state: 'active', timer: null },
-          { id: 2, title: 'MLS Photos: Ranch Shoot', desc: '36 imgs', price: 349, icon: 'home', state: 'active', timer: null },
-          { id: 3, title: 'MLS Aerial Video', desc: '2 min duration', price: 249, icon: 'video', state: 'active', timer: null }
+          { id: 2, title: 'MLS Photos: Reshoot', desc: '8 imgs', price: 89, icon: 'refresh', state: 'active', timer: null }
         ],
 
         /* CART ACTIONS */
@@ -112,10 +111,20 @@
         selectedSqFt: '0-1999',
         extraCost: 5,
 
-        /* UPDATED MINI SHOOT STATE */
+        /* RESHOOT STATE */
+        reshootCount: 8,
+        reshootBasePrice: 89,
+        reshootExtraCost: 10,
+
+        /* MINI SHOOT STATE */
         miniCount: 12,
         miniBasePrice: 119,
         miniExtraCost: 10,
+
+        /* EXTERIOR ONLY STATE */
+        exteriorCount: 8,
+        exteriorBasePrice: 79,
+        exteriorExtraCost: 10,
 
         /* RANCH SHOOT STATE */
         ranchCount: 25,
@@ -123,9 +132,12 @@
         ranchExtraCost: 5,
         ranchPriceMatrix: { 25: 299, 36: 349 },
 
-        /* UNIFIED DRAG STATE */
+        /* ADVANCED BOTTOM SHEET DRAG & TOUCH STATE */
         dragY: 0,
         startY: 0,
+        lastY: 0,
+        lastTime: 0,
+        velocityY: 0,
         isDragging: false,
 
         sqFtOptions: [
@@ -243,7 +255,34 @@
           }
         },
 
-        /* UPDATED MINI SHOOT LOGIC */
+        /* RESHOOT LOGIC */
+        get reshootExtras() { return Math.max(0, this.reshootCount - 8); },
+        get reshootExtraTotal() { return this.reshootExtras * this.reshootExtraCost; },
+        get reshootRawTotal() { return this.reshootBasePrice + this.reshootExtraTotal; },
+        get reshootFinalTotal() {
+          const amount = this.includeTax ? this.reshootRawTotal * (1 + this.taxRate) : this.reshootRawTotal;
+          return amount.toFixed(2);
+        },
+        get reshootPriceDollars() { return this.reshootFinalTotal.split('.')[0]; },
+        get reshootPriceCents() { return '.' + this.reshootFinalTotal.split('.')[1]; },
+
+        updateReshootCount(dir) {
+          if (dir === 'up' && this.reshootCount < 20) {
+            this.reshootCount++;
+          }
+          if (dir === 'down' && this.reshootCount > 8) {
+            this.reshootCount--;
+          }
+        },
+
+        sanitizeReshootInput() {
+          let val = parseInt(this.reshootCount, 10);
+          if (isNaN(val) || val < 8) val = 8;
+          if (val > 20) val = 20;
+          this.reshootCount = val;
+        },
+
+        /* MINI SHOOT LOGIC */
         get miniExtras() { return Math.max(0, this.miniCount - 12); },
         get miniExtraTotal() { return this.miniExtras * this.miniExtraCost; },
         get miniRawTotal() { return this.miniBasePrice + this.miniExtraTotal; },
@@ -268,6 +307,33 @@
           if (isNaN(val) || val < 12) val = 12;
           if (val > 24) val = 24;
           this.miniCount = val;
+        },
+
+        /* EXTERIOR ONLY LOGIC */
+        get exteriorExtras() { return Math.max(0, this.exteriorCount - 8); },
+        get exteriorExtraTotal() { return this.exteriorExtras * this.exteriorExtraCost; },
+        get exteriorRawTotal() { return this.exteriorBasePrice + this.exteriorExtraTotal; },
+        get exteriorFinalTotal() {
+          const amount = this.includeTax ? this.exteriorRawTotal * (1 + this.taxRate) : this.exteriorRawTotal;
+          return amount.toFixed(2);
+        },
+        get exteriorPriceDollars() { return this.exteriorFinalTotal.split('.')[0]; },
+        get exteriorPriceCents() { return '.' + this.exteriorFinalTotal.split('.')[1]; },
+
+        updateExteriorCount(dir) {
+          if (dir === 'up' && this.exteriorCount < 20) {
+            this.exteriorCount++;
+          }
+          if (dir === 'down' && this.exteriorCount > 8) {
+            this.exteriorCount--;
+          }
+        },
+
+        sanitizeExteriorInput() {
+          let val = parseInt(this.exteriorCount, 10);
+          if (isNaN(val) || val < 8) val = 8;
+          if (val > 20) val = 20;
+          this.exteriorCount = val;
         },
 
         /* RANCH SHOOT LOGIC */
@@ -359,7 +425,7 @@
           }, 600);
         },
 
-        /* SHEET CONTROLS */
+        /* SHEET CONTROLS & SMOOTH DRAG MECHANICS */
         openSheet(sheetName) {
           this.dragY = 0;
           this.activeSheet = null;
@@ -370,27 +436,44 @@
 
         closeSheet() {
           this.activeSheet = null;
-          setTimeout(() => { this.dragY = 0; }, 250);
+          setTimeout(() => { this.dragY = 0; }, 300);
         },
 
         dragStart(e) {
-          this.startY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+          const clientY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+          this.startY = clientY;
+          this.lastY = clientY;
+          this.lastTime = Date.now();
+          this.velocityY = 0;
           this.isDragging = true;
         },
 
         dragMove(e) {
           if (!this.isDragging) return;
           const currentY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-          let delta = currentY - this.startY;
-          if (delta > 0) {
-            this.dragY = delta;
+          const now = Date.now();
+          const deltaY = currentY - this.startY;
+          const dt = now - this.lastTime;
+
+          if (dt > 0) {
+            this.velocityY = (currentY - this.lastY) / dt;
+          }
+
+          this.lastY = currentY;
+          this.lastTime = now;
+
+          if (deltaY < 0) {
+            this.dragY = deltaY * 0.25; 
+          } else {
+            this.dragY = deltaY;
           }
         },
 
         dragEnd() {
           if (!this.isDragging) return;
           this.isDragging = false;
-          if (this.dragY > 120) {
+
+          if (this.dragY > 100 || this.velocityY > 0.45) {
             this.closeSheet();
           } else {
             this.dragY = 0;
@@ -432,7 +515,7 @@
         </button>
       </div>
 
-      <!-- CART ICON TOP NAV BUTTON (OPENS CART QUOTE SHEET) -->
+      <!-- CART ICON TOP NAV BUTTON -->
       <div class="justify-self-end">
         <button @click="openSheet('cart')"
                 class="w-10 h-10 rounded-full flex items-center justify-center relative transition-colors duration-300 focus:outline-none cursor-pointer"
@@ -487,13 +570,15 @@
             </svg>
           </button>
 
-          <div class="p-4 rounded-2xl flex items-center justify-between text-left border opacity-50 transition-colors cursor-not-allowed"
-               :class="isDark ? 'bg-black border-[#262626] text-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900'">
-            <span class="text-[15px] font-bold">Reshoot</span>
+          <!-- RESHOOT BUTTON -->
+          <button @click="openSheet('reshoot')"
+                  class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                  :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+            <span class="text-[15px] font-black">Reshoot</span>
             <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-          </div>
+          </button>
 
           <button @click="openSheet('ranch')"
                   class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
@@ -504,13 +589,14 @@
             </svg>
           </button>
 
-          <div class="p-4 rounded-2xl flex items-center justify-between text-left border opacity-50 transition-colors cursor-not-allowed"
-               :class="isDark ? 'bg-black border-[#262626] text-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900'">
-            <span class="text-[15px] font-bold">Exterior Only</span>
+          <button @click="openSheet('exterior')"
+                  class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                  :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+            <span class="text-[15px] font-black">Exterior Only</span>
             <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-          </div>
+          </button>
 
           <button @click="openSheet('mini')"
                   class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
@@ -612,26 +698,24 @@
     <template x-if="activeSheet === 'cart'">
       <div x-show="activeSheet === 'cart'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px)`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t-2 rounded-t-[36px] p-5 pt-3 z-50 shadow-[0_-10px_25px_rgba(255,255,255,0.15)] flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t-2 rounded-t-[36px] p-5 pt-2 z-50 shadow-[0_-10px_25px_rgba(255,255,255,0.15)] flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-black text-white border-white' : 'bg-white text-neutral-900 border-neutral-300 shadow-xl'">
 
-        <!-- Drag Handle -->
-        <div class="py-1 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
-          <div class="w-10 h-1 rounded-full transition-colors duration-300"
-               :class="isDark ? 'bg-neutral-600' : 'bg-neutral-300'"></div>
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
+               :class="isDark ? 'bg-neutral-600 hover:bg-neutral-400' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <!-- Header: Cart Icon & Trash Can -->
         <div class="flex justify-between items-center pb-1 px-1">
           <div class="relative inline-flex items-center group cursor-pointer">
             <svg class="w-9 h-9 transition group-hover:scale-105" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
@@ -648,13 +732,9 @@
           </button>
         </div>
 
-        <!-- Item List Container -->
         <div class="space-y-2 max-h-52 overflow-y-auto no-scrollbar">
-          
           <template x-for="item in cartItems" :key="item.id">
             <div>
-              
-              <!-- STATE 1: ACTIVE ITEM TILE -->
               <div x-show="item.state === 'active'"
                    x-data="{ offsetX: 0, startX: 0, swiping: false }" 
                    @touchstart="startX = $event.touches[0].clientX; swiping = true"
@@ -662,12 +742,10 @@
                    @touchend="swiping = false; if(offsetX < -80) { deleteItem(item); } else { offsetX = 0; }"
                    class="relative rounded-2xl overflow-hidden transition-all duration-200">
                    
-                <!-- Swipe Delete Underlay -->
                 <div class="absolute inset-0 bg-red-600 flex items-center justify-end pr-4 rounded-2xl text-white font-extrabold text-xs">
                   <span>DELETE 🗑️</span>
                 </div>
 
-                <!-- Item Surface Card -->
                 <div class="pl-3.5 pr-3 py-3 rounded-2xl flex justify-between items-center relative z-10 border transition-all duration-150 cursor-pointer select-none min-h-[58px]"
                      :class="isDark ? 'bg-neutral-950 border-neutral-800 hover:border-white active:border-white' : 'bg-neutral-50 border-neutral-200 hover:border-neutral-400 active:border-neutral-400'"
                      :style="`transform: translateX(${offsetX}px)`">
@@ -678,14 +756,14 @@
                         <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                       </svg>
                     </template>
+                    <template x-if="item.icon === 'refresh'">
+                      <svg class="w-5 h-5 shrink-0" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="2" fill="none">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                      </svg>
+                    </template>
                     <template x-if="item.icon === 'home'">
                       <svg class="w-5 h-5 shrink-0" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="2" fill="none">
                         <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                      </svg>
-                    </template>
-                    <template x-if="item.icon === 'video'">
-                      <svg class="w-5 h-5 shrink-0" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="2" fill="none">
-                        <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                       </svg>
                     </template>
                     
@@ -695,7 +773,6 @@
                     </div>
                   </div>
 
-                  <!-- Item Price + Subtle X Button -->
                   <div class="flex items-center gap-1.5 shrink-0">
                     <span class="text-xs font-bold text-right" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + item.price.toFixed(2)"></span>
                     <button @click.stop="deleteItem(item)" class="p-1 text-neutral-500/60 hover:text-red-500 transition shrink-0 cursor-pointer" title="Remove">
@@ -706,7 +783,6 @@
                 </div>
               </div>
 
-              <!-- STATE 2: UNDO PILL -->
               <div x-show="item.state === 'deleted'" x-cloak
                    x-data="{ toastX: 0, toastStartX: 0, toastSwiping: false }"
                    @touchstart="toastStartX = $event.touches[0].clientX; toastSwiping = true"
@@ -726,7 +802,6 @@
                     <span class="text-[11px] font-bold tracking-tight text-neutral-900 truncate" x-text="`Removed ${item.title}`"></span>
                   </div>
 
-                  <!-- BLACK UNDO SECTION -->
                   <button @click="restoreItem(item)" 
                           class="bg-black hover:bg-neutral-900 active:scale-95 text-white font-bold text-[10px] uppercase px-4 self-stretch flex items-center gap-1.5 transition shrink-0 border-l border-neutral-200 cursor-pointer">
                     <svg class="w-3.5 h-3.5 stroke-white fill-none" viewBox="0 0 24 24" stroke-width="2.5">
@@ -741,7 +816,6 @@
             </div>
           </template>
 
-          <!-- RESTORE SCREEN -->
           <template x-if="activeCount() === 0">
             <div class="py-8 px-4 text-center rounded-2xl border border-dashed space-y-3"
                  :class="isDark ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-300'">
@@ -763,11 +837,9 @@
 
         </div>
 
-        <!-- Calculation Breakdown Block -->
         <div class="border-t pt-3 space-y-2 pl-2 pr-2 transition-colors duration-300"
              :class="isDark ? 'border-neutral-900' : 'border-neutral-200'">
           
-          <!-- Subtotal Row -->
           <div class="grid grid-cols-[1fr_auto] items-center text-xs text-neutral-400">
             <span class="font-medium text-left">Subtotal</span>
             <span class="font-bold text-right" 
@@ -775,7 +847,6 @@
                   x-text="'$' + calculateSubtotal().toFixed(2)"></span>
           </div>
 
-          <!-- Custom Tax Toggle Row -->
           <div class="grid grid-cols-[1fr_auto] items-center text-xs text-neutral-400">
             <label class="flex items-center gap-2 cursor-pointer select-none group">
               <button @click="includeTax = !includeTax" type="button" 
@@ -799,7 +870,6 @@
                   x-text="includeTax ? '$' + (calculateSubtotal() * taxRate).toFixed(2) : '$0.00'"></span>
           </div>
 
-          <!-- Total Row -->
           <div class="grid grid-cols-[1fr_auto] items-center pt-2 border-t"
                :class="isDark ? 'border-neutral-900' : 'border-neutral-200'">
             <span class="text-sm font-bold uppercase tracking-wider text-left"
@@ -813,24 +883,180 @@
       </div>
     </template>
 
-    <!-- FULL SHOOT BOTTOM SHEET -->
-    <template x-if="activeSheet === 'full'">
-      <div x-show="activeSheet === 'full'"
+    <!-- RESHOOT BOTTOM SHEET -->
+    <template x-if="activeSheet === 'reshoot'">
+      <div x-show="activeSheet === 'reshoot'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px)`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-3 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-2 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
 
-        <!-- DRAG HANDLE BAR -->
-        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+             @pointerdown="dragStart($event)">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
+               :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
+        </div>
+
+        <div class="flex items-end justify-between gap-2 pb-0.5">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
+                 :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+              </svg>
+            </div>
+            <div class="flex flex-col justify-center">
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
+                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
+              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Reshoot</h1>
+            </div>
+          </div>
+
+          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+            <button @click="includeTax = !includeTax"
+                    title="Toggle Sales Tax"
+                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                    :class="[
+                      includeTax 
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                        : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
+                    ]">
+                TAX
+              </span>
+            </button>
+
+            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span>
+              <span x-text="reshootPriceDollars" class="leading-none"></span>
+              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="reshootPriceCents"></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="rounded-2xl border divide-y mb-3.5 tabular-nums overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+            
+            <div class="px-4 h-[48px] flex items-center justify-between">
+              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 8 Photos</span>
+              <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="reshootBasePrice"></span>
+              </div>
+            </div>
+
+            <div class="px-4 h-[48px] flex items-center justify-between transition-all duration-300"
+                 :class="reshootExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
+              <div class="text-[15px] transition-colors flex items-start">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="reshootExtras > 0 ? '10 / Extra × ' + reshootExtras : '10 / Extra'"></span>
+              </div>
+              <div class="flex items-center text-[15px] font-bold transition-colors">
+                <template x-if="reshootExtras > 0">
+                  <div class="flex items-start">
+                    <span class="leading-none mr-[0.5px]">+</span>
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none" x-text="reshootExtraTotal"></span>
+                  </div>
+                </template>
+                <template x-if="reshootExtras === 0">
+                  <div class="flex items-start">
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none">0</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex items-center justify-between gap-2 mb-2 px-4">
+            <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
+                   :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                <button @click="updateReshootCount('down')" :disabled="reshootCount <= 8"
+                        :class="reshootCount <= 8 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
+                
+                <input type="number" 
+                       x-model.number="reshootCount"
+                       @change="sanitizeReshootInput()"
+                       @blur="sanitizeReshootInput()"
+                       min="8"
+                       max="20"
+                       class="w-10 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums"
+                       :class="isDark ? 'text-white' : 'text-neutral-900'" />
+                
+                <button @click="updateReshootCount('up')" :disabled="reshootCount >= 20"
+                        :class="reshootCount >= 20 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
+              </div>
+
+              <button @click="addConfiguredItemToCart('MLS Photos: Reshoot', reshootCount + ' imgs', reshootRawTotal, 'refresh')" 
+                      :disabled="state !== 'idle'"
+                      :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
+                      class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                <template x-if="state !== 'success'">
+                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                  </svg>
+                </template>
+                <template x-if="state === 'success'">
+                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                  </svg>
+                </template>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-1 pb-2">
+          <div class="relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[13px] font-bold border transition-all tracking-tight cursor-pointer"
+               :class="isDark ? 'text-neutral-400 bg-white/5 border-white/10 hover:border-white/30' : 'text-neutral-700 bg-neutral-200/60 border-neutral-300 hover:border-neutral-400 shadow-sm'">
+            <svg class="w-3.5 h-3.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            </svg>
+            <span>Wizard</span>
+          </div>
+        </div>
+
+      </div>
+    </template>
+
+    <!-- FULL SHOOT BOTTOM SHEET -->
+    <template x-if="activeSheet === 'full'">
+      <div x-show="activeSheet === 'full'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-2 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+
+        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -845,7 +1071,7 @@
               </svg>
             </div>
             <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none uppercase tracking-widest mb-1"
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
                     :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
               <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</h1>
             </div>
@@ -957,6 +1183,7 @@
 
           <div class="rounded-2xl border divide-y mb-3.5 tabular-nums overflow-hidden transition-colors duration-300"
                :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+            
             <div class="px-4 h-[48px] flex items-center justify-between">
               <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="'Base ' + (holdsSelection ? effectiveTier.imgs : 25) + ' Photos'"></span>
               <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
@@ -1009,7 +1236,7 @@
             </div>
           </div>
 
-          <div class="flex items-center justify-between gap-2 mb-2">
+          <div class="flex items-center justify-between gap-2 mb-2 px-4">
             <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
             <div class="flex items-center gap-2 shrink-0">
               <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
@@ -1075,23 +1302,180 @@
       </div>
     </template>
 
-    <!-- MINI SHOOT BOTTOM SHEET (UPDATED PRICING) -->
-    <template x-if="activeSheet === 'mini'">
-      <div x-show="activeSheet === 'mini'"
+    <!-- EXTERIOR ONLY BOTTOM SHEET -->
+    <template x-if="activeSheet === 'exterior'">
+      <div x-show="activeSheet === 'exterior'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px)`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-3 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-2 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
 
-        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+             @pointerdown="dragStart($event)">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
+               :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
+        </div>
+
+        <div class="flex items-end justify-between gap-2 pb-0.5">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
+                 :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+            </div>
+            <div class="flex flex-col justify-center">
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
+                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
+              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Exterior Only</h1>
+            </div>
+          </div>
+
+          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+            <button @click="includeTax = !includeTax"
+                    title="Toggle Sales Tax"
+                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                    :class="[
+                      includeTax 
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                        : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
+                    ]">
+                TAX
+              </span>
+            </button>
+
+            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span>
+              <span x-text="exteriorPriceDollars" class="leading-none"></span>
+              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="exteriorPriceCents"></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="rounded-2xl border divide-y mb-3.5 tabular-nums overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+            
+            <div class="px-4 h-[48px] flex items-center justify-between">
+              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 8 Photos</span>
+              <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="exteriorBasePrice"></span>
+              </div>
+            </div>
+
+            <div class="px-4 h-[48px] flex items-center justify-between transition-all duration-300"
+                 :class="exteriorExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
+              <div class="text-[15px] transition-colors flex items-start">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="exteriorExtras > 0 ? '10 / Extra × ' + exteriorExtras : '10 / Extra'"></span>
+              </div>
+              <div class="flex items-center text-[15px] font-bold transition-colors">
+                <template x-if="exteriorExtras > 0">
+                  <div class="flex items-start">
+                    <span class="leading-none mr-[0.5px]">+</span>
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none" x-text="exteriorExtraTotal"></span>
+                  </div>
+                </template>
+                <template x-if="exteriorExtras === 0">
+                  <div class="flex items-start">
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none">0</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex items-center justify-between gap-2 mb-2 px-4">
+            <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
+                   :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                <button @click="updateExteriorCount('down')" :disabled="exteriorCount <= 8"
+                        :class="exteriorCount <= 8 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
+                
+                <input type="number" 
+                       x-model.number="exteriorCount"
+                       @change="sanitizeExteriorInput()"
+                       @blur="sanitizeExteriorInput()"
+                       min="8"
+                       max="20"
+                       class="w-10 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums"
+                       :class="isDark ? 'text-white' : 'text-neutral-900'" />
+                
+                <button @click="updateExteriorCount('up')" :disabled="exteriorCount >= 20"
+                        :class="exteriorCount >= 20 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
+              </div>
+
+              <button @click="addConfiguredItemToCart('MLS Photos: Exterior Only', exteriorCount + ' imgs', exteriorRawTotal, 'camera')" 
+                      :disabled="state !== 'idle'"
+                      :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
+                      class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                <template x-if="state !== 'success'">
+                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                  </svg>
+                </template>
+                <template x-if="state === 'success'">
+                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                  </svg>
+                </template>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-1 pb-2">
+          <div class="relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[13px] font-bold border transition-all tracking-tight cursor-pointer"
+               :class="isDark ? 'text-neutral-400 bg-white/5 border-white/10 hover:border-white/30' : 'text-neutral-700 bg-neutral-200/60 border-neutral-300 hover:border-neutral-400 shadow-sm'">
+            <svg class="w-3.5 h-3.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            </svg>
+            <span>Wizard</span>
+          </div>
+        </div>
+
+      </div>
+    </template>
+
+    <!-- MINI SHOOT BOTTOM SHEET -->
+    <template x-if="activeSheet === 'mini'">
+      <div x-show="activeSheet === 'mini'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-2 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+
+        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -1106,7 +1490,7 @@
               </svg>
             </div>
             <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none uppercase tracking-widest mb-1"
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
                     :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
               <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Mini Shoot</h1>
             </div>
@@ -1171,7 +1555,7 @@
 
           </div>
 
-          <div class="flex items-center justify-between gap-2 mb-2">
+          <div class="flex items-center justify-between gap-2 mb-2 px-4">
             <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
             <div class="flex items-center gap-2 shrink-0">
               <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
@@ -1236,19 +1620,19 @@
     <template x-if="activeSheet === 'ranch'">
       <div x-show="activeSheet === 'ranch'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-500 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px)`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-3 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-2 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
 
-        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -1263,7 +1647,7 @@
               </svg>
             </div>
             <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none uppercase tracking-widest mb-1"
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
                     :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
               <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Ranch Shoot</h1>
             </div>
@@ -1292,6 +1676,7 @@
         </div>
 
         <div>
+          <!-- RANCH TILES WITH ONLY NUMBERS (MATCHING APP DESIGN SYSTEM) -->
           <div class="grid grid-cols-2 gap-2 mb-3.5 tabular-nums">
             <template x-for="tImg in [25, 36]" :key="tImg">
               <button @click="selectRanchTier(tImg)"
@@ -1302,7 +1687,7 @@
                         !ranchTargetUpgradeTier && ranchEffectiveTier.imgs !== tImg ? (isDark ? 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20' : 'bg-neutral-200/50 text-neutral-600 border-neutral-300 hover:border-neutral-400') : ''
                       ]"
                       class="py-3 px-2 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
-                <span class="text-[16px] font-bold leading-tight" x-text="tImg + ' Photos'"></span>
+                <span class="text-[16px] font-bold leading-tight" x-text="tImg"></span>
                 <div class="flex items-start justify-center mt-0.5 leading-none">
                   <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                   <span class="text-[14px] font-extrabold leading-none" x-text="getRanchTierPrice(tImg)"></span>
@@ -1369,7 +1754,7 @@
 
           </div>
 
-          <div class="flex items-center justify-between gap-2 mb-2">
+          <div class="flex items-center justify-between gap-2 mb-2 px-4">
             <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
             <div class="flex items-center gap-2 shrink-0">
               <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
