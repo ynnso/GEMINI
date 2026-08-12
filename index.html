@@ -168,6 +168,27 @@
  },
  get zillowPriceDollars() { return this.zillowSqFt ? this.zillowFinalTotal.split('.')[0] : '--'; },
  get zillowPriceCents() { return this.zillowSqFt ? '.' + this.zillowFinalTotal.split('.')[1] : ''; },
+ videoPrices: {
+ MLS: { 'BuzzReels Trio': 159, 'HD Highlight': 159, 'Full HD': 319 },
+ PORT: {
+ BCD: { 'BuzzReels Trio': 275, 'HD Highlight': 275, 'Full HD': 399 },
+ CR: { 'BuzzReels Trio': 299, 'HD Highlight': 299, 'Full HD': 449 },
+ AMF: { 'BuzzReels Trio': 349, 'HD Highlight': 349, 'Full HD': 499 }
+ }
+ },
+ videoSelected: '',
+ videoSelectedSide: 'MLS',
+ get videoRawTotal() {
+ if (!this.videoSelected) return 0;
+ if (this.videoSelectedSide === 'MLS') return this.videoPrices.MLS[this.videoSelected];
+ return this.videoPrices.PORT[this.videoPortSector][this.videoSelected];
+ },
+ get videoFinalTotal() {
+ const amount = this.includeTax ? this.videoRawTotal * (1 + this.taxRate) : this.videoRawTotal;
+ return amount.toFixed(2);
+ },
+ get videoPriceDollars() { return this.videoSelected ? Number(this.videoFinalTotal.split('.')[0]).toLocaleString('en-US') : '--'; },
+ get videoPriceCents() { return this.videoSelected ? '.' + this.videoFinalTotal.split('.')[1] : ''; },
  get portCheckpoint() {
  const q = this.portQty;
  const tiers = [70, 60, 50, 40, 30, 20, 10];
@@ -881,7 +902,7 @@
         <template x-if="videoCategory === 'MLS'">
           <div class="flex flex-col gap-1.5">
             <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+              <button @click="videoSelected = item; videoSelectedSide = 'MLS'; openSheet('video')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black" x-text="item"></span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
               </button>
@@ -891,7 +912,7 @@
         <template x-if="videoCategory === 'PORT'">
           <div class="flex flex-col gap-1.5">
             <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
-              <button @click="alert(item + ' — ' + videoPortSector + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+              <button @click="videoSelected = item; videoSelectedSide = 'PORT'; openSheet('video')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="flex flex-col items-start"><span class="text-[15px] font-black" x-text="item"></span><span class="font-medium text-[12px]" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="sectorLabel[videoPortSector]"></span></span>
                 <svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
               </button>
@@ -1789,6 +1810,76 @@
                     <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
                   </svg>
                 </template>
+        </button>
+
+      </div>
+    </template>
+
+    <template x-if="activeSheet === 'video'">
+      <div x-show="activeSheet === 'video'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 min-h-[60vh] max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+
+        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
+        </div>
+
+        <div class="flex items-end justify-between gap-2 pb-1">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+            </div>
+            <div class="flex flex-col justify-center">
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="videoSelectedSide + ' Video' + (videoSelectedSide === 'PORT' ? ' — ' + videoPortSector : '')"></span>
+              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="videoSelected"></h1>
+            </div>
+          </div>
+
+          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+            <button @click="includeTax = !includeTax" :disabled="!videoSelected" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                    :class="includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')">
+                TAX
+              </span>
+            </button>
+            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <template x-if="videoSelected"><span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span></template>
+              <span x-text="videoPriceDollars" class="leading-none"></span>
+              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="videoPriceCents"></span>
+            </div>
+          </div>
+        </div>
+
+        <button @click="addConfiguredItemToCart(videoSelectedSide + ' Video: ' + videoSelected + (videoSelectedSide === 'PORT' ? ' (' + videoPortSector + ')' : ''), '', videoRawTotal, 'video')"
+                :disabled="!videoSelected || state !== 'idle'"
+                :class="[!videoSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
+                class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+          <template x-if="state !== 'success'">
+            <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+              <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+            </svg>
+          </template>
+          <template x-if="state === 'success'">
+            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+              <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+            </svg>
+          </template>
         </button>
 
       </div>
