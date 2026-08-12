@@ -90,9 +90,8 @@
  },
  get portTargetUpgradeTier() {
  const q = this.portQty, base = this.portSelectedBase;
- if (base === 2 && q >= 11 && q <= 14) return 10;
- if (base === 10 && q >= 16 && q <= 19) return 20;
- if (base === 20 && q >= 26 && q <= 29) return 30;
+ if (base === 10 && q >= 15 && q <= 19) return 20;
+ if (base === 20 && q >= 25 && q <= 29) return 30;
  return null;
  },
  get portExtras() { return Math.max(0, this.portQty - this.portEffectiveTier.imgs); },
