@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>S2S Field App - Reshoot & Ranch Pricing Sheets</title>
+  <title>S2S Field App - Airbnb Toggle & Pricing Sheet</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -50,8 +50,9 @@
 <body class="w-full min-h-screen transition-colors duration-300"
       :class="isDark ? 'bg-black text-white' : 'bg-neutral-100 text-neutral-900'"
       x-data="{
-        activeSheet: 'ranch',
+        activeSheet: null,
         activeTab: 'photos',
+        photoCategory: 'MLS',
         
         state: 'idle',
         includeTax: true,
@@ -120,6 +121,11 @@
         miniCount: 12,
         miniBasePrice: 119,
         miniExtraCost: 10,
+
+        /* AIRBNB / LEASE STATE */
+        airbnbCount: 12,
+        airbnbBasePrice: 169,
+        airbnbExtraCost: 12,
 
         /* EXTERIOR ONLY STATE */
         exteriorCount: 8,
@@ -307,6 +313,33 @@
           if (isNaN(val) || val < 12) val = 12;
           if (val > 24) val = 24;
           this.miniCount = val;
+        },
+
+        /* AIRBNB / LEASE LOGIC */
+        get airbnbExtras() { return Math.max(0, this.airbnbCount - 12); },
+        get airbnbExtraTotal() { return this.airbnbExtras * this.airbnbExtraCost; },
+        get airbnbRawTotal() { return this.airbnbBasePrice + this.airbnbExtraTotal; },
+        get airbnbFinalTotal() {
+          const amount = this.includeTax ? this.airbnbRawTotal * (1 + this.taxRate) : this.airbnbRawTotal;
+          return amount.toFixed(2);
+        },
+        get airbnbPriceDollars() { return this.airbnbFinalTotal.split('.')[0]; },
+        get airbnbPriceCents() { return '.' + this.airbnbFinalTotal.split('.')[1]; },
+
+        updateAirbnbCount(dir) {
+          if (dir === 'up' && this.airbnbCount < 50) {
+            this.airbnbCount++;
+          }
+          if (dir === 'down' && this.airbnbCount > 12) {
+            this.airbnbCount--;
+          }
+        },
+
+        sanitizeAirbnbInput() {
+          let val = parseInt(this.airbnbCount, 10);
+          if (isNaN(val) || val < 12) val = 12;
+          if (val > 50) val = 50;
+          this.airbnbCount = val;
         },
 
         /* EXTERIOR ONLY LOGIC */
@@ -554,58 +587,101 @@
 
         <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300"
              :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
-          <button class="flex-1 py-2 text-[12px] font-black text-center bg-[#E50914] text-white rounded-xl shadow-[0_0_12px_rgba(229,9,20,0.35)]">MLS</button>
-          <button class="flex-1 py-2 text-[12px] font-bold text-center text-[#8E8E93]">Airbnb</button>
-          <button class="flex-1 py-2 text-[12px] font-bold text-center text-[#8E8E93]">PORT</button>
+          
+          <button @click="photoCategory = 'MLS'"
+                  class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer"
+                  :class="photoCategory === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">
+            MLS
+          </button>
+          
+          <button @click="photoCategory = 'Airbnb'"
+                  class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer"
+                  :class="photoCategory === 'Airbnb' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">
+            Airbnb
+          </button>
+          
+          <button @click="photoCategory = 'PORT'"
+                  class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer"
+                  :class="photoCategory === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">
+            PORT
+          </button>
+
         </div>
 
+        <!-- DYNAMIC PHOTO OPTIONS LIST -->
         <div class="flex flex-col gap-2.5 pt-1">
           
-          <button @click="openSheet('full')"
-                  class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
-                  :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
-            <span class="text-[15px] font-black">Full Shoot</span>
-            <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </button>
+          <!-- MLS OPTIONS -->
+          <template x-if="photoCategory === 'MLS'">
+            <div class="flex flex-col gap-2.5">
+              <button @click="openSheet('full')"
+                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black">Full Shoot</span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
 
-          <!-- RESHOOT BUTTON -->
-          <button @click="openSheet('reshoot')"
-                  class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
-                  :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
-            <span class="text-[15px] font-black">Reshoot</span>
-            <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </button>
+              <button @click="openSheet('reshoot')"
+                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black">Reshoot</span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
 
-          <button @click="openSheet('ranch')"
-                  class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
-                  :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
-            <span class="text-[15px] font-black">Ranch Shoot</span>
-            <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </button>
+              <button @click="openSheet('ranch')"
+                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black">Ranch Shoot</span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
 
-          <button @click="openSheet('exterior')"
-                  class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
-                  :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
-            <span class="text-[15px] font-black">Exterior Only</span>
-            <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </button>
+              <button @click="openSheet('exterior')"
+                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black">Exterior Only</span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
 
-          <button @click="openSheet('mini')"
-                  class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
-                  :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
-            <span class="text-[15px] font-black">Mini Shoot</span>
-            <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-          </button>
+              <button @click="openSheet('mini')"
+                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black">Mini Shoot</span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
+          </template>
+
+          <!-- AIRBNB OPTIONS -->
+          <template x-if="photoCategory === 'Airbnb'">
+            <div class="flex flex-col gap-2.5">
+              <button @click="openSheet('airbnb')"
+                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black">Airbnb</span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
+          </template>
+
+          <!-- PORT OPTIONS -->
+          <template x-if="photoCategory === 'PORT'">
+            <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl"
+                 :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
+              Portfolio photography packages coming soon.
+            </div>
+          </template>
 
         </div>
       </section>
@@ -1616,6 +1692,163 @@
       </div>
     </template>
 
+    <!-- AIRBNB / LEASE BOTTOM SHEET -->
+    <template x-if="activeSheet === 'airbnb'">
+      <div x-show="activeSheet === 'airbnb'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] p-5 pt-2 z-50 shadow-2xl flex flex-col gap-3.5 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+
+        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+             @pointerdown="dragStart($event)">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
+               :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
+        </div>
+
+        <div class="flex items-end justify-between gap-2 pb-0.5">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
+                 :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+            </div>
+            <div class="flex flex-col justify-center">
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
+                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">Airbnb Photos</span>
+              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Airbnb / Lease</h1>
+            </div>
+          </div>
+
+          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+            <button @click="includeTax = !includeTax"
+                    title="Toggle Sales Tax"
+                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                    :class="[
+                      includeTax 
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                        : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
+                    ]">
+                TAX
+              </span>
+            </button>
+
+            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span>
+              <span x-text="airbnbPriceDollars" class="leading-none"></span>
+              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="airbnbPriceCents"></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="rounded-2xl border divide-y mb-3.5 tabular-nums overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+            
+            <div class="px-4 h-[48px] flex items-center justify-between">
+              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 12 Photos</span>
+              <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="airbnbBasePrice"></span>
+              </div>
+            </div>
+
+            <div class="px-4 h-[48px] flex items-center justify-between transition-all duration-300"
+                 :class="airbnbExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
+              <div class="text-[15px] transition-colors flex items-start">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="airbnbExtras > 0 ? '12 / Extra × ' + airbnbExtras : '12 / Extra'"></span>
+              </div>
+              <div class="flex items-center text-[15px] font-bold transition-colors">
+                <template x-if="airbnbExtras > 0">
+                  <div class="flex items-start">
+                    <span class="leading-none mr-[0.5px]">+</span>
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none" x-text="airbnbExtraTotal"></span>
+                  </div>
+                </template>
+                <template x-if="airbnbExtras === 0">
+                  <div class="flex items-start">
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none">0</span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex items-center justify-between gap-2 mb-2 px-4">
+            <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
+                   :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                <button @click="updateAirbnbCount('down')" :disabled="airbnbCount <= 12"
+                        :class="airbnbCount <= 12 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
+                
+                <input type="number" 
+                       x-model.number="airbnbCount"
+                       @change="sanitizeAirbnbInput()"
+                       @blur="sanitizeAirbnbInput()"
+                       min="12"
+                       max="50"
+                       class="w-10 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums"
+                       :class="isDark ? 'text-white' : 'text-neutral-900'" />
+                
+                <button @click="updateAirbnbCount('up')" :disabled="airbnbCount >= 50"
+                        :class="airbnbCount >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
+              </div>
+
+              <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' imgs', airbnbRawTotal, 'home')" 
+                      :disabled="state !== 'idle'"
+                      :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
+                      class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                <template x-if="state !== 'success'">
+                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                  </svg>
+                </template>
+                <template x-if="state === 'success'">
+                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                  </svg>
+                </template>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-1 pb-2">
+          <div class="relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[13px] font-bold border transition-all tracking-tight cursor-pointer"
+               :class="isDark ? 'text-neutral-400 bg-white/5 border-white/10 hover:border-white/30' : 'text-neutral-700 bg-neutral-200/60 border-neutral-300 hover:border-neutral-400 shadow-sm'">
+            <svg class="w-3.5 h-3.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            </svg>
+            <span>Wizard</span>
+          </div>
+        </div>
+
+      </div>
+    </template>
+
     <!-- RANCH SHOOT BOTTOM SHEET -->
     <template x-if="activeSheet === 'ranch'">
       <div x-show="activeSheet === 'ranch'"
@@ -1676,7 +1909,6 @@
         </div>
 
         <div>
-          <!-- RANCH TILES WITH ONLY NUMBERS (MATCHING APP DESIGN SYSTEM) -->
           <div class="grid grid-cols-2 gap-2 mb-3.5 tabular-nums">
             <template x-for="tImg in [25, 36]" :key="tImg">
               <button @click="selectRanchTier(tImg)"
