@@ -263,7 +263,16 @@
  toggleDropdown(evt) {
  if (this.dropdownOpen) { this.dropdownOpen = false; return; }
  const r = evt.currentTarget.getBoundingClientRect();
- this.dropdownRect = { top: r.bottom + 8, left: r.left, width: r.width };
+ const vh = window.innerHeight;
+ const desiredTop = r.bottom + 8;
+ const maxAvail = vh - desiredTop - 16;
+ const minAvail = 200;
+ if (maxAvail < minAvail) {
+ const top = Math.max(16, vh - minAvail - 16);
+ this.dropdownRect = { top, left: r.left, width: r.width, maxHeight: minAvail };
+ } else {
+ this.dropdownRect = { top: desiredTop, left: r.left, width: r.width, maxHeight: Math.min(maxAvail, 320) };
+ }
  this.dropdownOpen = true;
  },
         count: 25,
@@ -1420,7 +1429,7 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-10 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-10 z-50 shadow-2xl flex flex-col gap-4 min-h-[60vh] max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
@@ -1485,11 +1494,11 @@
           <div x-show="dropdownOpen" x-cloak @click.outside="dropdownOpen = false"
                x-transition:enter="transition ease-out duration-150 transform" x-transition:enter-start="opacity-0 scale-95 -translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                x-transition:leave="transition ease-in duration-100 transform" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; z-index:200;`"
+               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; max-height:${dropdownRect.maxHeight}px; z-index:200;`"
                class="p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300"
                :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
+            <div class="space-y-0.5 max-h-full overflow-y-auto">
               <template x-for="opt in floorSqFtOptions" :key="opt.value">
                 <button type="button" @click="floorSqFt = opt.value; dropdownOpen = false"
                         class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
@@ -1582,7 +1591,7 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-10 z-50 shadow-2xl flex flex-col gap-4 min-h-[60vh] max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
@@ -1633,10 +1642,10 @@
           <div x-show="dropdownOpen" x-cloak @click.outside="dropdownOpen = false"
                x-transition:enter="transition ease-out duration-150 transform" x-transition:enter-start="opacity-0 scale-95 -translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                x-transition:leave="transition ease-in duration-100 transform" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; z-index:200;`"
+               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; max-height:${dropdownRect.maxHeight}px; z-index:200;`"
                class="p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
+            <div class="space-y-0.5 max-h-full overflow-y-auto">
               <template x-for="opt in mpSqFtOptions" :key="opt.value">
                 <button type="button" @click="mpSqFt = opt.value; dropdownOpen = false"
                         class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
@@ -1749,10 +1758,10 @@
           <div x-show="dropdownOpen" x-cloak @click.outside="dropdownOpen = false"
                x-transition:enter="transition ease-out duration-150 transform" x-transition:enter-start="opacity-0 scale-95 -translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                x-transition:leave="transition ease-in duration-100 transform" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; z-index:200;`"
+               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; max-height:${dropdownRect.maxHeight}px; z-index:200;`"
                class="p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
+            <div class="space-y-0.5 max-h-full overflow-y-auto">
               <template x-for="opt in zillowSqFtOptions" :key="opt.value">
                 <button type="button" @click="zillowSqFt = opt.value; dropdownOpen = false"
                         class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
@@ -2076,7 +2085,7 @@
                x-transition:leave="transition ease-in duration-100 transform"
                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; z-index:200;`"
+               :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; max-height:${dropdownRect.maxHeight}px; z-index:200;`"
                class="p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300"
                :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             
@@ -2085,7 +2094,7 @@
               Select Sq Ft
             </div>
 
-            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
+            <div class="space-y-0.5 max-h-full overflow-y-auto">
               <template x-for="opt in sqFtOptions" :key="opt.value">
                 <button type="button"
                         @click="selectSqFt(opt.value); dropdownOpen = false"
