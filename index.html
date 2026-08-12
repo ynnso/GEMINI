@@ -305,6 +305,57 @@
  if (this.addonSelected === 'PORT Extended/Hr' || this.addonSelected === 'Processing/Hr') return 100;
  return 0;
  },
+ aerialPrices: {
+ MLS: { 'Aerial Mini 2 Images': 79, 'Aerial Standard 5 Images': 119, 'Aerial Curb Appeal Video 30 sec': 119, 'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 139, 'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 179, 'Aerial Video 2 min': 249, 'Aerial Mini 2 Images + Aerial Video 2 min': 259, 'Aerial Standard 5 Images + Aerial Video 2 min': 299 },
+ PORT: { 'Aerial Mini 2 Images': 149, 'Aerial Standard 5 Images': 199, 'Aerial Curb Appeal Video 30 sec': 199, 'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 249, 'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 299, 'Aerial Video 2 min': 349, 'Aerial Mini 2 Images + Aerial Video 2 min': 349, 'Aerial Standard 5 Images + Aerial Video 2 min': 399 }
+ },
+ aerialMiniPackages: ['Aerial Mini 2 Images', 'Aerial Mini 2 Images + Curb Appeal Vid 30 sec', 'Aerial Mini 2 Images + Aerial Video 2 min'],
+ aerialStandardPackages: ['Aerial Standard 5 Images', 'Aerial Standard 5 Images + Curb Appeal Vid 30 sec', 'Aerial Standard 5 Images + Aerial Video 2 min'],
+ aerialSelected: '',
+ aerialSelectedSide: 'MLS',
+ aerialQty: 2,
+ aerialHasImageStepper(item) {
+ return this.aerialMiniPackages.includes(item) || this.aerialStandardPackages.includes(item);
+ },
+ aerialBaseQty(item) {
+ return this.aerialMiniPackages.includes(item) ? 2 : 5;
+ },
+ get aerialRawTotal() {
+ if (!this.aerialSelected) return 0;
+ const base = this.aerialPrices[this.aerialSelectedSide][this.aerialSelected] || 0;
+ if (base === 0) return 0;
+ const isPort = this.aerialSelectedSide === 'PORT';
+ const miniRate = isPort ? 20 : 15;
+ const stdRate = isPort ? 20 : 10;
+ if (this.aerialMiniPackages.includes(this.aerialSelected)) {
+ const extra = Math.min(Math.max(0, this.aerialQty - 2), 2);
+ return base + (extra * miniRate);
+ }
+ if (this.aerialStandardPackages.includes(this.aerialSelected)) {
+ return base + (Math.max(0, this.aerialQty - 5) * stdRate);
+ }
+ return base;
+ },
+ get aerialExtraRate() {
+ const isPort = this.aerialSelectedSide === 'PORT';
+ if (this.aerialMiniPackages.includes(this.aerialSelected)) return isPort ? 20 : 15;
+ if (this.aerialStandardPackages.includes(this.aerialSelected)) return isPort ? 20 : 10;
+ return 0;
+ },
+ get aerialExtras() { return this.aerialHasImageStepper(this.aerialSelected) ? Math.max(0, this.aerialQty - this.aerialBaseQty(this.aerialSelected)) : 0; },
+ get aerialExtraTotal() { return this.aerialRawTotal - (this.aerialPrices[this.aerialSelectedSide][this.aerialSelected] || 0); },
+ updateAerialQty(dir) {
+ const base = this.aerialBaseQty(this.aerialSelected);
+ const max = this.aerialMiniPackages.includes(this.aerialSelected) ? base + 2 : 99;
+ if (dir === 'up' && this.aerialQty < max) this.aerialQty++;
+ if (dir === 'down' && this.aerialQty > base) this.aerialQty--;
+ },
+ get aerialFinalTotal() {
+ const amount = this.includeTax ? this.aerialRawTotal * (1 + this.taxRate) : this.aerialRawTotal;
+ return amount.toFixed(2);
+ },
+ get aerialPriceDollars() { return this.aerialSelected ? Number(this.aerialFinalTotal.split('.')[0]).toLocaleString('en-US') : '--'; },
+ get aerialPriceCents() { return this.aerialSelected ? '.' + this.aerialFinalTotal.split('.')[1] : ''; },
  get portCheckpoint() {
  const q = this.portQty;
  const tiers = [70, 60, 50, 40, 30, 20, 10];
@@ -1056,17 +1107,17 @@
         <div class="flex flex-col gap-1.5">
           <template x-if="aerialFilter === 'Images'">
             <template x-for="item in ['Aerial Mini 2 Images','Aerial Standard 5 Images']" :key="item">
-              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="aerialSelected = item; aerialSelectedSide = aerialCategory; aerialQty = aerialBaseQty(item); openSheet('aerial')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="aerialFilter === 'Video'">
             <template x-for="item in ['Aerial Curb Appeal Video 30 sec','Aerial Video 2 min']" :key="item">
-              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="aerialSelected = item; aerialSelectedSide = aerialCategory; openSheet('aerial')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="aerialFilter === 'Combos'">
-            <template x-for="item in ['Mini + Curb Appeal Vid 30 sec','Standard + Curb Appeal Vid 30 sec','Mini + Aerial Video 2 min','Standard + Aerial Video 2 min']" :key="item">
-              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+            <template x-for="item in ['Aerial Mini 2 Images + Curb Appeal Vid 30 sec','Aerial Standard 5 Images + Curb Appeal Vid 30 sec','Aerial Mini 2 Images + Aerial Video 2 min','Aerial Standard 5 Images + Aerial Video 2 min']" :key="item">
+              <button @click="aerialSelected = item; aerialSelectedSide = aerialCategory; aerialQty = aerialBaseQty(item); openSheet('aerial')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[12px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
         </div>
@@ -2129,6 +2180,125 @@
         <template x-if="!addonHasStepper(addonSelected) && !addonIsHourly(addonSelected)">
           <button @click="addConfiguredItemToCart('Add-On: ' + addonSelected, '', addonRawTotal, 'addon')" :disabled="!addonSelected || state !== 'idle'"
                   :class="[!addonSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
+                  class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+            <template x-if="state !== 'success'">
+              <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" /><circle cx="9" cy="19.5" r="1.5" fill="currentColor" /><circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" /><path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+              </svg>
+            </template>
+            <template x-if="state === 'success'">
+              <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" /><circle cx="9" cy="19.5" r="1.5" fill="currentColor" /><circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" /><path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+              </svg>
+            </template>
+          </button>
+        </template>
+
+      </div>
+    </template>
+
+    <template x-if="activeSheet === 'aerial'">
+      <div x-show="activeSheet === 'aerial'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           :class="aerialHasImageStepper(aerialSelected) ? 'min-h-[45vh]' : 'min-h-[30vh]'"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-10 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+
+        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
+        </div>
+
+        <div class="flex items-end justify-between gap-2 pb-1">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M20,7H18V5h2a1,1,0,0,0,0-2H14a1,1,0,0,0,0,2h2V7H8V5h2a1,1,0,0,0,0-2H4A1,1,0,0,0,4,5H6V7H4a3,3,0,0,0,0,6H6.1a4.955,4.955,0,0,0,.99,2.092A5,5,0,0,0,3,20a1,1,0,0,0,2,0,3,3,0,0,1,3-3h3v2a1,1,0,0,0,2,0V17h3a3,3,0,0,1,3,3,1,1,0,0,0,2,0,5,5,0,0,0-4.091-4.908A4.955,4.955,0,0,0,17.9,13H20a3,3,0,0,0,0-6Zm0,4H17a1,1,0,0,0-1,1,3,3,0,0,1-3,3H11a3,3,0,0,1-3-3,1,1,0,0,0-1-1H4A1,1,0,0,1,4,9H20a1,1,0,0,1,0,2Zm-6,1a2,2,0,0,1-4,0,1.929,1.929,0,0,1,.1-.581A1,1,0,1,0,11.417,10.1,1.978,1.978,0,0,1,12,10,2,2,0,0,1,14,12Z"/></svg>
+            </div>
+            <div class="flex flex-col justify-center">
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="aerialSelectedSide + ' Aerial'"></span>
+              <h1 class="text-[20px] font-black leading-tight tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="aerialSelected"></h1>
+            </div>
+          </div>
+
+          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+            <button @click="includeTax = !includeTax" :disabled="!aerialSelected" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                    :class="includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')">
+                TAX
+              </span>
+            </button>
+            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <template x-if="aerialSelected"><span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span></template>
+              <span x-text="aerialPriceDollars" class="leading-none"></span>
+              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="aerialPriceCents"></span>
+            </div>
+          </div>
+        </div>
+
+        <template x-if="aerialHasImageStepper(aerialSelected)">
+          <div class="flex flex-col gap-4">
+            <div class="rounded-2xl border divide-y tabular-nums overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+              <div class="px-4 py-3 h-[52px] flex items-center justify-between">
+                <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="'Base ' + aerialBaseQty(aerialSelected) + ' imgs'"></span>
+                <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+                  <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <span class="leading-none" x-text="aerialPrices[aerialSelectedSide][aerialSelected]"></span>
+                </div>
+              </div>
+              <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300" :class="aerialExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
+                <div class="text-[15px] transition-colors flex items-start">
+                  <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <span class="leading-none" x-text="aerialExtraRate + ' / Extra' + (aerialExtras > 0 ? ' × ' + aerialExtras : '')"></span>
+                </div>
+                <div class="flex items-center text-[15px] font-bold transition-colors">
+                  <template x-if="aerialExtras > 0">
+                    <div class="flex items-start"><span class="leading-none mr-[0.5px]">+</span><span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none" x-text="aerialExtraTotal"></span></div>
+                  </template>
+                  <template x-if="aerialExtras === 0">
+                    <div class="flex items-start"><span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none">0</span></div>
+                  </template>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 px-1">
+              <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Images</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                  <button @click="updateAerialQty('down')" :disabled="aerialQty <= aerialBaseQty(aerialSelected)" :class="aerialQty <= aerialBaseQty(aerialSelected) ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
+                  <span class="w-10 text-center text-[16px] font-black" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="aerialQty"></span>
+                  <button @click="updateAerialQty('up')" :disabled="aerialMiniPackages.includes(aerialSelected) && aerialQty >= aerialBaseQty(aerialSelected) + 2" :class="(aerialMiniPackages.includes(aerialSelected) && aerialQty >= aerialBaseQty(aerialSelected) + 2) ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
+                </div>
+                <button @click="addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, aerialQty + ' imgs', aerialRawTotal, 'aerial')" :disabled="state !== 'idle'"
+                        :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
+                        class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                  <template x-if="state !== 'success'">
+                    <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" /><circle cx="9" cy="19.5" r="1.5" fill="currentColor" /><circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" /><path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                    </svg>
+                  </template>
+                  <template x-if="state === 'success'">
+                    <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" /><circle cx="9" cy="19.5" r="1.5" fill="currentColor" /><circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" /><path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                    </svg>
+                  </template>
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template x-if="!aerialHasImageStepper(aerialSelected)">
+          <button @click="addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, '', aerialRawTotal, 'aerial')" :disabled="!aerialSelected || state !== 'idle'"
+                  :class="[!aerialSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
                   class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
             <template x-if="state !== 'success'">
               <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
