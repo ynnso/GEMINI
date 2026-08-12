@@ -84,6 +84,20 @@
  let overageUnits = Math.min(unitPlace, 5);
  return decadeBase + (overageUnits * 20);
  },
+ portSelectedBase: 2,
+ get portEffectiveTier() {
+ return { imgs: this.portSelectedBase, price: this.portTierPrice(this.portBrand, this.portSelectedBase) };
+ },
+ get portTargetUpgradeTier() {
+ const q = this.portQty, base = this.portSelectedBase;
+ if (base === 2 && q >= 11 && q <= 14) return 10;
+ if (base === 10 && q >= 16 && q <= 19) return 20;
+ if (base === 20 && q >= 26 && q <= 29) return 30;
+ return null;
+ },
+ get portExtras() { return Math.max(0, this.portQty - this.portEffectiveTier.imgs); },
+ get portExtraTotal() { return this.portTierPrice(this.portBrand, this.portQty) - this.portEffectiveTier.price; },
+ selectPortTier(c) { this.portSelectedBase = c; this.portQty = c; },
  get portRawTotal() { return this.portTierPrice(this.portBrand, this.portQty); },
  get portFinalTotal() {
  const amount = this.includeTax ? this.portRawTotal * (1 + this.taxRate) : this.portRawTotal;
@@ -1359,15 +1373,76 @@
         </div>
 
         <div class="flex flex-col gap-4">
+          <div class="grid grid-cols-4 gap-2 tabular-nums">
+            <template x-for="tImg in [2, 10, 20, 30]" :key="tImg">
+              <button @click="selectPortTier(tImg)"
+                      :class="[
+                        portTargetUpgradeTier === tImg ? 'bg-emerald-400 text-black font-black ring-2 ring-black' : '',
+                        !portTargetUpgradeTier && portEffectiveTier.imgs === tImg ? (isDark ? 'bg-white text-black font-extrabold shadow-lg border-white' : 'bg-neutral-900 text-white font-extrabold shadow-md border-neutral-900') : '',
+                        portTargetUpgradeTier && portTargetUpgradeTier !== tImg ? 'opacity-20 border-transparent bg-transparent' : '',
+                        !portTargetUpgradeTier && portEffectiveTier.imgs !== tImg ? (isDark ? 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20' : 'bg-neutral-200/50 text-neutral-600 border-neutral-300 hover:border-neutral-400') : ''
+                      ]"
+                      class="py-3 px-1.5 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
+                <span class="text-[16px] font-bold leading-tight" x-text="tImg"></span>
+                <div class="flex items-start justify-center mt-1 leading-none">
+                  <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <span class="text-[14px] font-extrabold leading-none" x-text="portTierPrice(portBrand, tImg)"></span>
+                </div>
+              </button>
+            </template>
+          </div>
+
           <div class="rounded-2xl border divide-y tabular-nums overflow-hidden transition-colors duration-300"
                :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
             
             <div class="px-4 py-3 h-[52px] flex items-center justify-between">
-              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="portBrand + ' — ' + sectorLabel[portBrand]"></span>
+              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="'Base ' + portEffectiveTier.imgs + ' Photos'"></span>
               <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
                 <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-                <span class="leading-none" x-text="portRawTotal"></span>
+                <span class="leading-none" x-text="portEffectiveTier.price"></span>
               </div>
+            </div>
+
+            <div @click="portTargetUpgradeTier && selectPortTier(portTargetUpgradeTier)"
+                 class="px-4 py-3 h-[52px] flex items-center justify-center transition-all duration-300"
+                 :class="[
+                   portTargetUpgradeTier 
+                     ? 'bg-emerald-400 text-black rounded-b-2xl cursor-pointer hover:opacity-95 active:scale-[0.99]'
+                     : (portExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold'))
+                 ]">
+              <template x-if="!portTargetUpgradeTier">
+                <div class="flex items-center justify-between w-full">
+                  <div class="text-[15px] transition-colors flex items-start">
+                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="leading-none" x-text="portExtras > 0 ? '20 / Extra × ' + portExtras : '20 / Extra'"></span>
+                  </div>
+                  <div class="flex items-center text-[15px] font-bold transition-colors">
+                    <template x-if="portExtras > 0">
+                      <div class="flex items-start">
+                        <span class="leading-none mr-[0.5px]">+</span>
+                        <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="leading-none" x-text="portExtraTotal"></span>
+                      </div>
+                    </template>
+                    <template x-if="portExtras === 0">
+                      <div class="flex items-start">
+                        <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="leading-none">0</span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+              <template x-if="portTargetUpgradeTier">
+                <div class="flex items-center justify-center gap-2 w-full select-none text-center">
+                  <svg class="w-4 h-4 shrink-0 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
+                  </svg>
+                  <span class="text-[15px] font-black tracking-tight leading-none text-black">
+                    <span x-text="portTargetUpgradeTier"></span> Upgrade – Same Price!
+                  </span>
+                </div>
+              </template>
             </div>
 
           </div>
