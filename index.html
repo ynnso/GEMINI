@@ -54,7 +54,7 @@
         activeTab: 'photos',
         activePrimary: 'photos',
         catList: ['photos','video','aerial','tour360','floor','addons'],
-        catTitle: { photos:'Photos', video:'Video', aerial:'Aerial', tour360:'360', floor:'Floor Plan', addons:'Add-Ons' },
+        catTitle: { photos:'Photos', video:'Video', aerial:'Aerial', tour360:'360 Tour', floor:'Floor Plan', addons:'Add-Ons' },
         catIconSvg: {
           photos: '<path d=\'M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574v9.176A2.25 2.25 0 004.5 21h15a2.25 2.25 0 002.25-2.25V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z\' stroke=\'currentColor\' stroke-width=\'1.5\' fill=\'none\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/><circle cx=\'12\' cy=\'13.5\' r=\'3\' stroke=\'currentColor\' stroke-width=\'1.5\' fill=\'none\'/>',
           video: '<path d=\'M16 10L18.5768 8.45392C19.3699 7.97803 19.7665 7.74009 20.0928 7.77051C20.3773 7.79703 20.6369 7.944 20.806 8.17433C21 8.43848 21 8.90095 21 9.8259V14.1741C21 15.099 21 15.5615 20.806 15.8257C20.6369 16.056 20.3773 16.203 20.0928 16.2295C19.7665 16.2599 19.3699 16.022 18.5768 15.5461L16 14M6.2 18H12.8C13.9201 18 14.4802 18 14.908 17.782C15.2843 17.5903 15.5903 17.2843 15.782 16.908C16 16.4802 16 15.9201 16 14.8V9.2C16 8.0799 16 7.51984 15.782 7.09202C15.5903 6.71569 15.2843 6.40973 14.908 6.21799C14.4802 6 13.9201 6 12.8 6H6.2C5.0799 6 4.51984 6 4.09202 6.21799C3.71569 6.40973 3.40973 6.71569 3.21799 7.09202C3 7.51984 3 8.07989 3 9.2V14.8C3 15.9201 3 16.4802 3.21799 16.908C3.40973 17.2843 3.71569 17.5903 4.09202 17.782C4.51984 18 5.07989 18 6.2 18Z\' stroke=\'currentColor\' stroke-width=\'1.5\' fill=\'none\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/>',
@@ -124,8 +124,11 @@
  { label: '2,000 – 2,999 Sq Ft', value: '2000-2999' },
  { label: '3,000 – 3,999 Sq Ft', value: '3000-3999' },
  { label: '4,000 – 4,999 Sq Ft', value: '4000-4999' },
- { label: '5,000 – 5,999 Sq Ft', value: '5000-5999' }
+ { label: '5,000 – 5,999 Sq Ft', value: '5000-5999' },
+ { label: '6,000+ Sq Ft', value: '6000' }
  ],
+ mpCustomSqft: 6666,
+ mpCustomRates: { MLS: { Standard: 0.06, Premium: 0.10 }, PORT: { Standard: 0.11, Premium: 0.15 } },
  zillowSqFtOptions: [
  { label: '0 – 1,999 Sq Ft', value: '0-1999' },
  { label: '2,000 – 2,999 Sq Ft', value: '2000-2999' },
@@ -141,6 +144,11 @@
  zillowSqFt: '',
  get mpRawTotal() {
  if (!this.mpSqFt) return 0;
+ if (this.mpSqFt === '6000') {
+ const s = parseInt(this.mpCustomSqft) || 0;
+ if (s < 6000) return 0;
+ return Math.round(s * this.mpCustomRates[this.mpPortSide][this.mpService] * 100) / 100;
+ }
  return this.matterportPrices[this.mpPortSide][this.mpSqFt][this.mpService];
  },
  get mpFinalTotal() {
@@ -1416,7 +1424,7 @@
           <div class="flex items-center gap-3">
             <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
                  :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2v18h3v-1H3v-6h3V9h5V8H6V3h15v5h-6v1h6v5h-4v1h4v6H11v-7h-1v5H8v1h2v2h12V2zm3 4H3V5h2zm-2 6v-1h2v1zm2-2H3V9h2zM3 8V7h2v1zm2-4H3V3h2z"/></svg>
             </div>
             <div class="flex flex-col justify-center">
               <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
@@ -1502,9 +1510,23 @@
           <button @click="addConfiguredItemToCart(floorPortSide + ' Floor Plan: ' + floorPlanType, floorSqFtOptions.find(o => o.value === floorSqFt).label, floorRawTotal, 'floorplan')"
                   :disabled="!floorSqFt || state !== 'idle'"
                   :class="[!floorSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
-                  class="h-12 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 shadow-md font-bold">
-            <template x-if="state !== 'success'"><span>Add to Cart</span></template>
-            <template x-if="state === 'success'"><span>Added ✓</span></template>
+                  class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+            <template x-if="state !== 'success'">
+                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                  </svg>
+                </template>
+                <template x-if="state === 'success'">
+                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                  </svg>
+                </template>
           </button>
         </div>
 
@@ -1582,6 +1604,16 @@
         </div>
 
         <div :class="!mpSqFt && 'opacity-30 pointer-events-none select-none'" class="flex flex-col gap-4">
+          <template x-if="mpSqFt === '6000'">
+            <div class="flex items-center justify-between gap-2 px-1">
+              <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Sq Ft</span>
+              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 100)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
+                <input type="number" x-model.number="mpCustomSqft" min="6000" class="w-20 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums" :class="isDark ? 'text-white' : 'text-neutral-900'" />
+                <button @click="mpCustomSqft = mpCustomSqft + 100" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
+              </div>
+            </div>
+          </template>
           <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
             <button @click="mpService = 'Standard'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Standard' ? 'bg-[#E50914] text-white font-black' : 'text-[#8E8E93] hover:text-white'">Standard</button>
             <button @click="mpService = 'Premium'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Premium' ? 'bg-[#E50914] text-white font-black' : 'text-[#8E8E93] hover:text-white'">Premium</button>
@@ -1590,9 +1622,23 @@
           <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, mpSqFtOptions.find(o => o.value === mpSqFt).label, mpRawTotal, 'tour360')"
                   :disabled="!mpSqFt || state !== 'idle'"
                   :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
-                  class="h-12 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 shadow-md font-bold">
-            <template x-if="state !== 'success'"><span>Add to Cart</span></template>
-            <template x-if="state === 'success'"><span>Added ✓</span></template>
+                  class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+            <template x-if="state !== 'success'">
+                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                  </svg>
+                </template>
+                <template x-if="state === 'success'">
+                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                  </svg>
+                </template>
           </button>
         </div>
 
@@ -1672,9 +1718,23 @@
         <button @click="addConfiguredItemToCart('Zillow 3D Tour', zillowSqFtOptions.find(o => o.value === zillowSqFt).label, zillowRawTotal, 'tour360')"
                 :disabled="!zillowSqFt || state !== 'idle'"
                 :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
-                class="h-12 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 shadow-md font-bold">
-          <template x-if="state !== 'success'"><span>Add to Cart</span></template>
-          <template x-if="state === 'success'"><span>Added ✓</span></template>
+                class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+          <template x-if="state !== 'success'">
+                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                  </svg>
+                </template>
+                <template x-if="state === 'success'">
+                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                  </svg>
+                </template>
         </button>
 
       </div>
