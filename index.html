@@ -57,6 +57,9 @@
         catTitle: { photos:'Photos', video:'Video', aerial:'Aerial', tour360:'360', floor:'Floor Plan', addons:'Add-Ons' },
         catIcon: { photos:'M6.8 6.2A2.3 2.3 0 015.2 7.2c-.4.1-.8.1-1.1.2C3 7.6 2.3 8.5 2.3 9.6v9.2A2.3 2.3 0 004.5 21h15a2.3 2.3 0 002.3-2.3V9.6c0-1.1-.8-2-1.8-2.2-.4-.1-.8-.1-1.1-.2a2.3 2.3 0 01-1.6-1.1l-.8-1.3a2.2 2.2 0 00-1.7-1 48.8 48.8 0 00-5.2 0 2.2 2.2 0 00-1.7 1z', video:'M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z', aerial:'M6 12L3.3 3.1A59.8 59.8 0 0121.5 12 59.8 59.8 0 013.3 20.9L6 12zm0 0h7.5', tour360:'M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9', floor:'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6z', addons:'M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z' },
         makeHero(key) { this.activePrimary = key; },
+ videoCategory: 'MLS',
+ videoPortSector: 'BCD',
+ aerialCategory: 'MLS',
         photoCategory: 'MLS',
         
         state: 'idle',
@@ -692,7 +695,47 @@
       </section>
 
       <!-- PLACEHOLDER HERO SECTIONS -->
-      <template x-for="key in catList.filter(k => k !== 'photos')" :key="key">
+      <!-- VIDEO SECTION -->
+      <section x-show="activePrimary === 'video'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+               :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" :d="catIcon['video']" /></svg>
+          <span>Video</span>
+        </div>
+        <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
+          <button @click="videoCategory = 'MLS'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="videoCategory === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">MLS</button>
+          <button @click="videoCategory = 'PORT'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="videoCategory === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">PORT</button>
+        </div>
+        <template x-if="videoCategory === 'PORT'">
+          <div class="flex gap-1.5">
+            <button @click="videoPortSector = 'BCD'" class="flex-1 py-1.5 text-[10px] font-bold text-center rounded-lg border transition-all cursor-pointer" :class="videoPortSector === 'BCD' ? (isDark ? 'bg-white text-black border-white' : 'bg-neutral-900 text-white border-neutral-900') : (isDark ? 'text-[#8E8E93] border-[#262626]' : 'text-neutral-500 border-neutral-200')">BCD</button>
+            <button @click="videoPortSector = 'CR'" class="flex-1 py-1.5 text-[10px] font-bold text-center rounded-lg border transition-all cursor-pointer" :class="videoPortSector === 'CR' ? (isDark ? 'bg-white text-black border-white' : 'bg-neutral-900 text-white border-neutral-900') : (isDark ? 'text-[#8E8E93] border-[#262626]' : 'text-neutral-500 border-neutral-200')">CR</button>
+            <button @click="videoPortSector = 'AMF'" class="flex-1 py-1.5 text-[10px] font-bold text-center rounded-lg border transition-all cursor-pointer" :class="videoPortSector === 'AMF' ? (isDark ? 'bg-white text-black border-white' : 'bg-neutral-900 text-white border-neutral-900') : (isDark ? 'text-[#8E8E93] border-[#262626]' : 'text-neutral-500 border-neutral-200')">AMF</button>
+          </div>
+        </template>
+        <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl" :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
+          <span x-text="videoCategory === 'MLS' ? 'MLS Video packages' : 'PORT ' + videoPortSector + ' Video packages'"></span> coming soon.
+        </div>
+      </section>
+
+      <!-- AERIAL SECTION -->
+      <section x-show="activePrimary === 'aerial'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+               :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" :d="catIcon['aerial']" /></svg>
+          <span>Aerial</span>
+        </div>
+        <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
+          <button @click="aerialCategory = 'MLS'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="aerialCategory === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">MLS</button>
+          <button @click="aerialCategory = 'PORT'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="aerialCategory === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">PORT</button>
+        </div>
+        <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl" :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
+          <span x-text="aerialCategory"></span> Aerial packages coming soon.
+        </div>
+      </section>
+
+      <!-- REMAINING PLACEHOLDERS -->
+      <template x-for="key in catList.filter(k => !['photos','video','aerial'].includes(k))" :key="key">
         <section x-show="activePrimary === key" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
                  :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
           <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
