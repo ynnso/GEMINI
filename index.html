@@ -1411,7 +1411,7 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-10 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
@@ -1428,7 +1428,7 @@
             </div>
             <div class="flex flex-col justify-center">
               <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
-                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="floorPortSide + ' Floor Plan'"></span>
+                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="floorPortSide"></span>
               <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Floor Plan</h1>
             </div>
           </div>
@@ -1474,10 +1474,10 @@
           <div x-show="dropdownOpen" x-cloak
                x-transition:enter="transition ease-out duration-150 transform" x-transition:enter-start="opacity-0 scale-95 -translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                x-transition:leave="transition ease-in duration-100 transform" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl overflow-hidden transition-colors duration-300"
-               :class="isDark ? 'bg-neutral-900/98 border-white/20 text-white shadow-black/90' : 'bg-white/98 border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
+               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-56 overflow-y-auto">
+            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
               <template x-for="opt in floorSqFtOptions" :key="opt.value">
                 <button type="button" @click="floorSqFt = opt.value; dropdownOpen = false"
                         class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
@@ -1492,42 +1492,67 @@
 
         <div :class="!floorSqFt && 'opacity-30 pointer-events-none select-none'" class="flex flex-col gap-4">
           <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
-            <button @click="floorPlanType = '2D'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorPlanType === '2D' ? 'bg-[#E50914] text-white font-black' : 'text-[#8E8E93] hover:text-white'">2D</button>
-            <button @click="floorPlanType = '3D'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorPlanType === '3D' ? 'bg-[#E50914] text-white font-black' : 'text-[#8E8E93] hover:text-white'">3D</button>
+            <button @click="floorPlanType = '2D'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorPlanType === '2D' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">2D</button>
+            <button @click="floorPlanType = '3D'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorPlanType === '3D' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">3D</button>
           </div>
+
+          <template x-if="floorPlanType === '2D'">
+            <button @click="addConfiguredItemToCart(floorPortSide + ' Floor Plan: ' + floorPlanType, floorSqFtOptions.find(o => o.value === floorSqFt).label, floorRawTotal, 'floorplan')"
+                    :disabled="!floorSqFt || state !== 'idle'"
+                    :class="[!floorSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
+                    class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+              <template x-if="state !== 'success'">
+                <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                  <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                  <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                  <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                </svg>
+              </template>
+              <template x-if="state === 'success'">
+                <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                  <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                  <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                  <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                </svg>
+              </template>
+            </button>
+          </template>
 
           <template x-if="floorPlanType === '3D'">
             <div class="flex items-center justify-between gap-2 px-1">
               <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'"># of Floors</span>
-              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-                <button @click="floorNumFloors = Math.max(1, floorNumFloors - 1)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
-                <span class="w-10 text-center text-[16px] font-black" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="floorNumFloors"></span>
-                <button @click="floorNumFloors = Math.min(5, floorNumFloors + 1)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                  <button @click="floorNumFloors = Math.max(1, floorNumFloors - 1)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
+                  <span class="w-10 text-center text-[16px] font-black" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="floorNumFloors"></span>
+                  <button @click="floorNumFloors = Math.min(5, floorNumFloors + 1)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
+                </div>
+                <button @click="addConfiguredItemToCart(floorPortSide + ' Floor Plan: ' + floorPlanType, floorSqFtOptions.find(o => o.value === floorSqFt).label, floorRawTotal, 'floorplan')"
+                        :disabled="!floorSqFt || state !== 'idle'"
+                        :class="[!floorSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
+                        class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                  <template x-if="state !== 'success'">
+                    <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                      <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                      <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                      <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                    </svg>
+                  </template>
+                  <template x-if="state === 'success'">
+                    <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                      <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                      <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                      <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                    </svg>
+                  </template>
+                </button>
               </div>
             </div>
           </template>
-
-          <button @click="addConfiguredItemToCart(floorPortSide + ' Floor Plan: ' + floorPlanType, floorSqFtOptions.find(o => o.value === floorSqFt).label, floorRawTotal, 'floorplan')"
-                  :disabled="!floorSqFt || state !== 'idle'"
-                  :class="[!floorSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
-                  class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
-            <template x-if="state !== 'success'">
-                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
-                  </svg>
-                </template>
-                <template x-if="state === 'success'">
-                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-                  </svg>
-                </template>
-          </button>
         </div>
 
       </div>
@@ -1558,7 +1583,7 @@
               <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
             </div>
             <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="mpPortSide + ' 360'"></span>
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="mpPortSide + ' 360 Tour'"></span>
               <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Matterport</h1>
             </div>
           </div>
@@ -1588,9 +1613,9 @@
           <div x-show="dropdownOpen" x-cloak
                x-transition:enter="transition ease-out duration-150 transform" x-transition:enter-start="opacity-0 scale-95 -translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                x-transition:leave="transition ease-in duration-100 transform" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900/98 border-white/20 text-white shadow-black/90' : 'bg-white/98 border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
+               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-56 overflow-y-auto">
+            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
               <template x-for="opt in mpSqFtOptions" :key="opt.value">
                 <button type="button" @click="mpSqFt = opt.value; dropdownOpen = false"
                         class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
@@ -1609,8 +1634,8 @@
               <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Sq Ft</span>
               <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
                 <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 100)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
-                <input type="number" x-model.number="mpCustomSqft" min="6000" class="w-20 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums" :class="isDark ? 'text-white' : 'text-neutral-900'" />
-                <button @click="mpCustomSqft = mpCustomSqft + 100" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
+                <input type="text" :value="mpCustomSqft.toLocaleString('en-US')" @input="mpCustomSqft = Math.min(99999, Math.max(0, parseInt($event.target.value.replace(/,/g,'')) || 0))" @blur="mpCustomSqft = Math.min(99999, Math.max(6000, mpCustomSqft))" class="w-24 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums" :class="isDark ? 'text-white' : 'text-neutral-900'" />
+                <button @click="mpCustomSqft = Math.min(99999, mpCustomSqft + 100)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
               </div>
             </div>
           </template>
@@ -1700,9 +1725,9 @@
           <div x-show="dropdownOpen" x-cloak
                x-transition:enter="transition ease-out duration-150 transform" x-transition:enter-start="opacity-0 scale-95 -translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
                x-transition:leave="transition ease-in duration-100 transform" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900/98 border-white/20 text-white shadow-black/90' : 'bg-white/98 border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
+               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-56 overflow-y-auto">
+            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
               <template x-for="opt in zillowSqFtOptions" :key="opt.value">
                 <button type="button" @click="zillowSqFt = opt.value; dropdownOpen = false"
                         class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
@@ -2024,15 +2049,15 @@
                x-transition:leave="transition ease-in duration-100 transform"
                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl backdrop-blur-2xl overflow-hidden transition-colors duration-300"
-               :class="isDark ? 'bg-neutral-900/98 border-white/20 text-white shadow-black/90' : 'bg-white/98 border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
+               class="absolute z-[100] left-0 right-0 mt-2 p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center"
                  :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">
               Select Sq Ft
             </div>
 
-            <div class="space-y-0.5 max-h-56 overflow-y-auto">
+            <div class="space-y-0.5 max-h-[35vh] overflow-y-auto">
               <template x-for="opt in sqFtOptions" :key="opt.value">
                 <button type="button"
                         @click="selectSqFt(opt.value)"
