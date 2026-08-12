@@ -69,6 +69,38 @@
  aerialCategory: 'MLS',
  aerialFilter: 'Combos',
  sectorLabel: { BCD: 'Builder | Contractor | Designer', CR: 'Commercial | Retail', AMF: 'Apartment | Multi-Family' },
+ portBrand: 'BCD',
+ portBases: { BCD: 149, CR: 199, AMF: 249 },
+ portQty: 2,
+ portTierPrice(brandKey, q) {
+ if (!brandKey || q <= 0) return 0;
+ let base = this.portBases[brandKey];
+ if (q <= 2) return base;
+ if (q <= 9) return base + ((q - 2) * 20);
+ if (q === 10) return base + 150;
+ let decade = Math.floor((q - 1) / 10);
+ let decadeBase = base + 150 + ((decade - 1) * 100);
+ let unitPlace = q - (decade * 10);
+ let overageUnits = Math.min(unitPlace, 5);
+ return decadeBase + (overageUnits * 20);
+ },
+ get portRawTotal() { return this.portTierPrice(this.portBrand, this.portQty); },
+ get portFinalTotal() {
+ const amount = this.includeTax ? this.portRawTotal * (1 + this.taxRate) : this.portRawTotal;
+ return amount.toFixed(2);
+ },
+ get portPriceDollars() { return this.portFinalTotal.split('.')[0]; },
+ get portPriceCents() { return '.' + this.portFinalTotal.split('.')[1]; },
+ updatePortQty(dir) {
+ if (dir === 'up' && this.portQty < 50) this.portQty++;
+ if (dir === 'down' && this.portQty > 2) this.portQty--;
+ },
+ sanitizePortInput() {
+ let val = parseInt(this.portQty, 10);
+ if (isNaN(val) || val < 2) val = 2;
+ if (val > 50) val = 50;
+ this.portQty = val;
+ },
  tour360Category: 'MLS',
  floorCategory: 'MLS',
  addonsCategory: 'Sky',
@@ -699,7 +731,7 @@
           <template x-if="photoCategory === 'PORT'">
             <div class="flex flex-col gap-1.5">
               <template x-for="item in ['BCD','CR','AMF']" :key="item">
-                <button @click="alert(item + ' PORT Photos — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <button @click="portBrand = item; openSheet('port')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                   <span class="flex flex-col items-start"><span class="text-[15px] font-black" x-text="item"></span><span class="font-medium text-[12px]" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="sectorLabel[item]"></span></span>
                   <svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                 </button>
@@ -1268,6 +1300,129 @@
     </template>
 
     <!-- FULL SHOOT BOTTOM SHEET -->
+    <template x-if="activeSheet === 'port'">
+      <div x-show="activeSheet === 'port'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+
+        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+             @pointerdown="dragStart($event)">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
+               :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
+        </div>
+
+        <div class="flex items-end justify-between gap-2 pb-1">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
+                 :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
+              </svg>
+            </div>
+            <div class="flex flex-col justify-center">
+              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
+                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">PORT Photos</span>
+              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="portBrand"></h1>
+            </div>
+          </div>
+
+          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+            <button @click="includeTax = !includeTax"
+                    title="Toggle Sales Tax"
+                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                    :class="[
+                      includeTax 
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                        : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
+                    ]">
+                TAX
+              </span>
+            </button>
+
+            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span>
+              <span x-text="portPriceDollars" class="leading-none"></span>
+              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="portPriceCents"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="rounded-2xl border divide-y tabular-nums overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
+            
+            <div class="px-4 py-3 h-[52px] flex items-center justify-between">
+              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="portBrand + ' — ' + sectorLabel[portBrand]"></span>
+              <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="portRawTotal"></span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex items-center justify-between gap-2 px-1">
+            <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
+                   :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                <button @click="updatePortQty('down')" :disabled="portQty <= 2"
+                        :class="portQty <= 2 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
+                
+                <input type="number" 
+                       x-model.number="portQty"
+                       @change="sanitizePortInput()"
+                       @blur="sanitizePortInput()"
+                       min="2"
+                       max="50"
+                       class="w-10 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums"
+                       :class="isDark ? 'text-white' : 'text-neutral-900'" />
+                
+                <button @click="updatePortQty('up')" :disabled="portQty >= 50"
+                        :class="portQty >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
+              </div>
+
+              <button @click="addConfiguredItemToCart('PORT Photos: ' + portBrand, portQty + ' imgs', portRawTotal, 'camera')" 
+                      :disabled="state !== 'idle'"
+                      :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
+                      class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                <template x-if="state !== 'success'">
+                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                  </svg>
+                </template>
+                <template x-if="state === 'success'">
+                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                  </svg>
+                </template>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </template>
+
     <template x-if="activeSheet === 'full'">
       <div x-show="activeSheet === 'full'"
            x-cloak
