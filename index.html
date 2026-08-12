@@ -191,14 +191,30 @@
  get videoPriceCents() { return this.videoSelected ? '.' + this.videoFinalTotal.split('.')[1] : ''; },
  addonSelected: '',
  addonQty: 10,
+ addonHours: 1,
  addonBasePrices: {
  'Rain Blue Sky': 0, 'Blue Sky': 29, 'Sunset Sky': 29, 'Sky + Grass Bundle': 59,
- 'Green Grass': 29, 'Aerial Green Grass': 59, 'Aerial/Ground Grass Bundle': 69
+ 'Green Grass': 29, 'Aerial Green Grass': 59, 'Aerial/Ground Grass Bundle': 69,
+ 'YouTube': 29, 'Social Media Teaser': 39, 'Trueview': 29,
+ 'Weekend Fee': 29, 'Inclement Weather Return': 39, 'Cancellation Fee': 49,
+ 'Next Day Rush': 49, 'Same Day Rush': 79, 'Sunrise Time Slot': 79,
+ 'Twilight Time Slot': 79, 'Night Time Slot': 109, 'TV Screen/Monitor': 29,
+ 'Home Measurement': 29, 'Keepsake Photo Album': 79, '2 MLS Market Add-On': 25,
+ '5 MLS Market Add-On': 50, '10 MLS Market Add-On': 100,
+ 'ColorPop': 39, 'Digital Twilight': 29, 'Virtual Staging': 60
  },
  addonHasStepper(item) {
- return ['Blue Sky', 'Sunset Sky', 'Green Grass', 'Aerial Green Grass'].includes(item);
+ return ['Blue Sky', 'Sunset Sky', 'Green Grass', 'Aerial Green Grass', 'ColorPop', 'Digital Twilight', 'Virtual Staging'].includes(item);
  },
- addonStepperMin(item) { return item === 'Aerial Green Grass' ? 5 : 10; },
+ addonIsHourly(item) {
+ return ['MLS Extended/Hr', 'PORT Extended/Hr', 'Processing/Hr'].includes(item);
+ },
+ addonStepperMin(item) {
+ if (item === 'Aerial Green Grass') return 5;
+ if (item === 'ColorPop' || item === 'Digital Twilight') return 1;
+ if (item === 'Virtual Staging') return 1;
+ return 10;
+ },
  get addonRawTotal() {
  if (!this.addonSelected) return 0;
  if (this.addonSelected === 'Blue Sky' || this.addonSelected === 'Sunset Sky' || this.addonSelected === 'Green Grass') {
@@ -207,6 +223,16 @@
  if (this.addonSelected === 'Aerial Green Grass') {
  return 59 + (Math.max(0, this.addonQty - 5) * 10);
  }
+ if (this.addonSelected === 'Virtual Staging') {
+ const q = Math.max(1, this.addonQty);
+ return q >= 4 ? q * 55 : q * 60;
+ }
+ if (this.addonSelected === 'ColorPop' || this.addonSelected === 'Digital Twilight') {
+ const base = this.addonSelected === 'ColorPop' ? 39 : 29;
+ return base + (Math.max(0, this.addonQty - 1) * 15);
+ }
+ if (this.addonSelected === 'MLS Extended/Hr') return (parseFloat(this.addonHours) || 0) * 50;
+ if (this.addonSelected === 'PORT Extended/Hr' || this.addonSelected === 'Processing/Hr') return (parseFloat(this.addonHours) || 0) * 100;
  return this.addonBasePrices[this.addonSelected] || 0;
  },
  get addonExtras() { return this.addonHasStepper(this.addonSelected) ? Math.max(0, this.addonQty - this.addonStepperMin(this.addonSelected)) : 0; },
@@ -217,6 +243,7 @@
  if (dir === 'down' && this.addonQty > min) this.addonQty--;
  },
  get addonFinalTotal() {
+ if (this.addonSelected === 'Cancellation Fee') return this.addonRawTotal.toFixed(2);
  const amount = this.includeTax ? this.addonRawTotal * (1 + this.taxRate) : this.addonRawTotal;
  return amount.toFixed(2);
  },
@@ -1061,17 +1088,17 @@
           </template>
           <template x-if="addonsCategory === 'Digital'">
             <template x-for="item in ['ColorPop','Digital Twilight','Home Measurement','Social Media Teaser','YouTube','Trueview','TV Screen/Monitor','Virtual Staging']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="addonSelected = item; addonQty = addonStepperMin(item); addonHours = 1; openSheet('addon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="addonsCategory === 'Time'">
             <template x-for="item in ['Inclement Weather Return','Cancellation Fee','Sunrise Time Slot','Twilight Time Slot','Night Time Slot','Weekend Fee','Next Day Rush','Same Day Rush','MLS Extended/Hr','PORT Extended/Hr','Processing/Hr']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="addonSelected = item; addonQty = addonStepperMin(item); addonHours = 1; openSheet('addon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="addonsCategory === 'Market'">
             <template x-for="item in ['Keepsake Photo Album','2 MLS Market Add-On','5 MLS Market Add-On','10 MLS Market Add-On']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="addonSelected = item; addonQty = addonStepperMin(item); addonHours = 1; openSheet('addon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
         </div>
@@ -1930,7 +1957,7 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           :class="[addonHasStepper(addonSelected) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300']"
+           :class="[(addonHasStepper(addonSelected) || addonIsHourly(addonSelected)) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300']"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-10 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
@@ -2016,7 +2043,34 @@
           </div>
         </template>
 
-        <template x-if="!addonHasStepper(addonSelected)">
+        <template x-if="addonIsHourly(addonSelected)">
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center justify-between gap-2 px-1">
+              <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Hours</span>
+              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+                <button @click="addonHours = Math.max(0.5, addonHours - 0.5)" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
+                <span class="w-10 text-center text-[16px] font-black" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="addonHours"></span>
+                <button @click="addonHours = addonHours + 0.5" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
+              </div>
+            </div>
+            <button @click="addConfiguredItemToCart('Add-On: ' + addonSelected, addonHours + ' hrs', addonRawTotal, 'addon')" :disabled="state !== 'idle'"
+                    :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
+                    class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+              <template x-if="state !== 'success'">
+                <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" /><circle cx="9" cy="19.5" r="1.5" fill="currentColor" /><circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" /><path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+                </svg>
+              </template>
+              <template x-if="state === 'success'">
+                <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" /><circle cx="9" cy="19.5" r="1.5" fill="currentColor" /><circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" /><path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+                </svg>
+              </template>
+            </button>
+          </div>
+        </template>
+
+        <template x-if="!addonHasStepper(addonSelected) && !addonIsHourly(addonSelected)">
           <button @click="addConfiguredItemToCart('Add-On: ' + addonSelected, '', addonRawTotal, 'addon')" :disabled="!addonSelected || state !== 'idle'"
                   :class="[!addonSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
                   class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
