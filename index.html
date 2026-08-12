@@ -688,9 +688,13 @@
 
           <!-- PORT OPTIONS -->
           <template x-if="photoCategory === 'PORT'">
-            <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl"
-                 :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
-              Portfolio photography packages coming soon.
+            <div class="flex flex-col gap-2.5">
+              <template x-for="item in ['BCD','CR','AMF']" :key="item">
+                <button @click="alert(item + ' PORT Photos — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                  <span class="text-[15px] font-black" x-text="item"></span>
+                  <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                </button>
+              </template>
             </div>
           </template>
 
@@ -717,8 +721,27 @@
           </div>
         </template>
         <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl" :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
-          <span x-text="videoCategory === 'MLS' ? 'MLS Video packages' : 'PORT ' + videoPortSector + ' Video packages'"></span> coming soon.
         </div>
+        <template x-if="videoCategory === 'MLS'">
+          <div class="flex flex-col gap-2.5">
+            <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
+              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black" x-text="item"></span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+              </button>
+            </template>
+          </div>
+        </template>
+        <template x-if="videoCategory === 'PORT'">
+          <div class="flex flex-col gap-2.5">
+            <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
+              <button @click="alert(item + ' — ' + videoPortSector + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <span class="text-[15px] font-black" x-text="item"></span>
+                <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+              </button>
+            </template>
+          </div>
+        </template>
       </section>
 
       <!-- AERIAL SECTION -->
@@ -733,7 +756,14 @@
           <button @click="aerialCategory = 'PORT'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="aerialCategory === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">PORT</button>
         </div>
         <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl" :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
-          <span x-text="aerialCategory"></span> Aerial packages coming soon.
+        </div>
+        <div class="flex flex-col gap-2.5">
+          <template x-for="item in ['Aerial Mini 2 Images','Aerial Standard 5 Images','Aerial Curb Appeal Video 30 sec','Aerial Video 2 min','Mini + Curb Appeal Vid 30 sec','Standard + Curb Appeal Vid 30 sec','Mini + Aerial Video 2 min','Standard + Aerial Video 2 min']" :key="item">
+            <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+              <span class="text-[13px] font-black" x-text="item"></span>
+              <svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            </button>
+          </template>
         </div>
       </section>
 
@@ -750,7 +780,20 @@
           <button @click="tour360Category = 'PORT'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="tour360Category === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">PORT</button>
         </div>
         <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl" :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
-          <span x-text="tour360Category"></span> packages coming soon.
+        </div>
+        <div class="flex flex-col gap-2.5">
+          <template x-if="tour360Category !== 'Zillow'">
+            <button @click="alert('Matterport — ' + tour360Category + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+              <span class="text-[15px] font-black">Matterport</span>
+              <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            </button>
+          </template>
+          <template x-if="tour360Category === 'Zillow'">
+            <button @click="alert('Zillow 3D Tour — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+              <span class="text-[15px] font-black">Zillow 3D Tour</span>
+              <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            </button>
+          </template>
         </div>
       </section>
 
@@ -766,7 +809,12 @@
           <button @click="floorCategory = 'PORT'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorCategory === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">PORT</button>
         </div>
         <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl" :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
-          <span x-text="floorCategory"></span> Floor Plan coming soon.
+        </div>
+        <div class="flex flex-col gap-2.5">
+          <button @click="alert('Floor Plan — ' + floorCategory + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+            <span class="text-[15px] font-black">Floor Plan</span>
+            <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+          </button>
         </div>
       </section>
 
@@ -783,8 +831,34 @@
           </template>
         </div>
         <div class="p-6 text-center text-xs text-[#8E8E93] font-semibold border border-dashed rounded-2xl" :class="isDark ? 'border-[#262626]' : 'border-neutral-300'">
-          <span x-text="addonsCategory"></span> add-ons coming soon.
         </div>
+        <div class="flex flex-col gap-2.5">
+          <template x-if="addonsCategory === 'Sky'">
+            <template x-for="item in ['Rain Blue Sky','Blue Sky','Sunset Sky','Sky + Grass Bundle']" :key="item">
+              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+            </template>
+          </template>
+          <template x-if="addonsCategory === 'Grass'">
+            <template x-for="item in ['Green Grass','Aerial Green Grass','Aerial/Ground Grass Bundle']" :key="item">
+              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+            </template>
+          </template>
+          <template x-if="addonsCategory === 'Digital'">
+            <template x-for="item in ['ColorPop','Digital Twilight','Home Measurement','Social Media Teaser','YouTube','Trueview','TV Screen/Monitor','Virtual Staging']" :key="item">
+              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+            </template>
+          </template>
+          <template x-if="addonsCategory === 'Time'">
+            <template x-for="item in ['Inclement Weather Return','Cancellation Fee','Sunrise Time Slot','Twilight Time Slot','Night Time Slot','Weekend Fee','Next Day Rush','Same Day Rush','MLS Extended/Hr','PORT Extended/Hr','Processing/Hr']" :key="item">
+              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+            </template>
+          </template>
+          <template x-if="addonsCategory === 'Market'">
+            <template x-for="item in ['Keepsake Photo Album','2 MLS Market Add-On','5 MLS Market Add-On','10 MLS Market Add-On']" :key="item">
+              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+            </template>
+          </template>
+        </div
       </section>
 
       <!-- SECONDARY GRID -->
