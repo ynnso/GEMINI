@@ -84,19 +84,22 @@
  let overageUnits = Math.min(unitPlace, 5);
  return decadeBase + (overageUnits * 20);
  },
- portSelectedBase: 2,
- get portEffectiveTier() {
- return { imgs: this.portSelectedBase, price: this.portTierPrice(this.portBrand, this.portSelectedBase) };
+ get portCheckpoint() {
+ const q = this.portQty;
+ if (q >= 30) return 30;
+ if (q >= 20) return 20;
+ if (q >= 10) return 10;
+ return 2;
  },
  get portTargetUpgradeTier() {
- const q = this.portQty, base = this.portSelectedBase;
- if (base === 10 && q >= 15 && q <= 19) return 20;
- if (base === 20 && q >= 25 && q <= 29) return 30;
+ const q = this.portQty, cp = this.portCheckpoint;
+ if (cp === 10 && q >= 15 && q <= 19) return 20;
+ if (cp === 20 && q >= 25 && q <= 29) return 30;
  return null;
  },
- get portExtras() { return Math.max(0, this.portQty - this.portEffectiveTier.imgs); },
- get portExtraTotal() { return this.portTierPrice(this.portBrand, this.portQty) - this.portEffectiveTier.price; },
- selectPortTier(c) { this.portSelectedBase = c; this.portQty = c; },
+ get portExtras() { return Math.max(0, this.portQty - this.portCheckpoint); },
+ get portExtraTotal() { return this.portTierPrice(this.portBrand, this.portQty) - this.portTierPrice(this.portBrand, this.portCheckpoint); },
+ selectPortTier(c) { this.portQty = c; },
  get portRawTotal() { return this.portTierPrice(this.portBrand, this.portQty); },
  get portFinalTotal() {
  const amount = this.includeTax ? this.portRawTotal * (1 + this.taxRate) : this.portRawTotal;
@@ -1377,9 +1380,9 @@
               <button @click="selectPortTier(tImg)"
                       :class="[
                         portTargetUpgradeTier === tImg ? 'bg-emerald-400 text-black font-black ring-2 ring-black' : '',
-                        !portTargetUpgradeTier && portEffectiveTier.imgs === tImg ? (isDark ? 'bg-white text-black font-extrabold shadow-lg border-white' : 'bg-neutral-900 text-white font-extrabold shadow-md border-neutral-900') : '',
+                        !portTargetUpgradeTier && portCheckpoint === tImg ? (isDark ? 'bg-white text-black font-extrabold shadow-lg border-white' : 'bg-neutral-900 text-white font-extrabold shadow-md border-neutral-900') : '',
                         portTargetUpgradeTier && portTargetUpgradeTier !== tImg ? 'opacity-20 border-transparent bg-transparent' : '',
-                        !portTargetUpgradeTier && portEffectiveTier.imgs !== tImg ? (isDark ? 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20' : 'bg-neutral-200/50 text-neutral-600 border-neutral-300 hover:border-neutral-400') : ''
+                        !portTargetUpgradeTier && portCheckpoint !== tImg ? (isDark ? 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20' : 'bg-neutral-200/50 text-neutral-600 border-neutral-300 hover:border-neutral-400') : ''
                       ]"
                       class="py-3 px-1.5 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
                 <span class="text-[16px] font-bold leading-tight" x-text="tImg"></span>
@@ -1393,20 +1396,12 @@
 
           <div class="rounded-2xl border divide-y tabular-nums overflow-hidden transition-colors duration-300"
                :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
-            
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between">
-              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="'Base ' + portEffectiveTier.imgs + ' Photos'"></span>
-              <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-                <span class="leading-none" x-text="portEffectiveTier.price"></span>
-              </div>
-            </div>
 
             <div @click="portTargetUpgradeTier && selectPortTier(portTargetUpgradeTier)"
-                 class="px-4 py-3 h-[52px] flex items-center justify-center transition-all duration-300"
+                 class="px-4 py-3 h-[52px] flex items-center justify-center transition-all duration-300 rounded-2xl"
                  :class="[
                    portTargetUpgradeTier 
-                     ? 'bg-emerald-400 text-black rounded-b-2xl cursor-pointer hover:opacity-95 active:scale-[0.99]'
+                     ? 'bg-emerald-400 text-black cursor-pointer hover:opacity-95 active:scale-[0.99]'
                      : (portExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold'))
                  ]">
               <template x-if="!portTargetUpgradeTier">
