@@ -595,7 +595,7 @@
     <main class="p-4 flex-1 flex flex-col gap-4">
 
       <!-- PHOTOS SECTION -->
-      <section x-show="activePrimary === 'photos'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+      <section x-show="activePrimary === 'photos'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
         
         <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
@@ -633,9 +633,9 @@
           
           <!-- MLS OPTIONS -->
           <template x-if="photoCategory === 'MLS'">
-            <div class="flex flex-col gap-2.5">
+            <div class="flex flex-col gap-1.5">
               <button @click="openSheet('full')"
-                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
                       :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black">Full Shoot</span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -644,7 +644,7 @@
               </button>
 
               <button @click="openSheet('reshoot')"
-                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
                       :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black">Reshoot</span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -653,7 +653,7 @@
               </button>
 
               <button @click="openSheet('ranch')"
-                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
                       :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black">Ranch Shoot</span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -662,7 +662,7 @@
               </button>
 
               <button @click="openSheet('exterior')"
-                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
                       :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black">Exterior Only</span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -671,7 +671,7 @@
               </button>
 
               <button @click="openSheet('mini')"
-                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
                       :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black">Mini Shoot</span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -683,9 +683,9 @@
 
           <!-- AIRBNB OPTIONS -->
           <template x-if="photoCategory === 'Airbnb'">
-            <div class="flex flex-col gap-2.5">
+            <div class="flex flex-col gap-1.5">
               <button @click="openSheet('airbnb')"
-                      class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
+                      class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer"
                       :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black">Airbnb</span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -697,9 +697,9 @@
 
           <!-- PORT OPTIONS -->
           <template x-if="photoCategory === 'PORT'">
-            <div class="flex flex-col gap-2.5">
+            <div class="flex flex-col gap-1.5">
               <template x-for="item in ['BCD','CR','AMF']" :key="item">
-                <button @click="alert(item + ' PORT Photos — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+                <button @click="alert(item + ' PORT Photos — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                   <span class="flex flex-col items-start"><span class="text-[15px] font-black" x-text="item"></span><span class="font-medium text-[12px]" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="sectorLabel[item]"></span></span>
                   <svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                 </button>
@@ -712,7 +712,7 @@
 
       <!-- PLACEHOLDER HERO SECTIONS -->
       <!-- VIDEO SECTION -->
-      <section x-show="activePrimary === 'video'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+      <section x-show="activePrimary === 'video'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
         <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['video']"></svg>
@@ -730,9 +730,9 @@
           </div>
         </template>
         <template x-if="videoCategory === 'MLS'">
-          <div class="flex flex-col gap-2.5">
+          <div class="flex flex-col gap-1.5">
             <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="text-[15px] font-black" x-text="item"></span>
                 <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
               </button>
@@ -740,9 +740,9 @@
           </div>
         </template>
         <template x-if="videoCategory === 'PORT'">
-          <div class="flex flex-col gap-2.5">
+          <div class="flex flex-col gap-1.5">
             <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
-              <button @click="alert(item + ' — ' + videoPortSector + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+              <button @click="alert(item + ' — ' + videoPortSector + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
                 <span class="flex flex-col items-start"><span class="text-[15px] font-black" x-text="item"></span><span class="font-medium text-[12px]" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="sectorLabel[videoPortSector]"></span></span>
                 <svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
               </button>
@@ -752,7 +752,7 @@
       </section>
 
       <!-- AERIAL SECTION -->
-      <section x-show="activePrimary === 'aerial'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+      <section x-show="activePrimary === 'aerial'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
         <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['aerial']"></svg>
@@ -767,27 +767,27 @@
           <button @click="aerialFilter = 'Video'" class="flex-1 py-1.5 text-[10px] font-bold text-center rounded-lg border transition-all cursor-pointer" :class="aerialFilter === 'Video' ? (isDark ? 'bg-white text-black border-white' : 'bg-neutral-900 text-white border-neutral-900') : (isDark ? 'text-[#8E8E93] border-[#262626]' : 'text-neutral-500 border-neutral-200')">Video Only</button>
           <button @click="aerialFilter = 'Combos'" class="flex-1 py-1.5 text-[10px] font-bold text-center rounded-lg border transition-all cursor-pointer" :class="aerialFilter === 'Combos' ? (isDark ? 'bg-white text-black border-white' : 'bg-neutral-900 text-white border-neutral-900') : (isDark ? 'text-[#8E8E93] border-[#262626]' : 'text-neutral-500 border-neutral-200')">Combos</button>
         </div>
-        <div class="flex flex-col gap-2.5">
+        <div class="flex flex-col gap-1.5">
           <template x-if="aerialFilter === 'Images'">
             <template x-for="item in ['Aerial Mini 2 Images','Aerial Standard 5 Images']" :key="item">
-              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="aerialFilter === 'Video'">
             <template x-for="item in ['Aerial Curb Appeal Video 30 sec','Aerial Video 2 min']" :key="item">
-              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="aerialFilter === 'Combos'">
             <template x-for="item in ['Mini + Curb Appeal Vid 30 sec','Standard + Curb Appeal Vid 30 sec','Mini + Aerial Video 2 min','Standard + Aerial Video 2 min']" :key="item">
-              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — ' + aerialCategory + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
         </div>
       </section>
 
       <!-- 360 SECTION -->
-      <section x-show="activePrimary === 'tour360'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+      <section x-show="activePrimary === 'tour360'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
         <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['tour360']"></svg>
@@ -798,15 +798,15 @@
           <button @click="tour360Category = 'Zillow'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="tour360Category === 'Zillow' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">Zillow 3D</button>
           <button @click="tour360Category = 'PORT'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="tour360Category === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">PORT</button>
         </div>
-        <div class="flex flex-col gap-2.5">
+        <div class="flex flex-col gap-1.5">
           <template x-if="tour360Category !== 'Zillow'">
-            <button @click="alert('Matterport — ' + tour360Category + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+            <button @click="alert('Matterport — ' + tour360Category + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
               <span class="text-[15px] font-black">Matterport</span>
               <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
             </button>
           </template>
           <template x-if="tour360Category === 'Zillow'">
-            <button @click="alert('Zillow 3D Tour — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+            <button @click="alert('Zillow 3D Tour — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
               <span class="text-[15px] font-black">Zillow 3D Tour</span>
               <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
             </button>
@@ -815,7 +815,7 @@
       </section>
 
       <!-- FLOOR PLAN SECTION -->
-      <section x-show="activePrimary === 'floor'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+      <section x-show="activePrimary === 'floor'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
         <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['floor']"></svg>
@@ -825,8 +825,8 @@
           <button @click="floorCategory = 'MLS'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorCategory === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">MLS</button>
           <button @click="floorCategory = 'PORT'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorCategory === 'PORT' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">PORT</button>
         </div>
-        <div class="flex flex-col gap-2.5">
-          <button @click="alert('Floor Plan — ' + floorCategory + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
+        <div class="flex flex-col gap-1.5">
+          <button @click="alert('Floor Plan — ' + floorCategory + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'">
             <span class="text-[15px] font-black">Floor Plan</span>
             <svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
           </button>
@@ -834,7 +834,7 @@
       </section>
 
       <!-- ADD-ONS SECTION -->
-      <section x-show="activePrimary === 'addons'" x-cloak class="rounded-3xl p-4 flex flex-col gap-3.5 border transition-colors duration-300"
+      <section x-show="activePrimary === 'addons'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
         <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['addons']"></svg>
@@ -845,30 +845,30 @@
             <button @click="addonsCategory = opt" class="flex-1 py-2 px-2 text-[11px] font-bold text-center rounded-xl transition-all cursor-pointer whitespace-nowrap" :class="addonsCategory === opt ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'" x-text="opt"></button>
           </template>
         </div>
-        <div class="flex flex-col gap-2.5">
+        <div class="flex flex-col gap-1.5">
           <template x-if="addonsCategory === 'Sky'">
             <template x-for="item in ['Rain Blue Sky','Blue Sky','Sunset Sky','Sky + Grass Bundle']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="addonsCategory === 'Grass'">
             <template x-for="item in ['Green Grass','Aerial Green Grass','Aerial/Ground Grass Bundle']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="addonsCategory === 'Digital'">
             <template x-for="item in ['ColorPop','Digital Twilight','Home Measurement','Social Media Teaser','YouTube','Trueview','TV Screen/Monitor','Virtual Staging']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="addonsCategory === 'Time'">
             <template x-for="item in ['Inclement Weather Return','Cancellation Fee','Sunrise Time Slot','Twilight Time Slot','Night Time Slot','Weekend Fee','Next Day Rush','Same Day Rush','MLS Extended/Hr','PORT Extended/Hr','Processing/Hr']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[13px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
           <template x-if="addonsCategory === 'Market'">
             <template x-for="item in ['Keepsake Photo Album','2 MLS Market Add-On','5 MLS Market Add-On','10 MLS Market Add-On']" :key="item">
-              <button @click="alert(item + ' — sheet coming soon')" class="p-4 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
+              <button @click="alert(item + ' — sheet coming soon')" class="py-2.5 px-3.5 rounded-2xl flex items-center justify-between text-left border transition-all active:scale-[0.98] cursor-pointer" :class="isDark ? 'bg-black border-[#262626] text-white active:border-white' : 'bg-neutral-50 border-neutral-200 text-neutral-900 active:border-neutral-900'"><span class="text-[14px] font-black" x-text="item"></span><svg class="w-5 h-5 text-[#8E8E93]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></button>
             </template>
           </template>
         </div>
