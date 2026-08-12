@@ -271,7 +271,7 @@
  const top = Math.max(16, vh - minAvail - 16);
  this.dropdownRect = { top, left: r.left, width: r.width, maxHeight: minAvail };
  } else {
- this.dropdownRect = { top: desiredTop, left: r.left, width: r.width, maxHeight: Math.min(maxAvail, 320) };
+ this.dropdownRect = { top: desiredTop, left: r.left, width: r.width, maxHeight: maxAvail };
  }
  this.dropdownOpen = true;
  },
@@ -1609,23 +1609,18 @@
             </div>
           </div>
 
-          <div class="flex flex-col items-end gap-0.5">
-            <div class="flex items-baseline gap-1.5 select-none tabular-nums">
-              <button @click="includeTax = !includeTax" :disabled="!mpSqFt" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
-                <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
-                      :class="includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')">
-                  TAX
-                </span>
-              </button>
-              <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
-                <template x-if="mpSqFt"><span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span></template>
-                <span x-text="mpPriceDollars" class="leading-none"></span>
-                <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="mpPriceCents"></span>
-              </div>
+          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+            <button @click="includeTax = !includeTax" :disabled="!mpSqFt" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+              <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider uppercase transition-all duration-300 backdrop-blur-md border leading-tight"
+                    :class="includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')">
+                TAX
+              </span>
+            </button>
+            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <template x-if="mpSqFt"><span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span></template>
+              <span x-text="mpPriceDollars" class="leading-none"></span>
+              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="mpPriceCents"></span>
             </div>
-            <template x-if="mpSqFt === '6000'">
-              <span class="text-[11px] font-semibold" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'" x-text="'$' + mpCustomRates[mpPortSide][mpService].toFixed(2) + ' / Sq Ft'"></span>
-            </template>
           </div>
         </div>
 
@@ -1661,7 +1656,7 @@
         <div :class="!mpSqFt && 'opacity-30 pointer-events-none select-none'" class="flex flex-col gap-4">
           <template x-if="mpSqFt === '6000'">
             <div class="flex items-center justify-between gap-2 px-1">
-              <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Sq Ft</span>
+              <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + mpCustomRates[mpPortSide][mpService].toFixed(2) + ' / Sq Ft'"></span>
               <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="[!mpCustomSqftInput ? (isDark ? 'animate-pulse-dark' : 'animate-pulse-light') : '', isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm']">
                 <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
                 <input type="text" x-model="mpCustomSqftInput" x-init="$nextTick(() => mpSqFt === '6000' && $el.focus())" @input="mpCustomSqftInput = $event.target.value.replace(/[^0-9]/g,'').slice(0,5)" @blur="mpCustomSqft = Math.min(99999, Math.max(6000, parseInt(mpCustomSqftInput) || 6000)); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" placeholder="6,000" class="w-24 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums" :class="isDark ? 'text-white placeholder-white/40' : 'text-neutral-900 placeholder-neutral-400'" />
