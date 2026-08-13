@@ -934,7 +934,7 @@
                   :style="isDark ? 'box-shadow: 9px 9px 18px #000000, -8px -8px 17px #262626;' : 'box-shadow: 9px 9px 18px #d1d1d1, -9px -9px 18px #ffffff;'">
             <div class="w-[94px] h-[94px] rounded-[22px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-                 :style="isDark ? 'box-shadow: inset 6px 6px 12px #000000, inset -5px -5px 11px #262626;' : 'box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;'">
+                 :style="isDark ? 'box-shadow: inset 7px 7px 14px #000000, inset -6px -6px 13px #2a2a2a;' : 'box-shadow: inset 6px 6px 12px #c2c2c2, inset -6px -6px 12px #ffffff;'">
               <svg class="w-14 h-14" :class="isDark ? 'text-white' : 'text-[#E50914]'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
             </div>
             <span class="text-[19px] font-black" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="catTitle[key]"></span>
@@ -1411,31 +1411,31 @@
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
             <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Full Shoot</span>
-            <span class="flex items-center gap-2"><span class="text-[15px] font-bold text-[#E50914]">from $139</span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">from $139</span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
           </button>
           <button @click="openSheet('reshoot')" class="flex items-center justify-between px-4 py-4 rounded-2xl transition-all active:scale-[0.98] cursor-pointer"
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
             <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Reshoot</span>
-            <span class="flex items-center gap-2"><span class="text-[15px] font-bold text-[#E50914]" x-text="'$' + reshootBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + reshootBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
           </button>
           <button @click="openSheet('ranch')" class="flex items-center justify-between px-4 py-4 rounded-2xl transition-all active:scale-[0.98] cursor-pointer"
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
             <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Ranch Shoot</span>
-            <span class="flex items-center gap-2"><span class="text-[15px] font-bold text-[#E50914]">from $299</span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">from $299</span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
           </button>
           <button @click="openSheet('exterior')" class="flex items-center justify-between px-4 py-4 rounded-2xl transition-all active:scale-[0.98] cursor-pointer"
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
             <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Exterior Only</span>
-            <span class="flex items-center gap-2"><span class="text-[15px] font-bold text-[#E50914]" x-text="'$' + exteriorBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + exteriorBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
           </button>
           <button @click="openSheet('mini')" class="flex items-center justify-between px-4 py-4 rounded-2xl transition-all active:scale-[0.98] cursor-pointer"
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
             <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Mini Shoot</span>
-            <span class="flex items-center gap-2"><span class="text-[15px] font-bold text-[#E50914]" x-text="'$' + miniBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + miniBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
           </button>
         </div>
 
@@ -1444,7 +1444,7 @@
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
             <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Airbnb / Lease</span>
-            <span class="flex items-center gap-2"><span class="text-[15px] font-bold text-[#E50914]" x-text="'from $' + airbnbBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'from $' + airbnbBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
           </button>
         </div>
 
@@ -1454,7 +1454,7 @@
                     :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                     :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
               <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="brand"></span>
-              <span class="flex items-center gap-2"><span class="text-[15px] font-bold text-[#E50914]" x-text="'from $' + portTierPrice(brand, 2)"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+              <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'from $' + portTierPrice(brand, 2)"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
             </button>
           </template>
         </div>
