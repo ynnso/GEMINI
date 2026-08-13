@@ -931,10 +931,10 @@
           <button @click="makeHero(key); openSheet(key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorplan' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon')))))"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-                  :style="isDark ? 'box-shadow: 9px 9px 18px #000000, -8px -8px 17px #262626;' : 'box-shadow: 9px 9px 18px #d1d1d1, -9px -9px 18px #ffffff;'">
-            <div class="w-[94px] h-[94px] rounded-[22px] flex items-center justify-center"
+                  :style="isDark ? 'box-shadow: 9px 9px 18px #060606, -9px -9px 18px #141414;' : 'box-shadow: 9px 9px 18px #d1d1d1, -9px -9px 18px #ffffff;'">
+            <div class="w-[94px] h-[94px] rounded-[24px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-                 :style="isDark ? 'box-shadow: inset 7px 7px 14px #000000, inset -6px -6px 13px #2a2a2a;' : 'box-shadow: inset 6px 6px 12px #c2c2c2, inset -6px -6px 12px #ffffff;'">
+                 :style="isDark ? 'box-shadow: inset 6px 6px 12px #000000, inset -5px -5px 11px #262626;' : 'box-shadow: inset 4px 4px 8px #d1d1d1, inset -4px -4px 8px #ffffff;'">
               <svg class="w-14 h-14" :class="isDark ? 'text-white' : 'text-[#E50914]'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
             </div>
             <span class="text-[19px] font-black" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="catTitle[key]"></span>
