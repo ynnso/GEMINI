@@ -1444,7 +1444,7 @@
                   :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
             <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Airbnb / Lease</span>
-            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'from $' + airbnbBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+            <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + airbnbBasePrice"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
           </button>
         </div>
 
@@ -1454,7 +1454,7 @@
                     :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
                     :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
               <span class="text-[17px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="brand"></span>
-              <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'from $' + portTierPrice(brand, 2)"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
+              <span class="flex items-center gap-2"><span class="text-[15px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + portTierPrice(brand, 2)"></span><span :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">›</span></span>
             </button>
           </template>
         </div>
