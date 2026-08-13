@@ -2712,11 +2712,11 @@
                       :disabled="!holdsSelection"
                       :class="[
                         targetUpgradeTier === tImg ? 'bg-emerald-400 text-black font-black ring-2 ring-black' : '',
-                        !targetUpgradeTier && effectiveTier.imgs === tImg && holdsSelection ? (isDark ? 'bg-[#0d0d0d] text-white font-extrabold' : 'bg-neutral-100 text-neutral-900 font-extrabold') : '',
+                        !targetUpgradeTier && effectiveTier.imgs === tImg && holdsSelection ? (isDark ? 'bg-white text-black font-extrabold' : 'bg-black text-white font-extrabold') : '',
                         targetUpgradeTier && targetUpgradeTier !== tImg ? 'opacity-20 bg-transparent' : '',
                         !targetUpgradeTier && effectiveTier.imgs !== tImg ? (isDark ? 'bg-[#0d0d0d] text-neutral-400' : 'bg-neutral-100 text-neutral-600') : ''
                       ]"
-                      :style="!targetUpgradeTier ? (effectiveTier.imgs === tImg && holdsSelection ? (isDark ? 'box-shadow: inset 5px 5px 10px #000000, inset -4px -4px 9px #262626;' : 'box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;') : (isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;')) : ''"
+                      :style="!targetUpgradeTier && !(effectiveTier.imgs === tImg && holdsSelection) ? (isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;') : ''"
                       class="py-3 px-1.5 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
                 <span class="text-[24px] font-bold leading-tight" x-text="tImg"></span>
                 <div class="flex items-start justify-center mt-1 leading-none">
@@ -2813,17 +2813,17 @@
                 :class="[
                   !holdsSelection 
                     ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#0d0d0d] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-100 text-neutral-500') 
-                    : (state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-[#0d0d0d] text-white' : 'bg-neutral-100 text-neutral-900'))
+                    : (state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black' : 'bg-black text-white'))
                 ]"
                 :style="holdsSelection && state !== 'success' ? (isDark ? 'box-shadow: 8px 8px 16px #000000, -7px -7px 15px #262626;' : 'box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;') : ''"
                 class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] mt-1">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-white' : 'text-neutral-900')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-white' : 'text-neutral-900')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
