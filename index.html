@@ -1813,35 +1813,36 @@
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-end justify-between gap-2 pb-1">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
-            </div>
-            <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="mpPortSide + ' 360 Tour'"></span>
-              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Matterport</h1>
-            </div>
+        <div class="flex items-center gap-3 pb-1 justify-center">
+          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+            <svg class="w-14 h-14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
           </div>
+          <div class="flex flex-col justify-center text-left">
+            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="mpPortSide + ' 360 Tour'"></span>
+            <h1 class="text-[46px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Matterport</h1>
+          </div>
+        </div>
 
-          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
-            <button @click="includeTax = !includeTax" :disabled="!mpSqFt" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+          <div class="flex items-baseline">
+            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+              <template x-if="mpSqFt"><span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span></template>
+              <span x-text="mpPriceDollars" class="leading-none"></span>
+              <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="mpPriceCents"></span>
+            </div>
+
+            <button @click="includeTax = !includeTax" :disabled="!mpSqFt" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')">
                 Tax
               </span>
             </button>
-            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <template x-if="mpSqFt"><span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span></template>
-              <span x-text="mpPriceDollars" class="leading-none"></span>
-              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="mpPriceCents"></span>
-            </div>
           </div>
         </div>
 
         <div class="relative py-1">
           <button type="button" @click="toggleDropdown($event)"
-                  class="w-full h-12 px-4 rounded-2xl text-[17px] font-bold border flex items-center justify-between transition-all duration-200 focus:outline-none shadow-sm cursor-pointer"
+                  class="w-full h-12 px-4 rounded-2xl text-[25px] font-bold border flex items-center justify-between transition-all duration-200 focus:outline-none shadow-sm cursor-pointer"
                   :class="!mpSqFt ? (isDark ? 'animate-pulse-dark bg-neutral-900 text-white border-white/30' : 'animate-pulse-light bg-white text-red-600 border-red-500/80') : (isDark ? 'bg-neutral-900/90 text-white border-white/20 hover:border-white/40' : 'bg-white text-neutral-900 border-neutral-300 hover:border-neutral-400')">
             <span class="w-full text-center" x-text="mpSqFt ? mpSqFtOptions.find(o => o.value === mpSqFt).label : 'Select Sq Ft'"></span>
             <svg class="w-4 h-4 shrink-0 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180' : 'rotate-0'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
@@ -1855,10 +1856,10 @@
                :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; max-height:${dropdownRect.maxHeight}px; z-index:200;`"
                class="p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-full overflow-y-auto">
+            <div class="space-y-0 max-h-full overflow-y-auto">
               <template x-for="opt in mpSqFtOptions" :key="opt.value">
                 <button type="button" @click="mpSqFt = opt.value; dropdownOpen = false"
-                        class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
+                        class="w-full px-3 py-1 rounded-xl text-[22px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
                         :class="mpSqFt === opt.value ? (isDark ? 'bg-white/10 text-white font-extrabold' : 'bg-neutral-100 text-black font-extrabold') : (isDark ? 'hover:bg-white/5 text-neutral-300 hover:text-white' : 'hover:bg-neutral-50 text-neutral-700 hover:text-black')">
                   <span class="w-full text-center" x-text="opt.label"></span>
                   <template x-if="mpSqFt === opt.value"><svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></template>
@@ -1871,11 +1872,11 @@
         <div :class="!mpSqFt && 'opacity-30 pointer-events-none select-none'" class="flex flex-col gap-4">
           <template x-if="mpSqFt === '6000'">
             <div class="flex items-center justify-between gap-2 px-1">
-              <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + mpCustomRates[mpPortSide][mpService].toFixed(2) + ' / Sq Ft'"></span>
-              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11" :class="[!mpCustomSqftInput ? (isDark ? 'animate-pulse-dark' : 'animate-pulse-light') : '', isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm']">
-                <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
-                <input type="text" x-model="mpCustomSqftInput" x-init="$nextTick(() => mpSqFt === '6000' && $el.focus())" @input="mpCustomSqftInput = $event.target.value.replace(/[^0-9]/g,'').slice(0,5)" @blur="mpCustomSqft = Math.min(99999, Math.max(6000, parseInt(mpCustomSqftInput) || 6000)); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" placeholder="6,000" class="w-24 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums" :class="isDark ? 'text-white placeholder-white/40' : 'text-neutral-900 placeholder-neutral-400'" />
-                <button @click="mpCustomSqft = Math.min(99999, mpCustomSqft + 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
+              <span class="text-[22px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + mpCustomRates[mpPortSide][mpService].toFixed(2) + ' / Sq Ft'"></span>
+              <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px]" :class="[!mpCustomSqftInput ? (isDark ? 'animate-pulse-dark' : 'animate-pulse-light') : '', isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm']">
+                <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
+                <input type="text" x-model="mpCustomSqftInput" x-init="$nextTick(() => mpSqFt === '6000' && $el.focus())" @input="mpCustomSqftInput = $event.target.value.replace(/[^0-9]/g,'').slice(0,5)" @blur="mpCustomSqft = Math.min(99999, Math.max(6000, parseInt(mpCustomSqftInput) || 6000)); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" placeholder="6,000" class="w-24 h-11 bg-transparent text-center text-[24px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" :class="isDark ? 'placeholder-white/40' : 'placeholder-neutral-400'" />
+                <button @click="mpCustomSqft = Math.min(99999, mpCustomSqft + 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
               </div>
             </div>
           </template>
@@ -1886,24 +1887,30 @@
 
           <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, mpSqFtOptions.find(o => o.value === mpSqFt).label, mpRawTotal, 'tour360')"
                   :disabled="!mpSqFt || state !== 'idle'"
-                  :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
-                  class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                  :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'))]"
+                  class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
             <template x-if="state !== 'success'">
-                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
-                  </svg>
-                </template>
-                <template x-if="state === 'success'">
-                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-                  </svg>
-                </template>
+              <span class="flex items-center -space-x-3">
+                <svg class="w-10 h-10" :class="!mpSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="w-14 h-14" :class="!mpSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
+                  <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
+                  <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </template>
+            <template x-if="state === 'success'">
+              <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+                <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+                <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+                <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+              </svg>
+            </template>
           </button>
         </div>
 
@@ -1929,35 +1936,36 @@
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-end justify-between gap-2 pb-1">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
-            </div>
-            <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">360</span>
-              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Zillow 3D Tour</h1>
-            </div>
+        <div class="flex items-center gap-3 pb-1 justify-center">
+          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+            <svg class="w-14 h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
           </div>
+          <div class="flex flex-col justify-center text-left">
+            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">360</span>
+            <h1 class="text-[38px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Zillow 3D Tour</h1>
+          </div>
+        </div>
 
-          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
-            <button @click="includeTax = !includeTax" :disabled="!zillowSqFt" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+          <div class="flex items-baseline">
+            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+              <template x-if="zillowSqFt"><span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span></template>
+              <span x-text="zillowPriceDollars" class="leading-none"></span>
+              <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="zillowPriceCents"></span>
+            </div>
+
+            <button @click="includeTax = !includeTax" :disabled="!zillowSqFt" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')">
                 Tax
               </span>
             </button>
-            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <template x-if="zillowSqFt"><span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span></template>
-              <span x-text="zillowPriceDollars" class="leading-none"></span>
-              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="zillowPriceCents"></span>
-            </div>
           </div>
         </div>
 
         <div class="relative py-1">
           <button type="button" @click="toggleDropdown($event)"
-                  class="w-full h-12 px-4 rounded-2xl text-[17px] font-bold border flex items-center justify-between transition-all duration-200 focus:outline-none shadow-sm cursor-pointer"
+                  class="w-full h-12 px-4 rounded-2xl text-[25px] font-bold border flex items-center justify-between transition-all duration-200 focus:outline-none shadow-sm cursor-pointer"
                   :class="!zillowSqFt ? (isDark ? 'animate-pulse-dark bg-neutral-900 text-white border-white/30' : 'animate-pulse-light bg-white text-red-600 border-red-500/80') : (isDark ? 'bg-neutral-900/90 text-white border-white/20 hover:border-white/40' : 'bg-white text-neutral-900 border-neutral-300 hover:border-neutral-400')">
             <span class="w-full text-center" x-text="zillowSqFt ? zillowSqFtOptions.find(o => o.value === zillowSqFt).label : 'Select Sq Ft'"></span>
             <svg class="w-4 h-4 shrink-0 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180' : 'rotate-0'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
@@ -1971,10 +1979,10 @@
                :style="`position:fixed; top:${dropdownRect.top}px; left:${dropdownRect.left}px; width:${dropdownRect.width}px; max-height:${dropdownRect.maxHeight}px; z-index:200;`"
                class="p-1.5 rounded-2xl border shadow-2xl overflow-hidden transition-colors duration-300" :class="isDark ? 'bg-neutral-900 border-white/20 text-white shadow-black/90' : 'bg-white border-neutral-300 text-neutral-900 shadow-neutral-400/50'">
             <div class="px-3 pt-2 pb-1 text-[11px] font-black uppercase tracking-widest text-center" :class="isDark ? 'text-neutral-500' : 'text-neutral-400'">Select Sq Ft</div>
-            <div class="space-y-0.5 max-h-full overflow-y-auto">
+            <div class="space-y-0 max-h-full overflow-y-auto">
               <template x-for="opt in zillowSqFtOptions" :key="opt.value">
                 <button type="button" @click="zillowSqFt = opt.value; dropdownOpen = false"
-                        class="w-full px-3 py-2.5 rounded-xl text-[15px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
+                        class="w-full px-3 py-1 rounded-xl text-[22px] font-bold flex items-center justify-between transition-colors duration-150 cursor-pointer"
                         :class="zillowSqFt === opt.value ? (isDark ? 'bg-white/10 text-white font-extrabold' : 'bg-neutral-100 text-black font-extrabold') : (isDark ? 'hover:bg-white/5 text-neutral-300 hover:text-white' : 'hover:bg-neutral-50 text-neutral-700 hover:text-black')">
                   <span class="w-full text-center" x-text="opt.label"></span>
                   <template x-if="zillowSqFt === opt.value"><svg class="w-4 h-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></template>
@@ -1986,24 +1994,30 @@
 
         <button @click="addConfiguredItemToCart('Zillow 3D Tour', zillowSqFtOptions.find(o => o.value === zillowSqFt).label, zillowRawTotal, 'tour360')"
                 :disabled="!zillowSqFt || state !== 'idle'"
-                :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer'))]"
-                class="h-12 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
+                :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'))]"
+                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
           <template x-if="state !== 'success'">
-                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
-                  </svg>
-                </template>
-                <template x-if="state === 'success'">
-                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-                  </svg>
-                </template>
+            <span class="flex items-center -space-x-3">
+              <svg class="w-10 h-10" :class="!zillowSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg class="w-14 h-14" :class="!zillowSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
+                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
+                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </template>
+          <template x-if="state === 'success'">
+            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+              <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+            </svg>
+          </template>
         </button>
 
       </div>
