@@ -1872,17 +1872,17 @@
         <div :class="!mpSqFt && 'opacity-30 pointer-events-none select-none'" class="flex flex-col gap-4">
           <template x-if="mpSqFt === '6000'">
             <div class="flex items-center justify-between gap-2 px-1">
-              <span class="text-[22px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + mpCustomRates[mpPortSide][mpService].toFixed(2) + ' / Sq Ft'"></span>
-              <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px]" :class="[!mpCustomSqftInput ? (isDark ? 'animate-pulse-dark' : 'animate-pulse-light') : '', isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm']">
+              <span class="text-[19px] font-bold whitespace-nowrap shrink-0" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + mpCustomRates[mpPortSide][mpService].toFixed(2) + ' / Sq Ft'"></span>
+              <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px] shrink-0" :class="[!mpCustomSqftInput ? (isDark ? 'animate-pulse-dark' : 'animate-pulse-light') : '', isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm']">
                 <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
                 <input type="text" x-model="mpCustomSqftInput" x-init="$nextTick(() => mpSqFt === '6000' && $el.focus())" @input="mpCustomSqftInput = $event.target.value.replace(/[^0-9]/g,'').slice(0,5)" @blur="mpCustomSqft = Math.min(99999, Math.max(6000, parseInt(mpCustomSqftInput) || 6000)); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" placeholder="6,000" class="w-24 h-11 bg-transparent text-center text-[24px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" :class="isDark ? 'placeholder-white/40' : 'placeholder-neutral-400'" />
                 <button @click="mpCustomSqft = Math.min(99999, mpCustomSqft + 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
               </div>
             </div>
           </template>
-          <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
-            <button @click="mpService = 'Standard'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Standard' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">Standard</button>
-            <button @click="mpService = 'Premium'" class="flex-1 py-2 text-[13px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Premium' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">Premium</button>
+          <div class="flex border rounded-2xl p-1.5 gap-1.5 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
+            <button @click="mpService = 'Standard'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Standard' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">Standard</button>
+            <button @click="mpService = 'Premium'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Premium' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">Premium</button>
           </div>
 
           <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, mpSqFtOptions.find(o => o.value === mpSqFt).label, mpRawTotal, 'tour360')"
