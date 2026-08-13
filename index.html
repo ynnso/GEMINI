@@ -2744,11 +2744,11 @@
 
           <div class="flex items-center justify-between gap-2 px-1">
             <span class="text-[24px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
-            <div class="flex items-center rounded-2xl border p-1 transition-colors h-[52px]"
+            <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px] w-[168px]"
                  :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
               <button @click="updateCount('down')" :disabled="!holdsSelection || count <= 25"
                       :class="!holdsSelection || count <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                      class="w-9 h-9 rounded-xl font-bold text-xl flex items-center justify-center transition-all active:scale-90">-</button>
+                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
               
               <input type="number" 
                      x-model.number="count"
@@ -2757,12 +2757,11 @@
                      :disabled="!holdsSelection"
                      min="25"
                      max="150"
-                     class="w-10 h-9 bg-transparent text-center text-[22px] font-black focus:outline-none tabular-nums"
-                     :class="isDark ? 'text-white' : 'text-neutral-900'" />
+                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" />
               
               <button @click="updateCount('up')" :disabled="!holdsSelection || count >= 150"
                       :class="!holdsSelection || count >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                      class="w-9 h-9 rounded-xl font-bold text-xl flex items-center justify-center transition-all active:scale-90">+</button>
+                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
         </div>
