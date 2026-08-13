@@ -2363,25 +2363,31 @@
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-end justify-between gap-2 pb-1">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
-                 :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
-              </svg>
-            </div>
-            <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
-                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">PORT Photos</span>
-              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="portBrand"></h1>
-            </div>
+        <div class="flex items-center gap-3 pb-1 justify-center">
+          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
+               :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+            <svg class="w-14 h-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" />
+            </svg>
           </div>
+          <div class="flex flex-col justify-center text-left">
+            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
+                  :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">PORT Photos</span>
+            <h1 class="text-[46px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="portBrand"></h1>
+          </div>
+        </div>
 
-          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+          <div class="flex items-baseline">
+            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+              <span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span>
+              <span x-text="portPriceDollars" class="leading-none"></span>
+              <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="portPriceCents"></span>
+            </div>
+
             <button @click="includeTax = !includeTax"
                     title="Toggle Sales Tax"
-                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="[
                       includeTax 
@@ -2391,12 +2397,6 @@
                 Tax
               </span>
             </button>
-
-            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span>
-              <span x-text="portPriceDollars" class="leading-none"></span>
-              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="portPriceCents"></span>
-            </div>
           </div>
         </div>
 
@@ -2411,10 +2411,10 @@
                         !portTargetUpgradeTier && portCheckpoint !== tImg ? (isDark ? 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20' : 'bg-neutral-200/50 text-neutral-600 border-neutral-300 hover:border-neutral-400') : ''
                       ]"
                       class="py-3 px-1.5 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
-                <span class="text-[16px] font-bold leading-tight" x-text="tImg"></span>
+                <span class="text-[24px] font-bold leading-tight" x-text="tImg"></span>
                 <div class="flex items-start justify-center mt-1 leading-none">
-                  <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-                  <span class="text-[14px] font-extrabold leading-none" x-text="portTierPrice(portBrand, tImg)"></span>
+                  <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <span class="text-[21px] font-extrabold leading-none" x-text="portTierPrice(portBrand, tImg)"></span>
                 </div>
               </button>
             </template>
@@ -2430,10 +2430,10 @@
                         !portTargetUpgradeTier && portCheckpoint !== tImg ? (isDark ? 'bg-neutral-900/60 text-neutral-400 border-white/10 hover:border-white/20' : 'bg-neutral-200/50 text-neutral-600 border-neutral-300 hover:border-neutral-400') : ''
                       ]"
                       class="py-3 px-1.5 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
-                <span class="text-[16px] font-bold leading-tight" x-text="tImg"></span>
+                <span class="text-[24px] font-bold leading-tight" x-text="tImg"></span>
                 <div class="flex items-start justify-center mt-1 leading-none">
-                  <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-                  <span class="text-[14px] font-extrabold leading-none" x-text="portTierPrice(portBrand, tImg)"></span>
+                  <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <span class="text-[21px] font-extrabold leading-none" x-text="portTierPrice(portBrand, tImg)"></span>
                 </div>
               </button>
             </template>
@@ -2451,21 +2451,21 @@
                  ]">
               <template x-if="!portTargetUpgradeTier">
                 <div class="flex items-center justify-between w-full">
-                  <div class="text-[15px] transition-colors flex items-start">
-                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <div class="text-[22px] transition-colors flex items-start">
+                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="portExtras > 0 ? '20 / Extra × ' + portExtras : '20 / Extra'"></span>
                   </div>
-                  <div class="flex items-center text-[15px] font-bold transition-colors">
+                  <div class="flex items-center text-[22px] font-bold transition-colors">
                     <template x-if="portExtras > 0">
-                      <div class="flex items-start">
+                      <div class="flex items-start text-[#E50914]">
                         <span class="leading-none mr-[0.5px]">+</span>
-                        <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none" x-text="portExtraTotal"></span>
                       </div>
                     </template>
                     <template x-if="portExtras === 0">
                       <div class="flex items-start">
-                        <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none">0</span>
                       </div>
                     </template>
@@ -2477,7 +2477,7 @@
                   <svg class="w-4 h-4 shrink-0 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
                   </svg>
-                  <span class="text-[15px] font-black tracking-tight leading-none text-black">
+                  <span class="text-[22px] font-black tracking-tight leading-none text-black">
                     <span x-text="portTargetUpgradeTier"></span> Upgrade – Same Price!
                   </span>
                 </div>
@@ -2487,52 +2487,55 @@
           </div>
 
           <div class="flex items-center justify-between gap-2 px-1">
-            <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
-            <div class="flex items-center gap-2 shrink-0">
-              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
-                   :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-                <button @click="updatePortQty('down')" :disabled="portQty <= 2"
-                        :class="portQty <= 2 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
-                
-                <input type="number" 
-                       x-model.number="portQty"
-                       @change="sanitizePortInput()"
-                       @blur="sanitizePortInput()"
-                       min="2"
-                       max="50"
-                       class="w-10 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums"
-                       :class="isDark ? 'text-white' : 'text-neutral-900'" />
-                
-                <button @click="updatePortQty('up')" :disabled="portQty >= 50"
-                        :class="portQty >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
-              </div>
-
-              <button @click="addConfiguredItemToCart('PORT Photos: ' + portBrand, portQty + ' imgs', portRawTotal, 'camera')" 
-                      :disabled="state !== 'idle'"
-                      :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
-                      class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
-                <template x-if="state !== 'success'">
-                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
-                  </svg>
-                </template>
-                <template x-if="state === 'success'">
-                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-                  </svg>
-                </template>
-              </button>
+            <span class="text-[24px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
+            <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px] w-[168px]"
+                 :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+              <button @click="updatePortQty('down')" :disabled="portQty <= 2"
+                      :class="portQty <= 2 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
+              
+              <input type="number" 
+                     x-model.number="portQty"
+                     @change="sanitizePortInput()"
+                     @blur="sanitizePortInput()"
+                     min="2"
+                     max="50"
+                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" />
+              
+              <button @click="updatePortQty('up')" :disabled="portQty >= 50"
+                      :class="portQty >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
         </div>
+
+        <button @click="addConfiguredItemToCart('PORT Photos: ' + portBrand, portQty + ' imgs', portRawTotal, 'camera')" 
+                :disabled="state !== 'idle'"
+                :class="state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800')"
+                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
+          <template x-if="state !== 'success'">
+            <span class="flex items-center -space-x-3">
+              <svg class="w-10 h-10" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
+                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
+                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </template>
+          <template x-if="state === 'success'">
+            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+              <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+            </svg>
+          </template>
+        </button>
 
       </div>
     </template>
@@ -3116,25 +3119,31 @@
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-end justify-between gap-2 pb-1">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
-                 :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-              <svg class="w-6 h-6 text-white" viewBox="0 0 640 640" fill="currentColor">
-                <path d="M320.5 437.1C295.3 405.4 280.4 377.7 275.5 353.9C253 265.9 388.1 265.9 365.6 353.9C360.2 378.1 345.3 405.9 320.6 437.1L320.5 437.1zM458.7 510.3C416.6 528.6 375 499.4 339.4 459.8C443.3 329.7 385.5 259.8 320.6 259.8C265.7 259.8 235.4 306.3 247.3 360.3C254.2 389.5 272.5 422.7 301.7 459.8C269.2 495.8 241.2 512.5 216.5 514.7C166.5 522.1 127.4 473.6 145.2 423.6C160.3 384.4 256.9 192.4 261.1 182C276.9 151.9 286.7 124.6 320.5 124.6C352.8 124.6 363.9 150.5 380.9 184.5C416.9 255.1 470.3 362 495.7 423.6C508.9 456.7 494.3 494.9 458.7 510.2zM505.7 374.2C376.8 99.9 369.7 96 320.6 96C275.1 96 255.7 127.7 235.9 168.8C129.7 381.1 119.5 411.2 118.6 413.8C93.4 483.1 145.3 544 208.2 544C229.9 544 268.8 537.9 320.6 481.6C379.3 545.4 421.9 544 433 544C495.9 544.1 547.9 483.1 522.6 413.8C522.6 409.9 505.8 374.9 505.8 374.2L505.8 374.2z"/>
-              </svg>
-            </div>
-            <div class="flex flex-col justify-center">
-              <span class="text-[13px] font-extrabold leading-none tracking-tight capitalize mb-1"
-                    :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">Airbnb Photos</span>
-              <h1 class="text-[28px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Airbnb / Lease</h1>
-            </div>
+        <div class="flex items-center gap-3 pb-1 justify-center">
+          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
+               :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
+            <svg class="w-14 h-14 text-white" viewBox="0 0 640 640" fill="currentColor">
+              <path d="M320.5 437.1C295.3 405.4 280.4 377.7 275.5 353.9C253 265.9 388.1 265.9 365.6 353.9C360.2 378.1 345.3 405.9 320.6 437.1L320.5 437.1zM458.7 510.3C416.6 528.6 375 499.4 339.4 459.8C443.3 329.7 385.5 259.8 320.6 259.8C265.7 259.8 235.4 306.3 247.3 360.3C254.2 389.5 272.5 422.7 301.7 459.8C269.2 495.8 241.2 512.5 216.5 514.7C166.5 522.1 127.4 473.6 145.2 423.6C160.3 384.4 256.9 192.4 261.1 182C276.9 151.9 286.7 124.6 320.5 124.6C352.8 124.6 363.9 150.5 380.9 184.5C416.9 255.1 470.3 362 495.7 423.6C508.9 456.7 494.3 494.9 458.7 510.2zM505.7 374.2C376.8 99.9 369.7 96 320.6 96C275.1 96 255.7 127.7 235.9 168.8C129.7 381.1 119.5 411.2 118.6 413.8C93.4 483.1 145.3 544 208.2 544C229.9 544 268.8 537.9 320.6 481.6C379.3 545.4 421.9 544 433 544C495.9 544.1 547.9 483.1 522.6 413.8C522.6 409.9 505.8 374.9 505.8 374.2L505.8 374.2z"/>
+            </svg>
           </div>
+          <div class="flex flex-col justify-center text-left">
+            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
+                  :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">Airbnb Photos</span>
+            <h1 class="text-[38px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Airbnb / Lease</h1>
+          </div>
+        </div>
 
-          <div class="flex items-baseline gap-1.5 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+          <div class="flex items-baseline">
+            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+              <span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span>
+              <span x-text="airbnbPriceDollars" class="leading-none"></span>
+              <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="airbnbPriceCents"></span>
+            </div>
+
             <button @click="includeTax = !includeTax"
                     title="Toggle Sales Tax"
-                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[2px]">
+                    class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="[
                       includeTax 
@@ -3144,12 +3153,6 @@
                 Tax
               </span>
             </button>
-
-            <div class="text-[30px] font-black leading-none tracking-tighter flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <span class="text-[15px] font-black leading-none self-start pt-[2px] mr-[1px] opacity-90">$</span>
-              <span x-text="airbnbPriceDollars" class="leading-none"></span>
-              <span class="text-[15px] font-black leading-none opacity-90 self-baseline" x-text="airbnbPriceCents"></span>
-            </div>
           </div>
         </div>
 
@@ -3158,30 +3161,30 @@
                :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
             
             <div class="px-4 py-3 h-[52px] flex items-center justify-between">
-              <span class="text-[15px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 12 Photos</span>
-              <div class="flex items-start text-[15px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+              <span class="text-[22px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 12 Photos</span>
+              <div class="flex items-start text-[22px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
+                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="airbnbBasePrice"></span>
               </div>
             </div>
 
             <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
                  :class="airbnbExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
-              <div class="text-[15px] transition-colors flex items-start">
-                <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+              <div class="text-[22px] transition-colors flex items-start">
+                <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="airbnbExtras > 0 ? '12 / Extra × ' + airbnbExtras : '12 / Extra'"></span>
               </div>
-              <div class="flex items-center text-[15px] font-bold transition-colors">
+              <div class="flex items-center text-[22px] font-bold transition-colors">
                 <template x-if="airbnbExtras > 0">
-                  <div class="flex items-start">
+                  <div class="flex items-start text-[#E50914]">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="airbnbExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="airbnbExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[10px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -3191,62 +3194,55 @@
           </div>
 
           <div class="flex items-center justify-between gap-2 px-1">
-            <span class="text-[16px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
-            <div class="flex items-center gap-2 shrink-0">
-              <div class="flex items-center rounded-2xl border p-1 transition-colors h-11"
-                   :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
-                <button @click="updateAirbnbCount('down')" :disabled="airbnbCount <= 12"
-                        :class="airbnbCount <= 12 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">-</button>
-                
-                <input type="number" 
-                       x-model.number="airbnbCount"
-                       @change="sanitizeAirbnbInput()"
-                       @blur="sanitizeAirbnbInput()"
-                       min="12"
-                       max="50"
-                       class="w-10 h-8 bg-transparent text-center text-[16px] font-black focus:outline-none tabular-nums"
-                       :class="isDark ? 'text-white' : 'text-neutral-900'" />
-                
-                <button @click="updateAirbnbCount('up')" :disabled="airbnbCount >= 50"
-                        :class="airbnbCount >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                        class="w-8 h-8 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-90">+</button>
-              </div>
-
-              <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' imgs', airbnbRawTotal, 'home')" 
-                      :disabled="state !== 'idle'"
-                      :class="state === 'success' ? 'bg-emerald-400 text-black font-black cursor-pointer' : (isDark ? 'bg-white text-black hover:bg-neutral-200 cursor-pointer' : 'bg-black text-white hover:bg-neutral-800 cursor-pointer')"
-                      class="h-11 px-4 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-95 shadow-md">
-                <template x-if="state !== 'success'">
-                  <svg class="w-6 h-6" :class="isDark ? 'text-black' : 'text-white'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
-                  </svg>
-                </template>
-                <template x-if="state === 'success'">
-                  <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                    <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                    <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                    <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-                  </svg>
-                </template>
-              </button>
+            <span class="text-[24px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
+            <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px] w-[168px]"
+                 :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+              <button @click="updateAirbnbCount('down')" :disabled="airbnbCount <= 12"
+                      :class="airbnbCount <= 12 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
+              
+              <input type="number" 
+                     x-model.number="airbnbCount"
+                     @change="sanitizeAirbnbInput()"
+                     @blur="sanitizeAirbnbInput()"
+                     min="12"
+                     max="50"
+                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" />
+              
+              <button @click="updateAirbnbCount('up')" :disabled="airbnbCount >= 50"
+                      :class="airbnbCount >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
+                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
         </div>
 
-        <div class="flex items-center justify-between pt-2 pb-1">
-          <div class="relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[13px] font-bold border transition-all tracking-tight cursor-pointer"
-               :class="isDark ? 'text-neutral-400 bg-white/5 border-white/10 hover:border-white/30' : 'text-neutral-700 bg-neutral-200/60 border-neutral-300 hover:border-neutral-400 shadow-sm'">
-            <svg class="w-3.5 h-3.5" :class="isDark ? 'text-white' : 'text-neutral-900'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+        <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' imgs', airbnbRawTotal, 'home')" 
+                :disabled="state !== 'idle'"
+                :class="state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800')"
+                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
+          <template x-if="state !== 'success'">
+            <span class="flex items-center -space-x-3">
+              <svg class="w-10 h-10" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
+                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
+                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </template>
+          <template x-if="state === 'success'">
+            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+              <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
             </svg>
-            <span>Wizard</span>
-          </div>
-        </div>
+          </template>
+        </button>
 
       </div>
     </template>
