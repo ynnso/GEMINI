@@ -1305,8 +1305,8 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t-2 rounded-t-[36px] p-5 pt-2 z-50 shadow-[0_-10px_25px_rgba(255,255,255,0.15)] flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-black text-white border-white' : 'bg-white text-neutral-900 border-neutral-300 shadow-xl'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t-2 rounded-t-[36px] p-5 pt-2 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-black text-white border-white shadow-[0_-10px_25px_rgba(255,255,255,0.15)]' : 'bg-white text-neutral-900 border-neutral-300 shadow-[0_-10px_25px_rgba(0,0,0,0.15)]'">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -1372,7 +1372,11 @@
                   </div>
 
                   <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-[17px] font-bold text-right" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="'$' + item.price.toFixed(2)"></span>
+                    <span class="flex items-start" :class="isDark ? 'text-white' : 'text-neutral-900'">
+                      <span class="text-[12px] font-bold pt-[1px] mr-[0.5px]">$</span>
+                      <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
+                      <span class="text-[12px] font-bold pt-[1px]" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
+                    </span>
                     <button @click.stop="deleteItem(item)" class="p-1.5 text-neutral-500/60 hover:text-red-500 transition shrink-0 cursor-pointer" title="Remove">
                       <span class="text-[15px] font-bold block scale-75">✕</span>
                     </button>
@@ -1440,9 +1444,11 @@
           
           <div class="grid grid-cols-[1fr_auto] items-center text-[16px] text-neutral-400">
             <span class="font-medium text-left">Subtotal</span>
-            <span class="font-bold text-right" 
-                  :class="isDark ? 'text-white' : 'text-neutral-900'"
-                  x-text="'$' + calculateSubtotal().toFixed(2)"></span>
+            <span class="flex items-start justify-end font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <span class="text-[12px] pt-[1px] mr-[0.5px]">$</span>
+              <span x-text="calculateSubtotal().toFixed(2).split('.')[0]"></span>
+              <span class="text-[12px] pt-[1px]" x-text="'.' + calculateSubtotal().toFixed(2).split('.')[1]"></span>
+            </span>
           </div>
 
           <div class="grid grid-cols-[1fr_auto] items-center text-[16px] text-neutral-400">
@@ -1463,17 +1469,22 @@
               <span class="font-medium text-left" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Tax (8.25%)</span>
             </label>
 
-            <span class="font-bold text-right" 
-                  :class="isDark ? 'text-white' : 'text-neutral-900'"
-                  x-text="includeTax ? '$' + (calculateSubtotal() * taxRate).toFixed(2) : '$0.00'"></span>
+            <span class="flex items-start justify-end font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <span class="text-[12px] pt-[1px] mr-[0.5px]">$</span>
+              <span x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
+              <span class="text-[12px] pt-[1px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
+            </span>
           </div>
 
           <div class="grid grid-cols-[1fr_auto] items-center pt-2.5 border-t"
                :class="isDark ? 'border-neutral-900' : 'border-neutral-200'">
             <span class="text-[19px] font-bold uppercase tracking-wider text-left"
                   :class="isDark ? 'text-white' : 'text-neutral-900'">TOTAL</span>
-            <span class="text-[36px] font-extrabold text-[#E50914] text-right leading-none" 
-                  x-text="'$' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2)"></span>
+            <span class="flex items-start justify-end font-extrabold text-[#E50914] leading-none">
+              <span class="text-[18px] pt-[3px] mr-[1px]">$</span>
+              <span class="text-[36px]" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
+              <span class="text-[18px] pt-[3px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
+            </span>
           </div>
 
         </div>
@@ -1555,20 +1566,20 @@
             <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
                  :class="reshootExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
               <div class="text-[22px] transition-colors flex items-start">
-                <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="reshootExtras > 0 ? '10 / Extra × ' + reshootExtras : '10 / Extra'"></span>
               </div>
               <div class="flex items-center text-[22px] font-bold transition-colors">
                 <template x-if="reshootExtras > 0">
                   <div class="flex items-start text-[#E50914]">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="reshootExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="reshootExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -1610,11 +1621,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -1754,11 +1762,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!floorSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="!floorSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -1876,11 +1881,8 @@
                   <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <svg class="w-14 h-14" :class="!mpSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                  <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                  <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg class="w-14 h-14" :class="!mpSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                  <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
                 </svg>
               </span>
             </template>
@@ -1986,11 +1988,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!zillowSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="!zillowSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2063,11 +2062,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!videoSelected ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="!videoSelected ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2142,15 +2138,15 @@
               </div>
               <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300" :class="addonExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
                 <div class="text-[22px] transition-colors flex items-start">
-                  <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                   <span class="leading-none" x-text="addonSelected === 'Virtual Staging' ? (addonQty >= 4 ? '55 / img (4+ discount)' : '60 / img') : (addonExtraRate + ' / Extra' + (addonExtras > 0 ? ' × ' + addonExtras : ''))"></span>
                 </div>
                 <div class="flex items-center text-[22px] font-bold transition-colors">
                   <template x-if="addonExtras > 0">
-                    <div class="flex items-start text-[#E50914]"><span class="leading-none mr-[0.5px]">+</span><span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none" x-text="addonExtraTotal"></span></div>
+                    <div class="flex items-start text-[#E50914]"><span class="leading-none mr-[0.5px]">+</span><span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none" x-text="addonExtraTotal"></span></div>
                   </template>
                   <template x-if="addonExtras === 0">
-                    <div class="flex items-start"><span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none">0</span></div>
+                    <div class="flex items-start"><span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none">0</span></div>
                   </template>
                 </div>
               </div>
@@ -2176,11 +2172,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2216,11 +2209,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2243,11 +2233,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!addonSelected ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="!addonSelected ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2322,15 +2309,15 @@
               </div>
               <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300" :class="aerialExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
                 <div class="text-[22px] transition-colors flex items-start">
-                  <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                   <span class="leading-none" x-text="aerialExtraRate + ' / Extra' + (aerialExtras > 0 ? ' × ' + aerialExtras : '')"></span>
                 </div>
                 <div class="flex items-center text-[22px] font-bold transition-colors">
                   <template x-if="aerialExtras > 0">
-                    <div class="flex items-start text-[#E50914]"><span class="leading-none mr-[0.5px]">+</span><span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none" x-text="aerialExtraTotal"></span></div>
+                    <div class="flex items-start text-[#E50914]"><span class="leading-none mr-[0.5px]">+</span><span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none" x-text="aerialExtraTotal"></span></div>
                   </template>
                   <template x-if="aerialExtras === 0">
-                    <div class="flex items-start"><span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none">0</span></div>
+                    <div class="flex items-start"><span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span><span class="leading-none">0</span></div>
                   </template>
                 </div>
               </div>
@@ -2356,11 +2343,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2383,11 +2367,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!aerialSelected ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="!aerialSelected ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2514,20 +2495,20 @@
               <template x-if="!portTargetUpgradeTier">
                 <div class="flex items-center justify-between w-full">
                   <div class="text-[22px] transition-colors flex items-start">
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="portExtras > 0 ? '20 / Extra × ' + portExtras : '20 / Extra'"></span>
                   </div>
                   <div class="flex items-center text-[22px] font-bold transition-colors">
                     <template x-if="portExtras > 0">
                       <div class="flex items-start text-[#E50914]">
                         <span class="leading-none mr-[0.5px]">+</span>
-                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none" x-text="portExtraTotal"></span>
                       </div>
                     </template>
                     <template x-if="portExtras === 0">
                       <div class="flex items-start">
-                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none">0</span>
                       </div>
                     </template>
@@ -2581,11 +2562,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2614,8 +2592,8 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#050505] text-white border-white/20 shadow-[0_-10px_25px_rgba(255,255,255,0.15)]' : 'bg-white text-neutral-900 border-neutral-300 shadow-[0_-10px_25px_rgba(0,0,0,0.15)]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -2738,7 +2716,7 @@
                       class="py-3 px-1.5 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
                 <span class="text-[24px] font-bold leading-tight" x-text="tImg"></span>
                 <div class="flex items-start justify-center mt-1 leading-none">
-                  <template x-if="holdsSelection"><span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span></template>
+                  <template x-if="holdsSelection"><span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span></template>
                   <span class="text-[21px] font-extrabold leading-none" x-text="getTierPrice(tImg)"></span>
                 </div>
               </button>
@@ -2751,7 +2729,7 @@
             <div class="px-4 py-3 h-[52px] flex items-center justify-between">
               <span class="text-[22px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="'Base ' + (holdsSelection ? effectiveTier.imgs : 25) + ' Photos'"></span>
               <div class="flex items-start text-[22px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-                <template x-if="holdsSelection"><span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span></template>
+                <template x-if="holdsSelection"><span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span></template>
                 <span class="leading-none" x-text="holdsSelection ? effectiveTier.price : '--'"></span>
               </div>
             </div>
@@ -2766,20 +2744,20 @@
               <template x-if="!targetUpgradeTier">
                 <div class="flex items-center justify-between w-full">
                   <div class="text-[22px] transition-colors flex items-start">
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="extras > 0 && holdsSelection ? '5 / Extra × ' + extras : '5 / Extra'"></span>
                   </div>
                   <div class="flex items-center text-[22px] font-bold transition-colors">
                     <template x-if="extras > 0 && holdsSelection">
                       <div class="flex items-start text-[#E50914]">
                         <span class="leading-none mr-[0.5px]">+</span>
-                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none" x-text="extraTotal"></span>
                       </div>
                     </template>
                     <template x-if="extras === 0 || !holdsSelection">
                       <div class="flex items-start">
-                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none">0</span>
                       </div>
                     </template>
@@ -2838,11 +2816,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="!holdsSelection ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -2933,20 +2908,20 @@
             <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
                  :class="exteriorExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
               <div class="text-[22px] transition-colors flex items-start">
-                <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="exteriorExtras > 0 ? '10 / Extra × ' + exteriorExtras : '10 / Extra'"></span>
               </div>
               <div class="flex items-center text-[22px] font-bold transition-colors">
                 <template x-if="exteriorExtras > 0">
                   <div class="flex items-start text-[#E50914]">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="exteriorExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="exteriorExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -2988,11 +2963,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -3083,20 +3055,20 @@
             <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
                  :class="miniExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
               <div class="text-[22px] transition-colors flex items-start">
-                <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="miniExtras > 0 ? '10 / Extra × ' + miniExtras : '10 / Extra'"></span>
               </div>
               <div class="flex items-center text-[22px] font-bold transition-colors">
                 <template x-if="miniExtras > 0">
                   <div class="flex items-start text-[#E50914]">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="miniExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="miniExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -3138,11 +3110,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -3233,20 +3202,20 @@
             <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
                  :class="airbnbExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
               <div class="text-[22px] transition-colors flex items-start">
-                <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="airbnbExtras > 0 ? '12 / Extra × ' + airbnbExtras : '12 / Extra'"></span>
               </div>
               <div class="flex items-center text-[22px] font-bold transition-colors">
                 <template x-if="airbnbExtras > 0">
                   <div class="flex items-start text-[#E50914]">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="airbnbExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="airbnbExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -3288,11 +3257,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
@@ -3410,7 +3376,7 @@
               <template x-if="!ranchTargetUpgradeTier">
                 <div class="flex items-center justify-between w-full">
                   <div class="text-[22px] transition-colors flex items-start">
-                    <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="ranchExtras > 0 ? '5 / Extra × ' + ranchExtras : '5 / Extra'"></span>
                   </div>
                   
@@ -3418,13 +3384,13 @@
                     <template x-if="ranchExtras > 0">
                       <div class="flex items-start text-[#E50914]">
                         <span class="leading-none mr-[0.5px]">+</span>
-                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none" x-text="ranchExtraTotal"></span>
                       </div>
                     </template>
                     <template x-if="ranchExtras === 0">
                       <div class="flex items-start">
-                        <span class="text-[22px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none">0</span>
                       </div>
                     </template>
@@ -3479,11 +3445,8 @@
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="10" cy="19" r="1.5" stroke="currentColor"/>
-                <circle cx="17" cy="19" r="1.5" stroke="currentColor"/>
-                <path d="M3.5 4H5.5L9.00446 15H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.22445 12.5L6.29862 6.5H18.8063C19.1476 6.5 19.3885 6.83435 19.2806 7.15811L17.614 12.1581C17.5459 12.3623 17.3548 12.5 17.1396 12.5H8.22445Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
           </template>
