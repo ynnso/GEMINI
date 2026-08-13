@@ -1366,16 +1366,16 @@
                     </template>
                     
                     <div class="truncate">
-                      <div class="text-[17px] font-bold leading-tight truncate" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="item.title"></div>
-                      <div class="text-[14px] text-neutral-400 truncate" x-text="item.desc"></div>
+                      <div class="text-[19px] font-bold leading-tight truncate" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="item.title"></div>
+                      <div class="text-[15px] text-neutral-400 truncate" x-text="item.desc"></div>
                     </div>
                   </div>
 
                   <div class="flex items-center gap-2 shrink-0">
                     <span class="flex items-start" :class="isDark ? 'text-white' : 'text-neutral-900'">
-                      <span class="text-[12px] font-bold pt-[1px] mr-[0.5px]">$</span>
-                      <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
-                      <span class="text-[12px] font-bold pt-[1px]" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
+                      <span class="text-[16px] font-bold pt-[2px] mr-[0.5px]">$</span>
+                      <span class="text-[22px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
+                      <span class="text-[16px] font-bold pt-[2px]" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
                     </span>
                     <button @click.stop="deleteItem(item)" class="p-1.5 text-neutral-500/60 hover:text-red-500 transition shrink-0 cursor-pointer" title="Remove">
                       <span class="text-[15px] font-bold block scale-75">✕</span>
@@ -1439,19 +1439,18 @@
 
         </div>
 
-        <div class="border-t pt-3 space-y-2.5 pl-2 pr-2 transition-colors duration-300"
-             :class="isDark ? 'border-neutral-900' : 'border-neutral-200'">
+        <div class="pt-1 space-y-3 px-1 transition-colors duration-300">
           
-          <div class="grid grid-cols-[1fr_auto] items-center text-[16px] text-neutral-400">
+          <div class="grid grid-cols-[1fr_auto] items-center text-[18px] text-neutral-400">
             <span class="font-medium text-left">Subtotal</span>
             <span class="flex items-start justify-end font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <span class="text-[12px] pt-[1px] mr-[0.5px]">$</span>
-              <span x-text="calculateSubtotal().toFixed(2).split('.')[0]"></span>
-              <span class="text-[12px] pt-[1px]" x-text="'.' + calculateSubtotal().toFixed(2).split('.')[1]"></span>
+              <span class="text-[16px] pt-[2px] mr-[0.5px]">$</span>
+              <span class="text-[22px]" x-text="calculateSubtotal().toFixed(2).split('.')[0]"></span>
+              <span class="text-[16px] pt-[2px]" x-text="'.' + calculateSubtotal().toFixed(2).split('.')[1]"></span>
             </span>
           </div>
 
-          <div class="grid grid-cols-[1fr_auto] items-center text-[16px] text-neutral-400">
+          <div class="grid grid-cols-[1fr_auto] items-center text-[18px] text-neutral-400">
             <label class="flex items-center gap-2.5 cursor-pointer select-none group">
               <button @click="includeTax = !includeTax" type="button" 
                       class="w-6 h-6 rounded flex items-center justify-center transition-all duration-150 border shrink-0 cursor-pointer"
@@ -1470,20 +1469,20 @@
             </label>
 
             <span class="flex items-start justify-end font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <span class="text-[12px] pt-[1px] mr-[0.5px]">$</span>
-              <span x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
-              <span class="text-[12px] pt-[1px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
+              <span class="text-[16px] pt-[2px] mr-[0.5px]">$</span>
+              <span class="text-[22px]" x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
+              <span class="text-[16px] pt-[2px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
             </span>
           </div>
 
           <div class="grid grid-cols-[1fr_auto] items-center pt-2.5 border-t"
                :class="isDark ? 'border-neutral-900' : 'border-neutral-200'">
-            <span class="text-[19px] font-bold uppercase tracking-wider text-left"
-                  :class="isDark ? 'text-white' : 'text-neutral-900'">TOTAL</span>
+            <span class="text-[21px] font-bold tracking-wider text-left"
+                  :class="isDark ? 'text-white' : 'text-neutral-900'">Total</span>
             <span class="flex items-start justify-end font-extrabold text-[#E50914] leading-none">
-              <span class="text-[18px] pt-[3px] mr-[1px]">$</span>
-              <span class="text-[36px]" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
-              <span class="text-[18px] pt-[3px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
+              <span class="text-[23px] pt-[4px] mr-[1px]">$</span>
+              <span class="text-[47px]" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
+              <span class="text-[23px] pt-[4px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
             </span>
           </div>
 
@@ -2597,7 +2596,7 @@
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white border-white/20 shadow-[0_-12px_40px_rgba(255,255,255,0.25)]' : 'bg-white text-neutral-900 border-neutral-300 shadow-[0_-12px_40px_rgba(229,9,20,0.35)]'">
+           :class="isDark ? 'bg-[#050505] text-white border-white/20 shadow-[0_-10px_25px_rgba(255,255,255,0.15)]' : 'bg-white text-neutral-900 border-neutral-300 shadow-[0_-10px_25px_rgba(229,9,20,0.15)]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
