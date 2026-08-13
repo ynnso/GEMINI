@@ -906,17 +906,14 @@
       </div>
 
       <!-- CART ICON TOP NAV BUTTON -->
-      <div class="justify-self-end">
+      <div class="justify-self-end pr-1">
         <button @click="openSheet('cart')"
-                class="w-10 h-10 rounded-full flex items-center justify-center relative transition-colors duration-300 focus:outline-none cursor-pointer"
+                class="w-11 h-11 rounded-full flex items-center justify-center relative transition-colors duration-300 focus:outline-none cursor-pointer"
                 :class="isDark ? 'text-white hover:text-neutral-300' : 'text-neutral-900 hover:text-neutral-600'"
                 title="View Quote Cart">
           
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-            <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-            <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-            <path d="M11 7.5h5M13.5 5v5" stroke-width="2.6" stroke="currentColor" />
+          <svg class="w-7 h-7" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
           </svg>
 
           <template x-if="activeCount() > 0">
@@ -1268,7 +1265,7 @@
     </main>
 
     <!-- FLOATING PILL NAV BAR -->
-    <div class="fixed bottom-3 left-1/2 -translate-x-1/2 w-[92%] max-w-sm h-[58px] rounded-full px-3 flex items-center justify-between z-30 border transition-all duration-300 shadow-2xl backdrop-blur-2xl"
+    <div class="fixed bottom-2 left-1/2 -translate-x-1/2 w-[92%] max-w-sm h-[58px] rounded-full px-3 flex items-center justify-between z-30 border transition-all duration-300 shadow-2xl backdrop-blur-2xl"
          :class="isDark ? 'bg-black/90 border-white/20 shadow-black/80' : 'bg-white/90 border-neutral-300 shadow-neutral-400/50'">
 
       <template x-for="key in catList" :key="key">
@@ -1475,14 +1472,14 @@
             </span>
           </div>
 
-          <div class="grid grid-cols-[1fr_auto] items-center gap-2 min-w-0 pt-2.5 border-t"
+          <div class="grid grid-cols-[1fr_auto] items-center gap-2 min-w-0 overflow-hidden pt-2.5 border-t"
                :class="isDark ? 'border-neutral-900' : 'border-neutral-200'">
-            <span class="text-[21px] font-bold tracking-wider text-left truncate"
+            <span class="text-[19px] font-bold tracking-wider text-left truncate"
                   :class="isDark ? 'text-white' : 'text-neutral-900'">Total</span>
-            <span class="flex items-baseline justify-end font-extrabold text-[#E50914] shrink-0">
-              <span class="text-[15px] self-start mr-[1px]">$</span>
-              <span class="text-[38px] leading-none" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
-              <span class="text-[15px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
+            <span class="flex items-baseline justify-end font-extrabold text-[#E50914] shrink-0 overflow-hidden">
+              <span class="text-[13px] self-start mr-[1px]">$</span>
+              <span class="text-[32px] leading-none" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
+              <span class="text-[13px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
             </span>
           </div>
 
@@ -2596,7 +2593,7 @@
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t-2 rounded-t-[36px] px-5 pt-3 pb-6 z-50 flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white border-white shadow-[0_-6px_10px_rgba(255,255,255,0.1)]' : 'bg-white text-neutral-900 border-neutral-900 shadow-[0_-6px_10px_rgba(229,9,20,0.08)]'">
+           :class="isDark ? 'bg-[#050505] text-white border-white shadow-[0_-6px_10px_rgba(255,255,255,0.1)]' : 'bg-white text-neutral-900 border-[#E50914] shadow-[0_-6px_10px_rgba(229,9,20,0.08)]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
