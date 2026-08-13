@@ -52,7 +52,7 @@
       x-data="{
         activeSheet: null,
         activeTab: 'photos',
-        activePrimary: null,
+        activePrimary: 'photos',
         catList: ['photos','video','aerial','tour360','floor','addons'],
         catTitle: { photos:'Photos', video:'Video', aerial:'Aerial', tour360:'360 Tour', floor:'Floor Plan', addons:'Add-Ons' },
         catIconSvg: {
@@ -872,7 +872,7 @@
       }">
 
   <!-- APP CONTAINER -->
-  <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative">
+  <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28">
 
     <!-- APP HEADER -->
     <header class="px-5 pt-6 pb-4 grid grid-cols-3 items-center backdrop-blur-xl sticky top-0 z-30 border-b transition-colors duration-300"
@@ -928,32 +928,15 @@
     <!-- DASHBOARD CONTENT -->
     <main class="p-4 flex-1 flex flex-col gap-4">
 
-      <!-- GRID DASHBOARD (LANDING VIEW) -->
-      <section x-show="activePrimary === null" x-cloak class="grid grid-cols-2 gap-3">
-        <template x-for="key in catList" :key="key">
-          <button @click="makeHero(key)"
-                  class="aspect-square rounded-3xl border flex flex-col items-center justify-center gap-3 transition-all active:scale-[0.97] cursor-pointer"
-                  :class="isDark ? 'bg-[#121212] border-[#262626] active:border-white' : 'bg-white border-neutral-300 shadow-md active:border-neutral-900'">
-            <svg class="w-12 h-12" :class="isDark ? 'text-white' : 'text-neutral-900'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
-            <span class="text-[17px] font-extrabold" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="catTitle[key]"></span>
-          </button>
-        </template>
-      </section>
-
       <!-- PHOTOS SECTION -->
       <section x-show="activePrimary === 'photos'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
         
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574v9.176A2.25 2.25 0 004.5 21h15a2.25 2.25 0 002.25-2.25V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
           </svg>
           <span>Photos</span>
-        </div>
-          <button @click="activePrimary = null" class="p-1.5 -mr-1.5 cursor-pointer" :class="isDark ? 'text-white' : 'text-neutral-900'" title="Back">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
         </div>
 
         <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300"
@@ -1108,14 +1091,9 @@
       <!-- VIDEO SECTION -->
       <section x-show="activePrimary === 'video'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['video']"></svg>
           <span>Video</span>
-        </div>
-          <button @click="activePrimary = null" class="p-1.5 -mr-1.5 cursor-pointer" :class="isDark ? 'text-white' : 'text-neutral-900'" title="Back">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
         </div>
         <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
           <button @click="videoCategory = 'MLS'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="videoCategory === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">MLS</button>
@@ -1153,14 +1131,9 @@
       <!-- AERIAL SECTION -->
       <section x-show="activePrimary === 'aerial'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['aerial']"></svg>
           <span>Aerial</span>
-        </div>
-          <button @click="activePrimary = null" class="p-1.5 -mr-1.5 cursor-pointer" :class="isDark ? 'text-white' : 'text-neutral-900'" title="Back">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
         </div>
         <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
           <button @click="aerialCategory = 'MLS'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="aerialCategory === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">MLS</button>
@@ -1193,14 +1166,9 @@
       <!-- 360 SECTION -->
       <section x-show="activePrimary === 'tour360'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['tour360']"></svg>
           <span>360 Tour</span>
-        </div>
-          <button @click="activePrimary = null" class="p-1.5 -mr-1.5 cursor-pointer" :class="isDark ? 'text-white' : 'text-neutral-900'" title="Back">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
         </div>
         <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
           <button @click="tour360Category = 'MLS'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="tour360Category === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">MLS</button>
@@ -1226,14 +1194,9 @@
       <!-- FLOOR PLAN SECTION -->
       <section x-show="activePrimary === 'floor'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['floor']"></svg>
           <span>Floor Plan</span>
-        </div>
-          <button @click="activePrimary = null" class="p-1.5 -mr-1.5 cursor-pointer" :class="isDark ? 'text-white' : 'text-neutral-900'" title="Back">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
         </div>
         <div class="flex border rounded-2xl p-1 gap-1 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
           <button @click="floorCategory = 'MLS'" class="flex-1 py-2 text-[12px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="floorCategory === 'MLS' ? 'bg-[#E50914] text-white font-black shadow-[0_0_12px_rgba(229,9,20,0.35)]' : 'text-[#8E8E93] hover:text-white'">MLS</button>
@@ -1250,14 +1213,9 @@
       <!-- ADD-ONS SECTION -->
       <section x-show="activePrimary === 'addons'" x-cloak class="rounded-3xl p-3.5 flex flex-col gap-2.5 border transition-colors duration-300"
                :class="isDark ? 'bg-[#121212] border-[#262626] border-l-4 border-l-white' : 'bg-white border-neutral-300 border-l-4 border-l-neutral-900 shadow-md'">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-2 font-extrabold text-[19px]" :class="isDark ? 'text-white' : 'text-neutral-900'">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg['addons']"></svg>
           <span>Add-Ons</span>
-        </div>
-          <button @click="activePrimary = null" class="p-1.5 -mr-1.5 cursor-pointer" :class="isDark ? 'text-white' : 'text-neutral-900'" title="Back">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
         </div>
         <div class="flex border rounded-2xl p-1 gap-1 overflow-x-auto no-scrollbar transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
           <template x-for="opt in ['Sky','Grass','Digital','Time','Market']" :key="opt">
@@ -1294,8 +1252,29 @@
       </section>
 
       <!-- SECONDARY GRID -->
+      <div class="grid grid-cols-2 gap-3">
+        <template x-for="key in catList.filter(k => k !== activePrimary)" :key="key">
+          <button @click="makeHero(key)" class="rounded-3xl px-3 h-[64px] flex items-center gap-2.5 border transition-colors duration-300 text-left cursor-pointer active:scale-[0.98]"
+               :class="isDark ? 'bg-[#121212] border-[#262626]' : 'bg-white border-neutral-300 shadow-sm'">
+            <svg class="w-5 h-5 shrink-0" :class="isDark ? 'text-white' : 'text-neutral-900'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
+            <div class="text-[13px] font-extrabold truncate" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="catTitle[key]"></div>
+          </button>
+        </template>
+      </div>
 
     </main>
+
+    <!-- FLOATING PILL NAV BAR -->
+    <div class="fixed bottom-2 left-1/2 -translate-x-1/2 w-[92%] max-w-sm h-[58px] rounded-full px-3 flex items-center justify-between z-30 border transition-all duration-300 shadow-2xl backdrop-blur-2xl"
+         :class="isDark ? 'bg-black/90 border-white/20 shadow-black/80' : 'bg-white/90 border-neutral-300 shadow-neutral-400/50'">
+
+      <template x-for="key in catList" :key="key">
+        <button @click="makeHero(key)" class="p-2 transition-transform active:scale-90 cursor-pointer" :class="activePrimary === key ? 'text-[#E50914]' : (isDark ? 'text-white' : 'text-neutral-800')">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
+        </button>
+      </template>
+
+    </div>
 
     <!-- BACKDROP WITH ADAPTIVE OPACITY & BLUR -->
     <div x-show="activeSheet !== null"
