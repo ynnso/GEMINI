@@ -873,14 +873,14 @@
   <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28">
 
     <!-- APP HEADER -->
-    <header class="px-7 pt-7 pb-5 grid grid-cols-3 items-center sticky top-0 z-30 bg-transparent">
+    <header class="px-6 h-[76px] grid grid-cols-3 items-center sticky top-0 z-30 bg-transparent">
 
       <!-- LOGO -->
       <div class="justify-self-start">
         <div class="h-10 px-4 rounded-full inline-grid place-items-center tracking-tighter transition-colors duration-300"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'">
-          <span class="flex items-center font-bold text-[20px]" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">S<span class="font-black text-[27px]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">2</span>S</span>
+          <span class="font-bold text-[20px]" style="font-variant-numeric: tabular-nums;" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">S<span class="font-black" style="font-size:27px;" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">2</span>S</span>
         </div>
       </div>
 
@@ -930,19 +930,19 @@
     </header>
 
     <!-- DASHBOARD CONTENT -->
-    <main class="flex-1 flex flex-col justify-center items-center px-4 pb-[104px] pt-2">
+    <main class="flex-1 flex flex-col justify-center items-center px-4 pb-[92px] pt-[8px]">
       <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
         <template x-for="key in ['photos','aerial','floor','video','tour360','addons']" :key="key">
           <button @click="makeHero(key); openSheet(key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorplan' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon')))))"
-                  class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-2 p-2.5 transition-all active:scale-[0.97] cursor-pointer"
+                  class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-2.5 p-3 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;'">
-            <div class="w-[72%] aspect-square rounded-[18px] flex items-center justify-center"
+            <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
               <svg class="w-[65%] h-[65%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
             </div>
-            <span class="text-[17px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
+            <span class="text-[18px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
           </button>
         </template>
       </div>
