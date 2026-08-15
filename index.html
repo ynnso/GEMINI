@@ -2507,23 +2507,25 @@
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-3 pb-1 justify-center">
-          <div class="w-[80px] h-[80px] rounded-[20px] flex items-center justify-center shrink-0 transition-colors duration-300"
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
                :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
-            <svg class="w-14 h-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.91" stroke-linecap="round" stroke-linejoin="round"
-                 :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+            <svg class="w-11 h-11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.91" stroke-linecap="round" stroke-linejoin="round"
+                 :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
               <polyline points="20.59 8.18 20.59 22.5 3.41 22.5 3.41 8.18"/><line x1="0.55" y1="22.5" x2="23.45" y2="22.5"/><polyline points="0.55 11.04 12 1.5 23.45 11.04"/><rect x="9.14" y="14.86" width="5.73" height="7.64"/><circle cx="12" cy="9.14" r="1.91"/><polyline points="16.77 5.48 16.77 1.5 20.59 1.5 20.59 8.66"/>
             </svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
                   :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">MLS Photos</span>
-            <h1 class="text-[46px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Full Shoot</h1>
+            <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Full Shoot</h1>
           </div>
         </div>
 
-        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums rounded-[24px] py-4"
+        <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
@@ -2726,7 +2728,7 @@
                     : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')
                 ]"
                 :style="holdsSelection && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1">
+                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10" :class="!holdsSelection ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
