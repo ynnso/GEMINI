@@ -930,8 +930,8 @@
     </header>
 
     <!-- DASHBOARD CONTENT -->
-    <main class="flex-1 flex flex-col justify-center items-center px-4 pb-[92px] pt-[8px]">
-      <div class="grid grid-cols-2 gap-4 w-full max-w-sm">
+    <main class="flex-1 flex flex-col items-center px-4 pb-[92px] pt-[28px]">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-7 w-full max-w-sm">
         <template x-for="key in ['photos','aerial','floor','video','tour360','addons']" :key="key">
           <button @click="makeHero(key); openSheet(key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorplan' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon')))))"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-2.5 p-3 transition-all active:scale-[0.97] cursor-pointer"
