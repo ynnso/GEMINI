@@ -1191,8 +1191,8 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[36px] px-5 pt-3 pb-6 z-50 flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white' : 'bg-white text-neutral-900'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -1200,25 +1200,28 @@
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-3 pb-1 justify-center">
-          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 transition-colors duration-300"
-               :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-               :style="isDark ? 'box-shadow: inset 6px 6px 12px #000000, inset -5px -5px 11px #262626;' : 'box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;'">
-            <svg class="w-14 h-14" viewBox="0 0 256 256" fill="currentColor"
-                 :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 256 256" fill="currentColor">
               <path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z" />
             </svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
-                  :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
-            <h1 class="text-[46px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Reshoot</h1>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
+                  :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">MLS Photos</span>
+            <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Reshoot</h1>
           </div>
         </div>
 
-        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
-            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+            <div class="text-[90px] font-black leading-none flex items-baseline" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" style="letter-spacing:-0.045em;">
               <span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span>
               <span x-text="reshootPriceDollars" class="leading-none"></span>
               <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="reshootPriceCents"></span>
@@ -1229,8 +1232,8 @@
                     class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="[
-                      includeTax 
-                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                      includeTax
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]'
                         : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
                     ]">
                 Tax
@@ -1240,35 +1243,35 @@
         </div>
 
         <div class="flex flex-col gap-4">
-          <div class="rounded-2xl overflow-hidden transition-colors duration-300"
-               :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-               :style="isDark ? 'box-shadow: inset 5px 5px 10px #000000, inset -4px -4px 9px #262626;' : 'box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;'">
-            
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between" :class="isDark ? 'border-b border-white/5' : 'border-b border-black/5'">
-              <span class="text-[22px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 8 Photos</span>
-              <div class="flex items-start text-[22px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+          <div class="rounded-[16px] overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+
+            <div class="px-4 py-2 h-[44px] flex items-center justify-between" :class="isDark ? 'border-b border-white/5' : 'border-b border-black/5'">
+              <span class="text-[20px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Base 8 Photos</span>
+              <div class="flex items-start text-[20px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="reshootBasePrice"></span>
               </div>
             </div>
 
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
-                 :class="reshootExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
-              <div class="text-[22px] transition-colors flex items-start">
-                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+            <div class="px-4 py-2 h-[44px] flex items-center justify-between transition-all duration-300"
+                 :class="reshootExtras > 0 ? 'font-bold' : (isDark ? 'bg-transparent text-[#94a3b8] font-semibold' : 'bg-transparent text-[#64748b] font-semibold')">
+              <div class="text-[20px] transition-colors flex items-start" :class="reshootExtras > 0 ? (isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]') : ''">
+                <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="reshootExtras > 0 ? '10 / Extra × ' + reshootExtras : '10 / Extra'"></span>
               </div>
-              <div class="flex items-center text-[22px] font-bold transition-colors">
+              <div class="flex items-center text-[20px] font-bold transition-colors">
                 <template x-if="reshootExtras > 0">
-                  <div class="flex items-start text-[#E50914]">
+                  <div class="flex items-start" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="reshootExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="reshootExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -1278,41 +1281,42 @@
           </div>
 
           <div class="flex items-center justify-between gap-2 px-1">
-            <span class="text-[24px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
-            <div class="flex items-center justify-between rounded-2xl p-1.5 transition-colors h-[52px] w-[168px]"
-                 :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-                 :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
+            <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Photos</span>
+            <div class="flex items-center justify-between rounded-[16px] p-1.5 transition-colors h-[52px] w-[168px]"
+                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                 :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
               <button @click="updateReshootCount('down')" :disabled="reshootCount <= 8"
-                      :class="reshootCount <= 8 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-black/5 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
-              
-              <input type="number" 
+                      :class="reshootCount <= 8 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
+
+              <input type="number"
                      x-model.number="reshootCount"
                      @change="sanitizeReshootInput()"
                      @blur="sanitizeReshootInput()"
                      min="8"
                      max="20"
-                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" />
-              
+                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums shrink-0"
+                     :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" />
+
               <button @click="updateReshootCount('up')" :disabled="reshootCount >= 20"
-                      :class="reshootCount >= 20 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-black/5 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
+                      :class="reshootCount >= 20 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Reshoot', reshootCount + ' imgs', reshootRawTotal, 'refresh')" 
+        <button @click="addConfiguredItemToCart('MLS Photos: Reshoot', reshootCount + ' imgs', reshootRawTotal, 'refresh')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black' : 'bg-black text-white')"
-                :style="state !== 'success' ? (isDark ? 'box-shadow: 8px 8px 16px #000000, -7px -7px 15px #262626;' : 'box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;') : ''"
-                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] mt-1">
+                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
@@ -2767,8 +2771,8 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -2776,23 +2780,28 @@
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-3 pb-1 justify-center">
-          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
-               :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-            <svg class="w-14 h-14" viewBox="0 -1 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 -1 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
               <g transform="translate(1,2)"><path d="M14,49 L14,57 C14,58.1 13.1,59 12,59 L2,59 C0.9,59 0,58.1 0,57 L0,9 C0,7.9 7,1 7,1 C7,1 14,7.9 14,9 L14,19"/><path d="M14,23 L14,45"/><path d="M38,49 L38,57 C38,58.1 37.1,59 36,59 L26,59 C24.9,59 24,58.1 24,57 L24,49"/><path d="M38,23 L38,45"/><path d="M24,19 L24,9 C24,7.9 31,0 31,0 C31,0 38,7.9 38,9 L38,19"/><path d="M24,45 L24,23"/><path d="M48,45 L48,23"/><path d="M48,19 L48,9 C48,7.9 55,0 55,0 C55,0 62,7.9 62,9 L62,57 C62,58.1 61.1,59 60,59 L50,59 C48.9,59 48,58.1 48,57 L48,49"/><path d="M38,43 L48,43"/><path d="M14,43 L24,43"/><path d="M24,51 L14,51"/><path d="M48,51 L38,51"/><path d="M38,17 L48,17"/><path d="M14,17 L24,17"/><path d="M24,25 L14,25"/><path d="M48,25 L38,25"/></g>
             </svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
-                  :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
-            <h1 class="text-[46px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Exterior Only</h1>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
+                  :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">MLS Photos</span>
+            <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Exterior Only</h1>
           </div>
         </div>
 
-        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
-            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+            <div class="text-[90px] font-black leading-none flex items-baseline" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" style="letter-spacing:-0.045em;">
               <span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span>
               <span x-text="exteriorPriceDollars" class="leading-none"></span>
               <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="exteriorPriceCents"></span>
@@ -2803,8 +2812,8 @@
                     class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="[
-                      includeTax 
-                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                      includeTax
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]'
                         : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
                     ]">
                 Tax
@@ -2814,34 +2823,35 @@
         </div>
 
         <div class="flex flex-col gap-4">
-          <div class="rounded-2xl border divide-y tabular-nums overflow-hidden transition-colors duration-300"
-               :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
-            
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between">
-              <span class="text-[22px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 8 Photos</span>
-              <div class="flex items-start text-[22px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+          <div class="rounded-[16px] overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+
+            <div class="px-4 py-2 h-[44px] flex items-center justify-between" :class="isDark ? 'border-b border-white/5' : 'border-b border-black/5'">
+              <span class="text-[20px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Base 8 Photos</span>
+              <div class="flex items-start text-[20px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="exteriorBasePrice"></span>
               </div>
             </div>
 
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
-                 :class="exteriorExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
-              <div class="text-[22px] transition-colors flex items-start">
-                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+            <div class="px-4 py-2 h-[44px] flex items-center justify-between transition-all duration-300"
+                 :class="exteriorExtras > 0 ? 'font-bold' : (isDark ? 'bg-transparent text-[#94a3b8] font-semibold' : 'bg-transparent text-[#64748b] font-semibold')">
+              <div class="text-[20px] transition-colors flex items-start" :class="exteriorExtras > 0 ? (isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]') : ''">
+                <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="exteriorExtras > 0 ? '10 / Extra × ' + exteriorExtras : '10 / Extra'"></span>
               </div>
-              <div class="flex items-center text-[22px] font-bold transition-colors">
+              <div class="flex items-center text-[20px] font-bold transition-colors">
                 <template x-if="exteriorExtras > 0">
-                  <div class="flex items-start text-[#E50914]">
+                  <div class="flex items-start" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="exteriorExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="exteriorExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -2851,39 +2861,42 @@
           </div>
 
           <div class="flex items-center justify-between gap-2 px-1">
-            <span class="text-[24px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
-            <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px] w-[168px]"
-                 :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+            <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Photos</span>
+            <div class="flex items-center justify-between rounded-[16px] p-1.5 transition-colors h-[52px] w-[168px]"
+                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                 :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
               <button @click="updateExteriorCount('down')" :disabled="exteriorCount <= 8"
-                      :class="exteriorCount <= 8 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
-              
-              <input type="number" 
+                      :class="exteriorCount <= 8 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
+
+              <input type="number"
                      x-model.number="exteriorCount"
                      @change="sanitizeExteriorInput()"
                      @blur="sanitizeExteriorInput()"
                      min="8"
                      max="20"
-                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" />
-              
+                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums shrink-0"
+                     :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" />
+
               <button @click="updateExteriorCount('up')" :disabled="exteriorCount >= 20"
-                      :class="exteriorCount >= 20 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
+                      :class="exteriorCount >= 20 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Exterior Only', exteriorCount + ' imgs', exteriorRawTotal, 'camera')" 
+        <button @click="addConfiguredItemToCart('MLS Photos: Exterior Only', exteriorCount + ' imgs', exteriorRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800')"
-                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
+                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
@@ -3068,8 +3081,8 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -3077,23 +3090,28 @@
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-3 pb-1 justify-center">
-          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300"
-               :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-            <svg class="w-14 h-14 text-white" viewBox="0 0 640 640" fill="currentColor">
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 640 640" fill="currentColor">
               <path d="M320.5 437.1C295.3 405.4 280.4 377.7 275.5 353.9C253 265.9 388.1 265.9 365.6 353.9C360.2 378.1 345.3 405.9 320.6 437.1L320.5 437.1zM458.7 510.3C416.6 528.6 375 499.4 339.4 459.8C443.3 329.7 385.5 259.8 320.6 259.8C265.7 259.8 235.4 306.3 247.3 360.3C254.2 389.5 272.5 422.7 301.7 459.8C269.2 495.8 241.2 512.5 216.5 514.7C166.5 522.1 127.4 473.6 145.2 423.6C160.3 384.4 256.9 192.4 261.1 182C276.9 151.9 286.7 124.6 320.5 124.6C352.8 124.6 363.9 150.5 380.9 184.5C416.9 255.1 470.3 362 495.7 423.6C508.9 456.7 494.3 494.9 458.7 510.2zM505.7 374.2C376.8 99.9 369.7 96 320.6 96C275.1 96 255.7 127.7 235.9 168.8C129.7 381.1 119.5 411.2 118.6 413.8C93.4 483.1 145.3 544 208.2 544C229.9 544 268.8 537.9 320.6 481.6C379.3 545.4 421.9 544 433 544C495.9 544.1 547.9 483.1 522.6 413.8C522.6 409.9 505.8 374.9 505.8 374.2L505.8 374.2z"/>
             </svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
-                  :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">Airbnb Photos</span>
-            <h1 class="text-[38px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Airbnb / Lease</h1>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
+                  :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Airbnb Photos</span>
+            <h1 class="text-[32px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Airbnb / Lease</h1>
           </div>
         </div>
 
-        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
-            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+            <div class="text-[90px] font-black leading-none flex items-baseline" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" style="letter-spacing:-0.045em;">
               <span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span>
               <span x-text="airbnbPriceDollars" class="leading-none"></span>
               <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="airbnbPriceCents"></span>
@@ -3104,8 +3122,8 @@
                     class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="[
-                      includeTax 
-                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                      includeTax
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]'
                         : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
                     ]">
                 Tax
@@ -3115,34 +3133,35 @@
         </div>
 
         <div class="flex flex-col gap-4">
-          <div class="rounded-2xl border divide-y tabular-nums overflow-hidden transition-colors duration-300"
-               :class="isDark ? 'bg-neutral-900 border-white/10 divide-white/10' : 'bg-white border-neutral-300 divide-neutral-200 shadow-sm'">
-            
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between">
-              <span class="text-[22px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Base 12 Photos</span>
-              <div class="flex items-start text-[22px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+          <div class="rounded-[16px] overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+
+            <div class="px-4 py-2 h-[44px] flex items-center justify-between" :class="isDark ? 'border-b border-white/5' : 'border-b border-black/5'">
+              <span class="text-[20px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Base 12 Photos</span>
+              <div class="flex items-start text-[20px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="airbnbBasePrice"></span>
               </div>
             </div>
 
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between transition-all duration-300"
-                 :class="airbnbExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold')">
-              <div class="text-[22px] transition-colors flex items-start">
-                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+            <div class="px-4 py-2 h-[44px] flex items-center justify-between transition-all duration-300"
+                 :class="airbnbExtras > 0 ? 'font-bold' : (isDark ? 'bg-transparent text-[#94a3b8] font-semibold' : 'bg-transparent text-[#64748b] font-semibold')">
+              <div class="text-[20px] transition-colors flex items-start" :class="airbnbExtras > 0 ? (isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]') : ''">
+                <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="airbnbExtras > 0 ? '12 / Extra × ' + airbnbExtras : '12 / Extra'"></span>
               </div>
-              <div class="flex items-center text-[22px] font-bold transition-colors">
+              <div class="flex items-center text-[20px] font-bold transition-colors">
                 <template x-if="airbnbExtras > 0">
-                  <div class="flex items-start text-[#E50914]">
+                  <div class="flex items-start" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
                     <span class="leading-none mr-[0.5px]">+</span>
-                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="airbnbExtraTotal"></span>
                   </div>
                 </template>
                 <template x-if="airbnbExtras === 0">
                   <div class="flex items-start">
-                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                    <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none">0</span>
                   </div>
                 </template>
@@ -3152,39 +3171,42 @@
           </div>
 
           <div class="flex items-center justify-between gap-2 px-1">
-            <span class="text-[24px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
-            <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px] w-[168px]"
-                 :class="isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm'">
+            <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Photos</span>
+            <div class="flex items-center justify-between rounded-[16px] p-1.5 transition-colors h-[52px] w-[168px]"
+                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                 :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
               <button @click="updateAirbnbCount('down')" :disabled="airbnbCount <= 12"
-                      :class="airbnbCount <= 12 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
-              
-              <input type="number" 
+                      :class="airbnbCount <= 12 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
+
+              <input type="number"
                      x-model.number="airbnbCount"
                      @change="sanitizeAirbnbInput()"
                      @blur="sanitizeAirbnbInput()"
                      min="12"
                      max="50"
-                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" />
-              
+                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums shrink-0"
+                     :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" />
+
               <button @click="updateAirbnbCount('up')" :disabled="airbnbCount >= 50"
-                      :class="airbnbCount >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-neutral-100 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
+                      :class="airbnbCount >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' imgs', airbnbRawTotal, 'home')" 
+        <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' imgs', airbnbRawTotal, 'home')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800')"
-                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
+                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
@@ -3215,8 +3237,8 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[36px] px-5 pt-3 pb-6 z-50 flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white' : 'bg-white text-neutral-900'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -3224,25 +3246,28 @@
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-3 pb-1 justify-center">
-          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 transition-colors duration-300"
-               :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-               :style="isDark ? 'box-shadow: inset 6px 6px 12px #000000, inset -5px -5px 11px #262626;' : 'box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;'">
-            <svg class="w-14 h-14" viewBox="0 0 256 256" fill="currentColor"
-                 :class="isDark ? 'text-white' : 'text-neutral-900'">
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 256 256" fill="currentColor">
               <path d="M240,192h-8V130.57l1.49,2.08a8,8,0,1,0,13-9.3l-40-56a8,8,0,0,0-2-1.94L137,18.77l-.1-.07a16,16,0,0,0-17.76,0l-.1.07L51.45,65.42a8,8,0,0,0-2,1.94l-40,56a8,8,0,1,0,13,9.3L24,130.57V192H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM40,108.17,61.7,77.79,128,32l66.3,45.78L216,108.17V192H192V120a8,8,0,0,0-8-8H72a8,8,0,0,0-8,8v72H40Zm88,42L97,128H159Zm48-14.62v48.91L141.76,160ZM114.24,160,80,184.46V135.55ZM128,169.83,159,192H97ZM104,88a8,8,0,0,1,8-8h32a8,8,0,1,1,0,16H112A8,8,0,0,1,104,88Z" />
             </svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
-                  :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">MLS Photos</span>
-            <h1 class="text-[46px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Ranch Shoot</h1>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
+                  :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">MLS Photos</span>
+            <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Ranch Shoot</h1>
           </div>
         </div>
 
-        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
-            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+            <div class="text-[90px] font-black leading-none flex items-baseline" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" style="letter-spacing:-0.045em;">
               <span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span>
               <span x-text="ranchPriceDollars" class="leading-none"></span>
               <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="ranchPriceCents"></span>
@@ -3253,8 +3278,8 @@
                     class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="[
-                      includeTax 
-                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' 
+                      includeTax
+                        ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]'
                         : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
                     ]">
                 Tax
@@ -3268,13 +3293,13 @@
             <template x-for="tImg in [25, 36]" :key="tImg">
               <button @click="selectRanchTier(tImg)"
                       :class="[
-                        ranchTargetUpgradeTier === tImg ? 'bg-emerald-400 text-black font-black ring-2 ring-black' : '',
-                        !ranchTargetUpgradeTier && ranchEffectiveTier.imgs === tImg ? (isDark ? 'bg-white text-black font-extrabold' : 'bg-black text-white font-extrabold') : '',
+                        ranchTargetUpgradeTier === tImg ? 'text-white font-black animate-pulse-light' : '',
+                        !ranchTargetUpgradeTier && ranchEffectiveTier.imgs === tImg ? 'text-white font-extrabold' : '',
                         ranchTargetUpgradeTier && ranchTargetUpgradeTier !== tImg ? 'opacity-20 bg-transparent' : '',
-                        !ranchTargetUpgradeTier && ranchEffectiveTier.imgs !== tImg ? (isDark ? 'bg-[#0d0d0d] text-neutral-400' : 'bg-neutral-100 text-neutral-600') : ''
+                        !ranchTargetUpgradeTier && ranchEffectiveTier.imgs !== tImg ? (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]') : ''
                       ]"
-                      :style="!ranchTargetUpgradeTier && !(ranchEffectiveTier.imgs === tImg) ? (isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;') : ''"
-                      class="py-3 px-2 rounded-2xl flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
+                      :style="ranchTargetUpgradeTier === tImg ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (!ranchTargetUpgradeTier && !(ranchEffectiveTier.imgs === tImg) ? (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;') : (!ranchTargetUpgradeTier && ranchEffectiveTier.imgs === tImg ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''))"
+                      class="py-3 px-2 rounded-[16px] flex flex-col items-center justify-center text-center transition-all duration-200 active:scale-95 cursor-pointer">
                 <span class="text-[24px] font-bold leading-tight" x-text="tImg"></span>
                 <div class="flex items-start justify-center mt-0.5 leading-none">
                   <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
@@ -3284,44 +3309,44 @@
             </template>
           </div>
 
-          <div class="rounded-2xl overflow-hidden transition-colors duration-300"
-               :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-               :style="isDark ? 'box-shadow: inset 5px 5px 10px #000000, inset -4px -4px 9px #262626;' : 'box-shadow: inset 5px 5px 10px #d1d1d1, inset -5px -5px 10px #ffffff;'">
-            
-            <div class="px-4 py-3 h-[52px] flex items-center justify-between" :class="isDark ? 'border-b border-white/5' : 'border-b border-black/5'">
-              <span class="text-[22px] font-semibold" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'" x-text="'Base ' + ranchEffectiveTier.imgs + ' Photos'"></span>
-              <div class="flex items-start text-[22px] font-bold" :class="isDark ? 'text-neutral-300' : 'text-neutral-800'">
-                <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+          <div class="rounded-[16px] overflow-hidden transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+
+            <div class="px-4 py-2 h-[44px] flex items-center justify-between" :class="isDark ? 'border-b border-white/5' : 'border-b border-black/5'">
+              <span class="text-[20px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'Base ' + ranchEffectiveTier.imgs + ' Photos'"></span>
+              <div class="flex items-start text-[20px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                 <span class="leading-none" x-text="ranchEffectiveTier.price"></span>
               </div>
             </div>
 
             <div @click="ranchTargetUpgradeTier && selectRanchTier(ranchTargetUpgradeTier)"
-                 class="px-4 py-3 h-[52px] flex items-center justify-center transition-all duration-300"
+                 class="px-4 py-2 h-[44px] flex items-center justify-center transition-all duration-300"
                  :class="[
-                   ranchTargetUpgradeTier 
-                     ? 'bg-emerald-400 text-black rounded-b-2xl cursor-pointer hover:opacity-95 active:scale-[0.99]'
-                     : (ranchExtras > 0 ? (isDark ? 'bg-white text-black font-bold' : 'bg-black text-white font-bold') : (isDark ? 'bg-transparent text-neutral-400 font-semibold' : 'bg-transparent text-neutral-600 font-semibold'))
+                   ranchTargetUpgradeTier
+                     ? 'rounded-b-[16px] cursor-pointer hover:opacity-95 active:scale-[0.99]'
+                     : (ranchExtras > 0 ? 'font-bold' : (isDark ? 'bg-transparent text-[#94a3b8] font-semibold' : 'bg-transparent text-[#64748b] font-semibold'))
                  ]">
-              
+
               <template x-if="!ranchTargetUpgradeTier">
                 <div class="flex items-center justify-between w-full">
-                  <div class="text-[22px] transition-colors flex items-start">
-                    <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                  <div class="text-[20px] transition-colors flex items-start" :class="ranchExtras > 0 ? (isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]') : ''">
+                    <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                     <span class="leading-none" x-text="ranchExtras > 0 ? '5 / Extra × ' + ranchExtras : '5 / Extra'"></span>
                   </div>
-                  
-                  <div class="flex items-center text-[22px] font-bold transition-colors">
+
+                  <div class="flex items-center text-[20px] font-bold transition-colors">
                     <template x-if="ranchExtras > 0">
-                      <div class="flex items-start text-[#E50914]">
+                      <div class="flex items-start" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
                         <span class="leading-none mr-[0.5px]">+</span>
-                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none" x-text="ranchExtraTotal"></span>
                       </div>
                     </template>
                     <template x-if="ranchExtras === 0">
                       <div class="flex items-start">
-                        <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                        <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                         <span class="leading-none">0</span>
                       </div>
                     </template>
@@ -3331,10 +3356,10 @@
 
               <template x-if="ranchTargetUpgradeTier">
                 <div class="flex items-center justify-center gap-2 w-full select-none text-center">
-                  <svg class="w-4 h-4 shrink-0 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                  <svg class="w-4 h-4 shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
                   </svg>
-                  <span class="text-[22px] font-black tracking-tight leading-none text-black">
+                  <span class="text-[20px] font-black tracking-tight leading-none" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
                     <span x-text="ranchTargetUpgradeTier"></span> Upgrade – Same Price!
                   </span>
                 </div>
@@ -3344,41 +3369,42 @@
           </div>
 
           <div class="flex items-center justify-between gap-2 px-1">
-            <span class="text-[24px] font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">Total Photos</span>
-            <div class="flex items-center justify-between rounded-2xl p-1.5 transition-colors h-[52px] w-[168px]"
-                 :class="isDark ? 'bg-[#0d0d0d]' : 'bg-neutral-100'"
-                 :style="isDark ? 'box-shadow: 6px 6px 12px #000000, -5px -5px 11px #262626;' : 'box-shadow: 6px 6px 12px #d1d1d1, -6px -6px 12px #ffffff;'">
+            <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Photos</span>
+            <div class="flex items-center justify-between rounded-[16px] p-1.5 transition-colors h-[52px] w-[168px]"
+                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                 :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
               <button @click="updateRanchCount('down')" :disabled="ranchCount <= 25"
-                      :class="ranchCount <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-black/5 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
-              
-              <input type="number" 
+                      :class="ranchCount <= 25 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">-</button>
+
+              <input type="number"
                      x-model.number="ranchCount"
                      @change="sanitizeRanchInput()"
                      @blur="sanitizeRanchInput()"
                      min="25"
                      max="150"
-                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" />
-              
+                     class="w-12 h-11 bg-transparent text-center text-[26px] font-black focus:outline-none tabular-nums shrink-0"
+                     :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" />
+
               <button @click="updateRanchCount('up')" :disabled="ranchCount >= 150"
-                      :class="ranchCount >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-white cursor-pointer' : 'hover:bg-black/5 text-black cursor-pointer')"
-                      class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
+                      :class="ranchCount >= 150 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Ranch Shoot', ranchCount + ' imgs', ranchRawTotal, 'home')" 
+        <button @click="addConfiguredItemToCart('MLS Photos: Ranch Shoot', ranchCount + ' imgs', ranchRawTotal, 'home')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black' : 'bg-black text-white')"
-                :style="state !== 'success' ? (isDark ? 'box-shadow: 8px 8px 16px #000000, -7px -7px 15px #262626;' : 'box-shadow: 8px 8px 16px #d1d1d1, -8px -8px 16px #ffffff;') : ''"
-                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] mt-1">
+                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="isDark ? 'text-black' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
