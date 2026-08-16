@@ -1430,31 +1430,31 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          <button @click="mpPortSide = 'MLS'; openSheet('matterport')" class="flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-5 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
+          <button @click="mpPortSide = 'MLS'; openSheet('matterport')" class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-            <div class="w-[70px] h-[70px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-              <svg class="w-[53px] h-[53px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor">
+                  :style="isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;'">
+            <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[75%] h-[75%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/>
               </svg>
             </div>
             <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">MLS 360</span>
           </button>
-          <button @click="mpPortSide = 'PORT'; openSheet('matterport')" class="flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-5 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
+          <button @click="mpPortSide = 'PORT'; openSheet('matterport')" class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-            <div class="w-[70px] h-[70px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-              <svg class="w-[53px] h-[53px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor">
+                  :style="isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;'">
+            <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[75%] h-[75%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/>
               </svg>
             </div>
             <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">PORT 360</span>
           </button>
-          <button @click="openSheet('zillow')" class="flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-5 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
+          <button @click="openSheet('zillow')" class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-            <div class="w-[70px] h-[70px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-              <svg class="w-[51px] h-[51px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
+                  :style="isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;'">
+            <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[71%] h-[71%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5">
                 <path d="M6.7467,18.7878v4.4681c8.0151-3.8259,16.9146-7.41,25.2164-7.9631l2.6543,3.9816c-6.0739,2.7818-10.7292,8.22-13.5327,11.2222,9.27-2.9613,16.8806-3.6837,20.1686-4.5863V18.6941L23.9048,5.5Z"/>
                 <path d="M6.7467,27.2374V42.5H41.2533V31.219a111.9752,111.9752,0,0,0-26.7575,5.9792l-2.474-3.7812C17.54,27.6756,21.2133,24.68,24.5935,21.5217A94.3183,94.3183,0,0,0,6.7467,27.2374Z"/>
               </svg>
