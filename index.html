@@ -1480,7 +1480,7 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 h-[88vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[88vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
@@ -1514,8 +1514,8 @@
                   :style="photosCategoryTab === 'PORT' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">PORT</button>
         </div>
 
-        <div class="flex flex-col gap-4" x-show="photosCategoryTab === 'MLS'">
-          <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-3" x-show="photosCategoryTab === 'MLS'">
+          <div class="grid grid-cols-2 gap-3">
             <button @click="openSheet('full')" class="flex flex-col items-center justify-center gap-2 pt-4 pb-2 px-3 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
                     :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                     :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
@@ -2437,7 +2437,7 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 h-[88vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[88vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
@@ -2526,7 +2526,7 @@
           </button>
         </div>
 
-        <div class="grid grid-cols-2 gap-4" x-show="aerialFilter === 'Combo'">
+        <div class="grid grid-cols-2 gap-3" x-show="aerialFilter === 'Combo'">
           <button @click="aerialSelected = 'Aerial Mini 2 Images + Curb Appeal Vid 30 sec'; openSheet('aerialProduct')" class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;'">
