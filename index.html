@@ -10,46 +10,9 @@
       darkMode: 'class',
     }
   </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    html { overflow-x: hidden; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif;
-      overscroll-behavior-y: none;
-    }
-    .tabular-nums { font-variant-numeric: tabular-nums; }
-    [x-cloak] { display: none !important; }
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    input[type=number] { -moz-appearance: textfield; }
-
-    @keyframes subtle-pulse-white {
-      0%, 100% { border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
-      50% { border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 12px 0 rgba(255, 255, 255, 0.25); }
-    }
-
-    @keyframes subtle-pulse-red-light {
-      0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-      50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 10px 0 rgba(239, 68, 68, 0.2); }
-    }
-
-    .animate-pulse-dark { animation: subtle-pulse-white 2s infinite ease-in-out; }
-    .animate-pulse-light { animation: subtle-pulse-red-light 1.8s infinite ease-in-out; }
-
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  </style>
-</head>
-<body class="w-full min-h-screen transition-colors duration-300"
-      :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
-      x-data="{
+  <script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('app', () => ({
         activeSheet: null,
         activeTab: 'photos',
         activePrimary: null,
@@ -928,7 +891,49 @@
             this.dragY = 0;
           }
         }
-      }">
+      }));
+});
+</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    html { overflow-x: hidden; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif;
+      overscroll-behavior-y: none;
+    }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+    [x-cloak] { display: none !important; }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+
+    @keyframes subtle-pulse-white {
+      0%, 100% { border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+      50% { border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 12px 0 rgba(255, 255, 255, 0.25); }
+    }
+
+    @keyframes subtle-pulse-red-light {
+      0%, 100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 10px 0 rgba(239, 68, 68, 0.2); }
+    }
+
+    .animate-pulse-dark { animation: subtle-pulse-white 2s infinite ease-in-out; }
+    .animate-pulse-light { animation: subtle-pulse-red-light 1.8s infinite ease-in-out; }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="w-full min-h-screen transition-colors duration-300"
+      :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
+      x-data="app">
 
   <!-- APP CONTAINER -->
   <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28">
