@@ -1098,22 +1098,22 @@ document.addEventListener('alpine:init', () => {
                :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+        <div class="flex items-center gap-4 p-3 rounded-[24px]"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 relative transition-colors duration-300"
+          <div class="w-[60px] h-[60px] rounded-[16px] flex items-center justify-center shrink-0 relative transition-colors duration-300"
                :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
-            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+            <svg class="w-9 h-9" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="absolute -top-1.5 -right-1.5 text-white text-[12px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md"
+            <span class="absolute top-0.5 right-0.5 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-md"
                   :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'"
                   x-text="activeCount()"></span>
           </div>
           <div class="flex flex-col justify-center text-left flex-1">
-            <span class="text-[17px] font-extrabold leading-none tracking-tight mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Your Quote</span>
-            <h1 class="text-[26px] font-black leading-tight tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Cart</h1>
+            <span class="text-[15px] font-extrabold leading-none tracking-tight mb-1" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Your Quote</span>
+            <h1 class="text-[22px] font-black leading-tight tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Cart</h1>
           </div>
           <button @click="clearCart()" class="p-2 rounded-[14px] transition-all active:scale-90 cursor-pointer shrink-0" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Clear Cart">
             <svg class="w-6 h-6 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2">
@@ -1122,23 +1122,23 @@ document.addEventListener('alpine:init', () => {
           </button>
         </div>
 
-        <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5">
+        <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5 px-3">
           <template x-for="item in cartItems" :key="item.id">
             <div>
-              <div x-show="item.state === 'active'" class="py-3 flex justify-between items-start border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
-                <div class="pr-3 min-w-0">
+              <div x-show="item.state === 'active'" class="py-3 flex justify-between items-start gap-3 border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
+                <div class="min-w-0">
                   <div class="text-[14px] font-bold leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
                   <div class="text-[12px] leading-snug" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
                 </div>
 
-                <div class="flex items-center gap-1.5 shrink-0">
+                <div class="flex items-center gap-1 shrink-0">
                   <span class="flex items-baseline" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
                     <span class="text-[11px] font-bold self-start mr-[1px]">$</span>
                     <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
                     <span class="text-[11px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
                   </span>
-                  <button @click.stop="deleteItem(item)" class="p-1 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
-                    <span class="text-[12px] font-bold block">✕</span>
+                  <button @click.stop="deleteItem(item)" class="p-0.5 -mr-1 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
+                    <span class="text-[11px] font-bold block">✕</span>
                   </button>
                 </div>
               </div>
@@ -1201,7 +1201,7 @@ document.addEventListener('alpine:init', () => {
 
         </div>
 
-        <div class="pt-1.5 space-y-2 px-3 w-full transition-colors duration-300">
+        <div class="pt-1.5 space-y-1.5 px-3 w-full transition-colors duration-300">
           
           <div class="flex items-center justify-between gap-2 w-full text-[16px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
             <span class="font-medium">Subtotal</span>
@@ -1213,13 +1213,8 @@ document.addEventListener('alpine:init', () => {
           </div>
 
           <div class="flex items-center justify-between gap-2 w-full text-[16px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
-            <span class="font-medium">Tax (8.25%)</span>
             <div class="flex items-center gap-2.5">
-              <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
-                <span class="text-[12px] self-start mr-[1px]">$</span>
-                <span class="text-[18px]" x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
-                <span class="text-[12px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
-              </span>
+              <span class="font-medium">Tax (8.25%)</span>
               <button @click="includeTax = !includeTax" type="button" 
                       class="w-6 h-6 rounded-[8px] flex items-center justify-center transition-all duration-150 shrink-0 cursor-pointer"
                       :class="includeTax ? 'bg-emerald-400' : ''"
@@ -1234,6 +1229,11 @@ document.addEventListener('alpine:init', () => {
                 </template>
               </button>
             </div>
+            <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+              <span class="text-[12px] self-start mr-[1px]">$</span>
+              <span class="text-[18px]" x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
+              <span class="text-[12px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
+            </span>
           </div>
 
           <div class="flex items-center justify-between gap-2 w-full pt-2 border-t"
