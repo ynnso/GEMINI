@@ -821,7 +821,10 @@
           ranch: 'photosCategory',
           airbnb: 'photosCategory',
           port: 'photosCategory',
-          floorplan: 'floorCategory'
+          floorplan: 'floorCategory',
+          videoBuzz: 'video',
+          videoHD: 'video',
+          videoFullHD: 'video'
         },
         goBack() {
           const parent = this.sheetParentMap[this.activeSheet];
@@ -2020,6 +2023,88 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 max-h-[90vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
+          <div class="w-9 h-1.5 rounded-full" :class="isDark ? 'bg-white/30' : 'bg-neutral-300'"></div>
+        </div>
+
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[59px] h-[59px] rounded-[18px] flex items-center justify-center shrink-0"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-[42px] h-[42px]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+          </div>
+          <h1 class="text-[52px] font-black leading-[59px] whitespace-nowrap" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Video</h1>
+        </div>
+
+        <div class="flex gap-2.5">
+          <button @click="videoSelectedSide = 'MLS'" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
+                  :class="videoSelectedSide === 'MLS' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="videoSelectedSide === 'MLS' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">MLS</button>
+          <button @click="videoSelectedSide = 'PORT'" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
+                  :class="videoSelectedSide === 'PORT' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="videoSelectedSide === 'PORT' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">PORT</button>
+        </div>
+
+        <template x-if="videoSelectedSide === 'PORT'">
+          <div class="flex gap-2">
+            <template x-for="sector in ['BCD','CR','AMF']" :key="sector">
+              <button @click="videoPortSector = sector" class="flex-1 py-2.5 text-[16px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
+                      :class="videoPortSector === sector ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                      :style="videoPortSector === sector ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="sector"></button>
+            </template>
+          </div>
+        </template>
+
+        <div class="flex flex-col gap-3">
+          <button @click="videoSelected = 'BuzzReels Trio'; openSheet('videoBuzz')" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
+                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+            <span class="text-[19px] font-black" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">BuzzReels Trio</span>
+            <div class="flex items-start text-[19px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
+              <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+              <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['BuzzReels Trio'] : videoPrices.PORT[videoPortSector]['BuzzReels Trio']"></span>
+            </div>
+          </button>
+          <button @click="videoSelected = 'HD Highlight'; openSheet('videoHD')" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
+                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+            <span class="text-[19px] font-black" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">HD Highlight</span>
+            <div class="flex items-start text-[19px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
+              <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+              <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['HD Highlight'] : videoPrices.PORT[videoPortSector]['HD Highlight']"></span>
+            </div>
+          </button>
+          <button @click="videoSelected = 'Full HD'; openSheet('videoFullHD')" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
+                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+            <span class="text-[19px] font-black" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Full HD</span>
+            <div class="flex items-start text-[19px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
+              <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+              <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['Full HD'] : videoPrices.PORT[videoPortSector]['Full HD']"></span>
+            </div>
+          </button>
+        </div>
+
+      </div>
+    </template>
+
+    <template x-if="activeSheet === 'videoBuzz' || activeSheet === 'videoHD' || activeSheet === 'videoFullHD'">
+      <div x-show="activeSheet === 'videoBuzz' || activeSheet === 'videoHD' || activeSheet === 'videoFullHD'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 min-h-[30vh] max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -2046,12 +2131,12 @@
              :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
             <div class="text-[90px] font-black leading-none flex items-baseline" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" style="letter-spacing:-0.045em;">
-              <template x-if="videoSelected"><span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span></template>
+              <span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span>
               <span x-text="videoPriceDollars" class="leading-none"></span>
               <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="videoPriceCents"></span>
             </div>
 
-            <button @click="includeTax = !includeTax" :disabled="!videoSelected" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
+            <button @click="includeTax = !includeTax" title="Toggle Sales Tax" class="p-0 cursor-pointer outline-none focus:outline-none group active:scale-90 transition-transform self-baseline mb-[8px] ml-2 shrink-0">
               <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
                     :class="includeTax ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]' : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')">
                 Tax
@@ -2060,50 +2145,18 @@
           </div>
         </div>
 
-        <div class="flex gap-2.5">
-          <button @click="videoSelectedSide = 'MLS'; videoSelected = ''" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
-                  :class="videoSelectedSide === 'MLS' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="videoSelectedSide === 'MLS' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">MLS</button>
-          <button @click="videoSelectedSide = 'PORT'; videoSelected = ''" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
-                  :class="videoSelectedSide === 'PORT' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="videoSelectedSide === 'PORT' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">PORT</button>
-        </div>
-
-        <template x-if="videoSelectedSide === 'PORT'">
-          <div class="flex gap-2">
-            <template x-for="sector in ['BCD','CR','AMF']" :key="sector">
-              <button @click="videoPortSector = sector; videoSelected = ''" class="flex-1 py-2.5 text-[16px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
-                      :class="videoPortSector === sector ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                      :style="videoPortSector === sector ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="sector"></button>
-            </template>
-          </div>
-        </template>
-
-        <div class="flex flex-col gap-3">
-          <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
-            <button @click="videoSelected = item" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
-                    :class="videoSelected === item ? 'text-white' : (isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]')"
-                    :style="videoSelected === item ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">
-              <span class="text-[19px] font-black" x-text="item"></span>
-              <div class="flex items-start text-[19px] font-bold">
-                <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-                <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS[item] : videoPrices.PORT[videoPortSector][item]"></span>
-              </div>
-            </button>
-          </template>
-        </div>
         <button @click="addConfiguredItemToCart(videoSelectedSide + ' Video: ' + videoSelected + (videoSelectedSide === 'PORT' ? ' (' + videoPortSector + ')' : ''), '', videoRawTotal, 'video')"
-                :disabled="!videoSelected || state !== 'idle'"
-                :class="[!videoSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
-                :style="videoSelected && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                :disabled="state !== 'idle'"
+                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10" :class="!videoSelected ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!videoSelected ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
