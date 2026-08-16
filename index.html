@@ -2060,6 +2060,38 @@
           </div>
         </div>
 
+        <div class="flex gap-2.5">
+          <button @click="videoSelectedSide = 'MLS'; videoSelected = ''" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
+                  :class="videoSelectedSide === 'MLS' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="videoSelectedSide === 'MLS' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">MLS</button>
+          <button @click="videoSelectedSide = 'PORT'; videoSelected = ''" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
+                  :class="videoSelectedSide === 'PORT' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="videoSelectedSide === 'PORT' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">PORT</button>
+        </div>
+
+        <template x-if="videoSelectedSide === 'PORT'">
+          <div class="flex gap-2">
+            <template x-for="sector in ['BCD','CR','AMF']" :key="sector">
+              <button @click="videoPortSector = sector; videoSelected = ''" class="flex-1 py-2.5 text-[16px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
+                      :class="videoPortSector === sector ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                      :style="videoPortSector === sector ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="sector"></button>
+            </template>
+          </div>
+        </template>
+
+        <div class="flex flex-col gap-3">
+          <template x-for="item in ['BuzzReels Trio','HD Highlight','Full HD']" :key="item">
+            <button @click="videoSelected = item" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
+                    :class="videoSelected === item ? 'text-white' : (isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]')"
+                    :style="videoSelected === item ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">
+              <span class="text-[19px] font-black" x-text="item"></span>
+              <div class="flex items-start text-[19px] font-bold">
+                <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
+                <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS[item] : videoPrices.PORT[videoPortSector][item]"></span>
+              </div>
+            </button>
+          </template>
+        </div>
         <button @click="addConfiguredItemToCart(videoSelectedSide + ' Video: ' + videoSelected + (videoSelectedSide === 'PORT' ? ' (' + videoPortSector + ')' : ''), '', videoRawTotal, 'video')"
                 :disabled="!videoSelected || state !== 'idle'"
                 :class="[!videoSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
