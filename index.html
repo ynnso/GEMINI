@@ -1112,8 +1112,8 @@ document.addEventListener('alpine:init', () => {
                   x-text="activeCount()"></span>
           </div>
           <div class="flex flex-col justify-center text-left flex-1">
-            <span class="text-[15px] font-extrabold leading-none tracking-tight mb-1" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Your Quote</span>
-            <h1 class="text-[22px] font-black leading-tight tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Cart</h1>
+            <span class="text-[12px] font-extrabold leading-none tracking-tight mb-1" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Your Quote</span>
+            <h1 class="text-[26px] font-black leading-tight tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Cart</h1>
           </div>
           <button @click="clearCart()" class="p-2 rounded-[14px] transition-all active:scale-90 cursor-pointer shrink-0" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Clear Cart">
             <svg class="w-6 h-6 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2">
@@ -1125,19 +1125,19 @@ document.addEventListener('alpine:init', () => {
         <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5 px-3">
           <template x-for="item in cartItems" :key="item.id">
             <div>
-              <div x-show="item.state === 'active'" class="py-3 flex justify-between items-start gap-3 border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
-                <div class="min-w-0">
+              <div x-show="item.state === 'active'" class="py-3 flex justify-between items-start gap-2 border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
+                <div class="min-w-0 flex-1">
                   <div class="text-[14px] font-bold leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
                   <div class="text-[12px] leading-snug" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
                 </div>
 
-                <div class="flex items-center gap-1 shrink-0">
-                  <span class="flex items-baseline" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                <div class="flex items-center shrink-0">
+                  <span class="flex items-baseline justify-end w-[64px]" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
                     <span class="text-[11px] font-bold self-start mr-[1px]">$</span>
                     <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
                     <span class="text-[11px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
                   </span>
-                  <button @click.stop="deleteItem(item)" class="p-0.5 -mr-1 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
+                  <button @click.stop="deleteItem(item)" class="p-1 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
                     <span class="text-[11px] font-bold block">✕</span>
                   </button>
                 </div>
@@ -1216,17 +1216,19 @@ document.addEventListener('alpine:init', () => {
             <div class="flex items-center gap-2.5">
               <span class="font-medium">Tax (8.25%)</span>
               <button @click="includeTax = !includeTax" type="button" 
-                      class="w-6 h-6 rounded-[8px] flex items-center justify-center transition-all duration-150 shrink-0 cursor-pointer"
+                      class="p-1.5 -m-1.5 flex items-center justify-center cursor-pointer shrink-0">
+                <span class="w-[17px] h-[17px] rounded-[6px] flex items-center justify-center transition-all duration-150"
                       :class="includeTax ? 'bg-emerald-400' : ''"
                       :style="!includeTax ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : ''">
-                <template x-if="includeTax">
-                  <svg class="w-5 h-5 stroke-black fill-none" viewBox="0 0 24 24" stroke-width="4">
-                    <path d="M5 13l4 4L19 7"/>
-                  </svg>
-                </template>
-                <template x-if="!includeTax">
-                  <span class="text-white text-[14px] font-bold leading-none">✕</span>
-                </template>
+                  <template x-if="includeTax">
+                    <svg class="w-3.5 h-3.5 stroke-black fill-none" viewBox="0 0 24 24" stroke-width="4">
+                      <path d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </template>
+                  <template x-if="!includeTax">
+                    <span class="text-white text-[14px] font-bold leading-none">✕</span>
+                  </template>
+                </span>
               </button>
             </div>
             <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
@@ -1379,7 +1381,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Reshoot', reshootCount + ' imgs', reshootRawTotal, 'refresh')"
+        <button @click="addConfiguredItemToCart('MLS Photos: Reshoot', reshootCount + ' Photos', reshootRawTotal, 'refresh')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
@@ -2746,7 +2748,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
-        <button @click="aerialHasImageStepper(aerialSelected) ? addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, aerialQty + ' imgs', aerialRawTotal, 'aerial') : addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, '', aerialRawTotal, 'aerial')" :disabled="state !== 'idle'"
+        <button @click="aerialHasImageStepper(aerialSelected) ? addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, aerialQty + ' Photos', aerialRawTotal, 'aerial') : addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, '', aerialRawTotal, 'aerial')" :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
@@ -2957,7 +2959,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('PORT Photos: ' + portBrand, portQty + ' imgs', portRawTotal, 'camera')"
+        <button @click="addConfiguredItemToCart('PORT Photos: ' + portBrand, portQty + ' Photos', portRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
@@ -3219,7 +3221,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Full Shoot', selectedSqFtLabel + ' (' + count + ' imgs)', rawTotal, 'camera')"
+        <button @click="addConfiguredItemToCart('MLS Photos: Full Shoot', selectedSqFtLabel + ' (' + count + ' Photos)', rawTotal, 'camera')"
                 :disabled="!holdsSelection || state !== 'idle'"
                 :class="[
                   !holdsSelection
@@ -3379,7 +3381,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Exterior Only', exteriorCount + ' imgs', exteriorRawTotal, 'camera')"
+        <button @click="addConfiguredItemToCart('MLS Photos: Exterior Only', exteriorCount + ' Photos', exteriorRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
@@ -3533,7 +3535,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Mini Shoot', miniCount + ' imgs', miniRawTotal, 'camera')"
+        <button @click="addConfiguredItemToCart('MLS Photos: Mini Shoot', miniCount + ' Photos', miniRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
@@ -3689,7 +3691,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' imgs', airbnbRawTotal, 'home')"
+        <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' Photos', airbnbRawTotal, 'home')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
@@ -3887,7 +3889,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
-        <button @click="addConfiguredItemToCart('MLS Photos: Ranch Shoot', ranchCount + ' imgs', ranchRawTotal, 'home')"
+        <button @click="addConfiguredItemToCart('MLS Photos: Ranch Shoot', ranchCount + ' Photos', ranchRawTotal, 'home')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
