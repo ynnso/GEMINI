@@ -306,6 +306,11 @@
  if (this.addonSelected === 'PORT Extended/Hr' || this.addonSelected === 'Processing/Hr') return 100;
  return 0;
  },
+ addonHourlyRateFor(item) {
+ if (item === 'MLS Extended/Hr') return 50;
+ if (item === 'PORT Extended/Hr' || item === 'Processing/Hr') return 100;
+ return 0;
+ },
  aerialPrices: {
  MLS: { 'Aerial Mini 2 Images': 79, 'Aerial Standard 5 Images': 119, 'Aerial Curb Appeal Video 30 sec': 119, 'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 139, 'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 179, 'Aerial Video 2 min': 249, 'Aerial Mini 2 Images + Aerial Video 2 min': 259, 'Aerial Standard 5 Images + Aerial Video 2 min': 299 },
  PORT: { 'Aerial Mini 2 Images': 149, 'Aerial Standard 5 Images': 199, 'Aerial Curb Appeal Video 30 sec': 199, 'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 249, 'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 299, 'Aerial Video 2 min': 349, 'Aerial Mini 2 Images + Aerial Video 2 min': 349, 'Aerial Standard 5 Images + Aerial Video 2 min': 399 }
@@ -419,6 +424,12 @@
  tour360Category: 'MLS',
  floorCategory: 'MLS',
  addonsCategory: 'Sky',
+        addonDisplayLabels: {
+          'Sky + Grass Bundle': 'Blue Sky + Green Grass Bundle'
+        },
+        addonDisplayLabel(item) {
+          return this.addonDisplayLabels[item] || item;
+        },
         photoCategory: 'MLS',
         
         state: 'idle',
@@ -853,7 +864,8 @@
           videoFullHD: 'video',
           aerialProduct: 'aerial',
           matterport: 'tourCategory',
-          zillow: 'tourCategory'
+          zillow: 'tourCategory',
+          addonProduct: 'addon'
         },
         goBack() {
           const parent = this.sheetParentMap[this.activeSheet];
@@ -2256,6 +2268,79 @@
 
     <template x-if="activeSheet === 'addon'">
       <div x-show="activeSheet === 'addon'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[88vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="py-1.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
+          <div class="w-9 h-1.5 rounded-full" :class="isDark ? 'bg-white/30' : 'bg-neutral-300'"></div>
+        </div>
+
+        <div class="flex items-center gap-3 p-3 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[48px] h-[48px] rounded-[16px] flex items-center justify-center shrink-0"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-[34px] h-[34px]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" /></svg>
+          </div>
+          <h1 class="text-[42px] font-black leading-[48px] whitespace-nowrap" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Add-Ons</h1>
+        </div>
+
+        <div class="grid grid-cols-5 gap-1.5">
+          <button @click="addonsCategory = 'Sky'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
+                  :class="addonsCategory === 'Sky' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="addonsCategory === 'Sky' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Sky</button>
+          <button @click="addonsCategory = 'Grass'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
+                  :class="addonsCategory === 'Grass' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="addonsCategory === 'Grass' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Grass</button>
+          <button @click="addonsCategory = 'Digital'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
+                  :class="addonsCategory === 'Digital' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="addonsCategory === 'Digital' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Digital</button>
+          <button @click="addonsCategory = 'Time'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
+                  :class="addonsCategory === 'Time' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="addonsCategory === 'Time' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Time</button>
+          <button @click="addonsCategory = 'Market'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
+                  :class="addonsCategory === 'Market' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="addonsCategory === 'Market' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Market</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <template x-for="item in ({
+            Sky: ['Rain Blue Sky','Blue Sky','Sunset Sky','Sky + Grass Bundle'],
+            Grass: ['Green Grass','Aerial Green Grass','Aerial/Ground Grass Bundle'],
+            Digital: ['ColorPop','Digital Twilight','Home Measurement','Social Media Teaser','YouTube','Trueview','TV Screen/Monitor','Virtual Staging'],
+            Time: ['Inclement Weather Return','Cancellation Fee','Sunrise Time Slot','Twilight Time Slot','Night Time Slot','Weekend Fee','Next Day Rush','Same Day Rush','MLS Extended/Hr','PORT Extended/Hr','Processing/Hr'],
+            Market: ['Keepsake Photo Album','2 MLS Market Add-On','5 MLS Market Add-On','10 MLS Market Add-On']
+          })[addonsCategory]" :key="item">
+            <button @click="addonSelected = item; openSheet('addonProduct')" class="flex flex-col items-center justify-center gap-1.5 pt-4 pb-2 px-2 rounded-[20px] transition-all active:scale-[0.97] cursor-pointer"
+                    :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                    :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+              <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+                <svg class="w-[30px] h-[30px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="currentColor" x-init="$el.setAttribute('viewBox', addonIconViewBox[item] || '0 0 24 24')" x-effect="$el.setAttribute('viewBox', addonIconViewBox[item] || '0 0 24 24')" x-html="addonIconMap[item]"></svg>
+              </div>
+              <div class="flex flex-col items-center -space-y-0.5">
+                <span class="text-[13px] font-black text-center leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="addonDisplayLabel(item)"></span>
+                <span class="text-[12px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="addonIsHourly(item) ? '$' + addonHourlyRateFor(item) + '/hr' : '$' + addonDisplayPrice(item)"></span>
+              </div>
+            </button>
+          </template>
+        </div>
+
+      </div>
+    </template>
+
+    <template x-if="activeSheet === 'addonProduct'">
+      <div x-show="activeSheet === 'addonProduct'"
            x-cloak
            x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
            x-transition:enter-start="translate-y-full"
