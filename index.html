@@ -2459,31 +2459,6 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
-        <button x-show="addonHasStepper(addonSelected)" @click="addConfiguredItemToCart('Add-On: ' + addonSelected, addonQty + ' imgs', addonRawTotal, 'addon')" :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
-                :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
-          <template x-if="state !== 'success'">
-            <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
-                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
-              </svg>
-            </span>
-          </template>
-          <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-              <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-            </svg>
-          </template>
-        </button>
-
         <template x-if="addonIsHourly(addonSelected)">
           <div class="flex flex-col gap-4">
             <div class="flex items-center justify-between gap-2 px-1">
@@ -2499,32 +2474,8 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
-        <button x-show="addonIsHourly(addonSelected)" @click="addConfiguredItemToCart('Add-On: ' + addonSelected, addonHours + ' hrs', addonRawTotal, 'addon')" :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
-                :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
-          <template x-if="state !== 'success'">
-            <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
-                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
-              </svg>
-            </span>
-          </template>
-          <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-              <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-            </svg>
-          </template>
-        </button>
-
-        <button x-show="!addonHasStepper(addonSelected) && !addonIsHourly(addonSelected)" @click="addConfiguredItemToCart('Add-On: ' + addonSelected, '', addonRawTotal, 'addon')" :disabled="!addonSelected || state !== 'idle'"
+        <button @click="addonHasStepper(addonSelected) ? addConfiguredItemToCart('Add-On: ' + addonSelected, addonQty + ' Photos', addonRawTotal, 'addon') : (addonIsHourly(addonSelected) ? addConfiguredItemToCart('Add-On: ' + addonSelected, addonHours + ' hrs', addonRawTotal, 'addon') : addConfiguredItemToCart('Add-On: ' + addonSelected, '', addonRawTotal, 'addon'))"
+                :disabled="!addonSelected || state !== 'idle'"
                 :class="[!addonSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
                 :style="addonSelected && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
