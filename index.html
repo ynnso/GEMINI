@@ -1125,37 +1125,21 @@ document.addEventListener('alpine:init', () => {
         <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5">
           <template x-for="item in cartItems" :key="item.id">
             <div>
-              <div x-show="item.state === 'active'"
-                   x-data="{ offsetX: 0, startX: 0, swiping: false }" 
-                   @touchstart="startX = $event.touches[0].clientX; swiping = true"
-                   @touchmove="if(swiping) { offsetX = $event.touches[0].clientX - startX; if(offsetX > 0) offsetX = 0; }"
-                   @touchend="swiping = false; if(offsetX < -80) { deleteItem(item); } else { offsetX = 0; }"
-                   class="relative overflow-hidden transition-all duration-200">
-                   
-                <div class="absolute inset-0 flex items-center justify-end pr-4 text-white font-extrabold text-[13px]" :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'">
-                  <span>DELETE 🗑️</span>
+              <div x-show="item.state === 'active'" class="py-3 flex justify-between items-start border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
+                <div class="pr-3 min-w-0">
+                  <div class="text-[14px] font-bold leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
+                  <div class="text-[12px] leading-snug" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
                 </div>
 
-                <div class="py-3 flex justify-between items-center relative z-10 cursor-pointer select-none border-b transition-colors duration-300"
-                     :class="isDark ? 'bg-[#1e232a] border-white/10' : 'bg-[#e6e9ef] border-black/10'"
-                     :style="`transform: translateX(${offsetX}px)`">
-                  
-                  <div class="truncate pr-2">
-                    <div class="text-[14px] font-bold leading-tight truncate" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
-                    <div class="text-[12px] truncate" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
-                  </div>
-
-                  <div class="flex items-center gap-1.5 shrink-0">
-                    <span class="flex items-baseline" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
-                      <span class="text-[11px] font-bold self-start mr-[1px]">$</span>
-                      <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
-                      <span class="text-[11px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
-                    </span>
-                    <button @click.stop="deleteItem(item)" class="p-1 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
-                      <span class="text-[12px] font-bold block">✕</span>
-                    </button>
-                  </div>
-
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <span class="flex items-baseline" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                    <span class="text-[11px] font-bold self-start mr-[1px]">$</span>
+                    <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
+                    <span class="text-[11px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
+                  </span>
+                  <button @click.stop="deleteItem(item)" class="p-1 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
+                    <span class="text-[12px] font-bold block">✕</span>
+                  </button>
                 </div>
               </div>
 
@@ -1217,19 +1201,25 @@ document.addEventListener('alpine:init', () => {
 
         </div>
 
-        <div class="pt-2 space-y-3 px-3 w-full transition-colors duration-300">
+        <div class="pt-1.5 space-y-2 px-3 w-full transition-colors duration-300">
           
-          <div class="flex items-center justify-between gap-2 w-full text-[17px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
+          <div class="flex items-center justify-between gap-2 w-full text-[16px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
             <span class="font-medium">Subtotal</span>
             <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
               <span class="text-[12px] self-start mr-[1px]">$</span>
-              <span class="text-[19px]" x-text="calculateSubtotal().toFixed(2).split('.')[0]"></span>
+              <span class="text-[18px]" x-text="calculateSubtotal().toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}).split('.')[0]"></span>
               <span class="text-[12px]" x-text="'.' + calculateSubtotal().toFixed(2).split('.')[1]"></span>
             </span>
           </div>
 
-          <div class="flex items-center justify-between gap-2 w-full text-[17px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
-            <label class="flex items-center gap-2.5 cursor-pointer select-none group">
+          <div class="flex items-center justify-between gap-2 w-full text-[16px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
+            <span class="font-medium">Tax (8.25%)</span>
+            <div class="flex items-center gap-2.5">
+              <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                <span class="text-[12px] self-start mr-[1px]">$</span>
+                <span class="text-[18px]" x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
+                <span class="text-[12px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
+              </span>
               <button @click="includeTax = !includeTax" type="button" 
                       class="w-6 h-6 rounded-[8px] flex items-center justify-center transition-all duration-150 shrink-0 cursor-pointer"
                       :class="includeTax ? 'bg-emerald-400' : ''"
@@ -1243,24 +1233,16 @@ document.addEventListener('alpine:init', () => {
                   <span class="text-white text-[14px] font-bold leading-none">✕</span>
                 </template>
               </button>
-
-              <span class="font-medium" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Tax (8.25%)</span>
-            </label>
-
-            <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
-              <span class="text-[12px] self-start mr-[1px]">$</span>
-              <span class="text-[19px]" x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
-              <span class="text-[12px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
-            </span>
+            </div>
           </div>
 
-          <div class="flex items-center justify-between gap-2 w-full pt-2.5 border-t"
+          <div class="flex items-center justify-between gap-2 w-full pt-2 border-t"
                :class="isDark ? 'border-white/10' : 'border-black/10'">
-            <span class="text-[18px] font-bold tracking-wider"
+            <span class="text-[17px] font-bold tracking-wider"
                   :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total</span>
             <span class="flex items-baseline font-extrabold" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
               <span class="text-[12px] self-start mr-[1px]">$</span>
-              <span class="text-[26px] leading-none" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
+              <span class="text-[25px] leading-none" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}).split('.')[0]"></span>
               <span class="text-[12px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
             </span>
           </div>
@@ -1971,7 +1953,7 @@ document.addEventListener('alpine:init', () => {
                     :style="mpService === 'Premium' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">Premium</button>
           </div>
 
-          <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, mpSqFtOptions.find(o => o.value === mpSqFt).label, mpRawTotal, 'tour360')"
+          <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, (mpSqFt === '6000' ? mpCustomSqft.toLocaleString('en-US') + ' Sq Ft' : mpSqFtOptions.find(o => o.value === mpSqFt).label), mpRawTotal, 'tour360')"
                   :disabled="!mpSqFt || state !== 'idle'"
                   :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                   :style="mpSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
