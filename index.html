@@ -873,14 +873,15 @@
   <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28">
 
     <!-- APP HEADER -->
-    <header class="fixed top-2 left-1/2 -translate-x-1/2 w-[92%] max-w-sm h-[64px] px-3 rounded-full grid grid-cols-3 items-center z-[70] transition-all duration-300"
-            :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-            :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
+    <header class="fixed top-0 left-0 right-0 px-6 h-[76px] grid grid-cols-3 items-center z-[70] transition-colors duration-300"
+            :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'">
 
       <!-- LOGO / HOME BUTTON -->
       <div class="justify-self-start">
         <button @click="activePrimary = null; closeSheet()"
-                class="h-10 px-3 rounded-full inline-grid place-items-center tracking-tighter transition-all active:scale-90 cursor-pointer">
+                class="h-10 px-3 rounded-full inline-grid place-items-center tracking-tighter transition-all active:scale-90 cursor-pointer"
+                :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'">
           <span class="font-bold text-[20px]" style="font-variant-numeric: tabular-nums;" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">S<span class="font-black" style="font-size:27px;" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">2</span>S</span>
         </button>
       </div>
@@ -889,7 +890,8 @@
       <div class="justify-self-center">
         <button @click="isDark = !isDark"
                 class="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
-                :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'"
+                :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
+                :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
                 :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
 
           <template x-if="isDark">
@@ -911,7 +913,8 @@
       <div class="justify-self-end">
         <button @click="openSheet('cart')"
                 class="w-11 h-11 rounded-full flex items-center justify-center relative transition-all active:scale-90 focus:outline-none cursor-pointer"
-                :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'"
+                :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
+                :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
                 title="View Quote Cart">
 
           <svg class="w-7 h-7" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
