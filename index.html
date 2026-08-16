@@ -2314,14 +2314,31 @@
                   :style="addonsCategory === 'Market' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Market</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3" x-show="addonsCategory === 'Sky' || addonsCategory === 'Grass' || addonsCategory === 'Market'">
           <template x-for="item in ({
             Sky: ['Rain Blue Sky','Blue Sky','Sunset Sky','Sky + Grass Bundle'],
             Grass: ['Green Grass','Aerial Green Grass','Aerial/Ground Grass Bundle'],
-            Digital: ['ColorPop','Digital Twilight','Home Measurement','Social Media Teaser','YouTube','Trueview','TV Screen/Monitor','Virtual Staging'],
-            Time: ['Inclement Weather Return','Cancellation Fee','Sunrise Time Slot','Twilight Time Slot','Night Time Slot','Weekend Fee','Next Day Rush','Same Day Rush','MLS Extended/Hr','PORT Extended/Hr','Processing/Hr'],
             Market: ['Keepsake Photo Album','2 MLS Market Add-On','5 MLS Market Add-On','10 MLS Market Add-On']
-          })[addonsCategory]" :key="item">
+          })[addonsCategory] || []" :key="item">
+            <button @click="addonSelected = item; openSheet('addonProduct')" class="flex flex-col items-center justify-center gap-1.5 pt-4 pb-2 px-2 rounded-[20px] transition-all active:scale-[0.97] cursor-pointer"
+                    :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                    :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+              <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+                <svg class="w-[30px] h-[30px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="currentColor" x-init="$el.setAttribute('viewBox', addonIconViewBox[item] || '0 0 24 24')" x-effect="$el.setAttribute('viewBox', addonIconViewBox[item] || '0 0 24 24')" x-html="addonIconMap[item]"></svg>
+              </div>
+              <div class="flex flex-col items-center -space-y-0.5">
+                <span class="text-[13px] font-black text-center leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="addonDisplayLabel(item)"></span>
+                <span class="text-[12px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="addonIsHourly(item) ? '$' + addonHourlyRateFor(item) + '/hr' : '$' + addonDisplayPrice(item)"></span>
+              </div>
+            </button>
+          </template>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3" x-show="addonsCategory === 'Digital' || addonsCategory === 'Time'">
+          <template x-for="item in ({
+            Digital: ['ColorPop','Digital Twilight','Home Measurement','Social Media Teaser','YouTube','Trueview','TV Screen/Monitor','Virtual Staging'],
+            Time: ['Inclement Weather Return','Cancellation Fee','Sunrise Time Slot','Twilight Time Slot','Night Time Slot','Weekend Fee','Next Day Rush','Same Day Rush','MLS Extended/Hr','PORT Extended/Hr','Processing/Hr']
+          })[addonsCategory] || []" :key="item">
             <button @click="addonSelected = item; openSheet('addonProduct')" class="flex items-center gap-2 py-1.5 pl-1.5 pr-3 rounded-[20px] transition-all active:scale-[0.97] cursor-pointer"
                     :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                     :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
