@@ -331,12 +331,12 @@
  aerialHeaderSizes: {
    'Aerial Mini 2 Images': 'text-[38px] whitespace-nowrap',
    'Aerial Standard 5 Images': 'text-[33px] whitespace-nowrap',
-   'Aerial Curb Appeal Video 30 sec': 'text-[26px] whitespace-nowrap',
+   'Aerial Curb Appeal Video 30 sec': 'text-[26px] leading-snug',
    'Aerial Video 2 min': 'text-[29px] whitespace-nowrap',
-   'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 'text-[20px] leading-snug',
+   'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 'text-[22px] leading-snug',
    'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 'text-[20px] leading-snug',
-   'Aerial Mini 2 Images + Aerial Video 2 min': 'text-[21px] leading-snug',
-   'Aerial Standard 5 Images + Aerial Video 2 min': 'text-[20px] leading-snug'
+   'Aerial Mini 2 Images + Aerial Video 2 min': 'text-[24px] leading-snug',
+   'Aerial Standard 5 Images + Aerial Video 2 min': 'text-[22px] leading-snug'
  },
  aerialHeaderSize(item) {
    return this.aerialHeaderSizes[item] || 'text-[17px] leading-snug';
@@ -2384,7 +2384,7 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 max-h-[90vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 h-[88vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
