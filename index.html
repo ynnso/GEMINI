@@ -211,7 +211,7 @@ document.addEventListener('alpine:init', () => {
  'ColorPop': 39, 'Digital Twilight': 29, 'Virtual Staging': 60
  },
  addonHasStepper(item) {
- return ['Blue Sky', 'Sunset Sky', 'Green Grass', 'Aerial Green Grass', 'ColorPop', 'Digital Twilight', 'Virtual Staging'].includes(item);
+ return ['Blue Sky', 'Sunset Sky', 'Green Grass', 'Aerial Green Grass', 'ColorPop', 'Digital Twilight', 'Virtual Staging', 'Trueview', 'TV Screen/Monitor'].includes(item);
  },
  addonIsHourly(item) {
  return ['MLS Extended/Hr', 'PORT Extended/Hr', 'Processing/Hr'].includes(item);
@@ -2424,7 +2424,7 @@ document.addEventListener('alpine:init', () => {
           <div class="flex flex-col gap-4">
             <div class="rounded-[20px] overflow-hidden divide-y transition-colors duration-300" :class="isDark ? 'bg-[#1e232a] divide-white/10' : 'bg-[#e6e9ef] divide-black/5'" :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
               <div class="px-4 py-3 h-[52px] flex items-center justify-between">
-                <span class="text-[22px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'Base ' + addonStepperMin(addonSelected) + ' imgs'"></span>
+                <span class="text-[22px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'Base ' + addonStepperMin(addonSelected) + ' Photos'"></span>
                 <div class="flex items-start text-[22px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
                   <span class="text-[15px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                   <span class="leading-none" x-text="addonBasePrices[addonSelected]"></span>
@@ -2447,7 +2447,7 @@ document.addEventListener('alpine:init', () => {
             </div>
 
             <div class="flex items-center justify-between gap-2 px-1">
-              <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Images</span>
+              <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Photos</span>
               <div class="flex items-center justify-between rounded-[16px] p-1.5 transition-colors h-[52px] w-[168px]"
                    :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                    :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
