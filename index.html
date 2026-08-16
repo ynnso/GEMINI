@@ -315,6 +315,19 @@
  aerialSelected: '',
  aerialSelectedSide: 'MLS',
  aerialQty: 2,
+ aerialDisplayLabels: {
+   'Aerial Mini 2 Images': 'Aerial Mini',
+   'Aerial Standard 5 Images': 'Aerial Standard',
+   'Aerial Curb Appeal Video 30 sec': 'Aerial Video 30 sec',
+   'Aerial Video 2 min': 'Aerial Video 2 min',
+   'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 'Aerial Mini 2 Photos + Curb Appeal Vid 30 sec',
+   'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 'Aerial Standard 5 Photos + Curb Appeal Vid 30 sec',
+   'Aerial Mini 2 Images + Aerial Video 2 min': 'Aerial Mini 2 Photos + Aerial Video 2 min',
+   'Aerial Standard 5 Images + Aerial Video 2 min': 'Aerial Standard 5 Photos + Aerial Video 2 min'
+ },
+ aerialDisplayLabel(item) {
+   return this.aerialDisplayLabels[item] || item;
+ },
  aerialHasImageStepper(item) {
  return this.aerialMiniPackages.includes(item) || this.aerialStandardPackages.includes(item);
  },
@@ -2526,7 +2539,7 @@
           </div>
           <div class="flex flex-col justify-center text-left">
             <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="aerialSelectedSide + ' Aerial'"></span>
-            <h1 class="text-[22px] font-black leading-tight tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="aerialSelected"></h1>
+            <h1 class="font-black leading-tight tracking-tight whitespace-nowrap" :class="[isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]', aerialHasImageStepper(aerialSelected) ? 'text-[30px]' : (aerialSelected === 'Aerial Video 2 min' ? 'text-[26px]' : 'text-[17px]')]" x-text="aerialDisplayLabel(aerialSelected)"></h1>
           </div>
         </div>
 
@@ -2555,7 +2568,7 @@
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
               <div class="px-4 py-2 h-[44px] flex items-center justify-between" :class="isDark ? 'border-b border-white/5' : 'border-b border-black/5'">
-                <span class="text-[20px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'Base ' + aerialBaseQty(aerialSelected) + ' imgs'"></span>
+                <span class="text-[20px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'Base ' + aerialBaseQty(aerialSelected) + ' Photos'"></span>
                 <div class="flex items-start text-[20px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
                   <span class="text-[14px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
                   <span class="leading-none" x-text="aerialPrices[aerialSelectedSide][aerialSelected]"></span>
@@ -2578,7 +2591,7 @@
             </div>
 
             <div class="flex items-center justify-between gap-2 px-1">
-              <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Images</span>
+              <span class="text-[24px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total Photos</span>
               <div class="flex items-center justify-between rounded-[16px] p-1.5 transition-colors h-[52px] w-[168px]"
                    :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                    :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
