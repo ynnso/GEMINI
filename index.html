@@ -395,8 +395,23 @@ document.addEventListener('alpine:init', () => {
         
         state: 'idle',
         ctaTimeoutId: null,
+        stateStuckAt: null,
         includeTax: false,
         taxRate: 0.0825,
+
+        init() {
+          setInterval(() => {
+            if (this.state === 'success') {
+              if (!this.stateStuckAt) this.stateStuckAt = Date.now();
+              if (Date.now() - this.stateStuckAt > 900) {
+                this.state = 'idle';
+                this.stateStuckAt = null;
+              }
+            } else {
+              this.stateStuckAt = null;
+            }
+          }, 200);
+        },
 
         /* CART STATE */
         clearedCache: [],
@@ -1389,7 +1404,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart('MLS Photos: Reshoot', reshootCount + ' imgs', reshootRawTotal, 'refresh')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -1404,7 +1419,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -1824,7 +1839,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart(floorPortSide + ' Floor Plan: ' + floorPlanType, floorSqFtOptions.find(o => o.value === floorSqFt).label, floorRawTotal, 'floorplan')"
                 :disabled="!floorSqFt || state !== 'idle'"
-                :class="[!floorSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
+                :class="[!floorSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                 :style="floorSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -1839,7 +1854,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -1963,7 +1978,7 @@ document.addEventListener('alpine:init', () => {
 
           <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, mpSqFtOptions.find(o => o.value === mpSqFt).label, mpRawTotal, 'tour360')"
                   :disabled="!mpSqFt || state !== 'idle'"
-                  :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
+                  :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                   :style="mpSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                   class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
             <template x-if="state !== 'success'">
@@ -1978,7 +1993,7 @@ document.addEventListener('alpine:init', () => {
               </span>
             </template>
             <template x-if="state === 'success'">
-              <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
                 <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
                 <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -2078,7 +2093,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart('Zillow 3D Tour', zillowSqFtOptions.find(o => o.value === zillowSqFt).label, zillowRawTotal, 'tour360')"
                 :disabled="!zillowSqFt || state !== 'idle'"
-                :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
+                :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                 :style="zillowSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -2093,7 +2108,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -2247,7 +2262,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart(videoSelectedSide + ' Video: ' + videoSelected + (videoSelectedSide === 'PORT' ? ' (' + videoPortSector + ')' : ''), '', videoRawTotal, 'video')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -2262,7 +2277,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -2482,7 +2497,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addonHasStepper(addonSelected) ? addConfiguredItemToCart('Add-On: ' + addonSelected, addonQty + ' Photos', addonRawTotal, 'addon') : (addonIsHourly(addonSelected) ? addConfiguredItemToCart('Add-On: ' + addonSelected, addonHours + ' hrs', addonRawTotal, 'addon') : addConfiguredItemToCart('Add-On: ' + addonSelected, '', addonRawTotal, 'addon'))"
                 :disabled="!addonSelected || state !== 'idle'"
-                :class="[!addonSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
+                :class="[!addonSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                 :style="addonSelected && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -2497,7 +2512,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -2755,7 +2770,7 @@ document.addEventListener('alpine:init', () => {
         </template>
 
         <button @click="aerialHasImageStepper(aerialSelected) ? addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, aerialQty + ' imgs', aerialRawTotal, 'aerial') : addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, '', aerialRawTotal, 'aerial')" :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -2770,7 +2785,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -2967,7 +2982,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart('PORT Photos: ' + portBrand, portQty + ' imgs', portRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -2982,7 +2997,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -3232,7 +3247,7 @@ document.addEventListener('alpine:init', () => {
                 :class="[
                   !holdsSelection
                     ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500')
-                    : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')
+                    : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')
                 ]"
                 :style="holdsSelection && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
@@ -3248,7 +3263,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -3389,7 +3404,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart('MLS Photos: Exterior Only', exteriorCount + ' imgs', exteriorRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -3404,7 +3419,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -3543,7 +3558,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart('MLS Photos: Mini Shoot', miniCount + ' imgs', miniRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -3558,7 +3573,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -3699,7 +3714,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' imgs', airbnbRawTotal, 'home')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -3714,7 +3729,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
@@ -3897,7 +3912,7 @@ document.addEventListener('alpine:init', () => {
 
         <button @click="addConfiguredItemToCart('MLS Photos: Ranch Shoot', ranchCount + ' imgs', ranchRawTotal, 'home')"
                 :disabled="state !== 'idle'"
-                :class="state === 'success' ? 'bg-emerald-400 text-black' : 'text-white'"
+                :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
                 class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
@@ -3912,7 +3927,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </template>
           <template x-if="state === 'success'">
-            <svg class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
               <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
               <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
               <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
