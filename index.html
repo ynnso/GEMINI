@@ -318,7 +318,7 @@
  aerialDisplayLabels: {
    'Aerial Mini 2 Images': 'Aerial Mini',
    'Aerial Standard 5 Images': 'Aerial Standard',
-   'Aerial Curb Appeal Video 30 sec': 'Aerial Video 30 sec',
+   'Aerial Curb Appeal Video 30 sec': 'Aerial Curb Appeal Video 30 sec',
    'Aerial Video 2 min': 'Aerial Video 2 min',
    'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 'Aerial Mini 2 Photos + Curb Appeal Vid 30 sec',
    'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 'Aerial Standard 5 Photos + Curb Appeal Vid 30 sec',
@@ -327,6 +327,19 @@
  },
  aerialDisplayLabel(item) {
    return this.aerialDisplayLabels[item] || item;
+ },
+ aerialHeaderSizes: {
+   'Aerial Mini 2 Images': 'text-[38px] whitespace-nowrap',
+   'Aerial Standard 5 Images': 'text-[33px] whitespace-nowrap',
+   'Aerial Curb Appeal Video 30 sec': 'text-[26px] whitespace-nowrap',
+   'Aerial Video 2 min': 'text-[29px] whitespace-nowrap',
+   'Aerial Mini 2 Images + Curb Appeal Vid 30 sec': 'text-[20px] leading-snug',
+   'Aerial Standard 5 Images + Curb Appeal Vid 30 sec': 'text-[20px] leading-snug',
+   'Aerial Mini 2 Images + Aerial Video 2 min': 'text-[21px] leading-snug',
+   'Aerial Standard 5 Images + Aerial Video 2 min': 'text-[20px] leading-snug'
+ },
+ aerialHeaderSize(item) {
+   return this.aerialHeaderSizes[item] || 'text-[17px] leading-snug';
  },
  aerialHasImageStepper(item) {
  return this.aerialMiniPackages.includes(item) || this.aerialStandardPackages.includes(item);
@@ -2539,7 +2552,7 @@
           </div>
           <div class="flex flex-col justify-center text-left min-w-0">
             <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="aerialSelectedSide + ' Aerial ' + (aerialSelected.includes('+') ? 'Combo' : (aerialSelected.includes('Video') ? 'Video' : 'Photos'))"></span>
-            <h1 class="font-black leading-tight tracking-tight" :class="[isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]', aerialSelected === 'Aerial Mini 2 Images' ? 'text-[38px] whitespace-nowrap' : (aerialSelected === 'Aerial Standard 5 Images' ? 'text-[33px] whitespace-nowrap' : (aerialSelected === 'Aerial Video 2 min' ? 'text-[29px] whitespace-nowrap' : (aerialSelected === 'Aerial Curb Appeal Video 30 sec' ? 'text-[26px] whitespace-nowrap' : 'text-[17px] leading-snug')))]" x-text="aerialDisplayLabel(aerialSelected)"></h1>
+            <h1 class="font-black leading-tight tracking-tight" :class="[isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]', aerialHeaderSize(aerialSelected)]" x-text="aerialDisplayLabel(aerialSelected)"></h1>
           </div>
         </div>
 
