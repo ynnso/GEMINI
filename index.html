@@ -1852,6 +1852,15 @@
           </div>
         </div>
 
+        <div class="flex gap-2.5">
+          <button @click="mpPortSide = 'MLS'; mpSqFt = ''" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
+                  :class="mpPortSide === 'MLS' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="mpPortSide === 'MLS' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">MLS</button>
+          <button @click="mpPortSide = 'PORT'; mpSqFt = ''" class="flex-1 py-3 text-[20px] font-bold text-center rounded-[15px] transition-all cursor-pointer"
+                  :class="mpPortSide === 'PORT' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                  :style="mpPortSide === 'PORT' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">PORT</button>
+        </div>
+
         <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
@@ -2122,32 +2131,38 @@
           </div>
         </template>
 
-        <div class="flex flex-col gap-3">
-          <button @click="videoSelected = 'BuzzReels Trio'; openSheet('videoBuzz')" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
+        <div class="grid grid-cols-2 gap-4">
+          <button @click="videoSelected = 'BuzzReels Trio'; openSheet('videoBuzz')" class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-            <span class="text-[19px] font-black" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">BuzzReels Trio</span>
-            <div class="flex items-start text-[19px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
-              <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-              <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['BuzzReels Trio'] : videoPrices.PORT[videoPortSector]['BuzzReels Trio']"></span>
+            <div class="w-[60px] h-[60px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[32px] h-[32px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+            </div>
+            <div class="flex flex-col items-center -space-y-0.5">
+              <span class="text-[16px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">BuzzReels Trio</span>
+              <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'"><span class="text-[10px] relative top-[-1px]">$</span><span x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['BuzzReels Trio'] : videoPrices.PORT[videoPortSector]['BuzzReels Trio']"></span></span>
             </div>
           </button>
-          <button @click="videoSelected = 'HD Highlight'; openSheet('videoHD')" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
+          <button @click="videoSelected = 'HD Highlight'; openSheet('videoHD')" class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-            <span class="text-[19px] font-black" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">HD Highlight</span>
-            <div class="flex items-start text-[19px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
-              <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-              <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['HD Highlight'] : videoPrices.PORT[videoPortSector]['HD Highlight']"></span>
+            <div class="w-[60px] h-[60px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[32px] h-[32px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+            </div>
+            <div class="flex flex-col items-center -space-y-0.5">
+              <span class="text-[16px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">HD Highlight</span>
+              <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'"><span class="text-[10px] relative top-[-1px]">$</span><span x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['HD Highlight'] : videoPrices.PORT[videoPortSector]['HD Highlight']"></span></span>
             </div>
           </button>
-          <button @click="videoSelected = 'Full HD'; openSheet('videoFullHD')" class="flex items-center justify-between p-4 rounded-[20px] transition-all active:scale-[0.98] cursor-pointer"
+          <button @click="videoSelected = 'Full HD'; openSheet('videoFullHD')" class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-            <span class="text-[19px] font-black" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Full HD</span>
-            <div class="flex items-start text-[19px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
-              <span class="text-[13px] font-bold leading-none pt-[1px] mr-[0.5px]">$</span>
-              <span class="leading-none" x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['Full HD'] : videoPrices.PORT[videoPortSector]['Full HD']"></span>
+            <div class="w-[60px] h-[60px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[32px] h-[32px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+            </div>
+            <div class="flex flex-col items-center -space-y-0.5">
+              <span class="text-[16px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Full HD</span>
+              <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'"><span class="text-[10px] relative top-[-1px]">$</span><span x-text="videoSelectedSide === 'MLS' ? videoPrices.MLS['Full HD'] : videoPrices.PORT[videoPortSector]['Full HD']"></span></span>
             </div>
           </button>
         </div>
