@@ -1831,26 +1831,32 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-10 z-50 shadow-2xl flex flex-col gap-4 min-h-[60vh] max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 min-h-[60vh] max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-3 pb-1 justify-center">
-          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-            <svg class="w-14 h-14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'" x-text="mpPortSide + ' 360 Tour'"></span>
-            <h1 class="text-[46px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Matterport</h1>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="mpPortSide + ' 360 Tour'"></span>
+            <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Matterport</h1>
           </div>
         </div>
 
-        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
-            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+            <div class="text-[90px] font-black leading-none flex items-baseline" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" style="letter-spacing:-0.045em;">
               <template x-if="mpSqFt"><span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span></template>
               <span x-text="mpPriceDollars" class="leading-none"></span>
               <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="mpPriceCents"></span>
@@ -1867,10 +1873,11 @@
 
         <div class="relative py-1">
           <button type="button" @click="toggleDropdown($event)"
-                  class="w-full h-12 px-4 rounded-2xl text-[25px] font-bold border flex items-center justify-between transition-all duration-200 focus:outline-none shadow-sm cursor-pointer"
-                  :class="!mpSqFt ? (isDark ? 'animate-pulse-dark bg-neutral-900 text-white border-white/30' : 'animate-pulse-light bg-white text-red-600 border-red-500/80') : (isDark ? 'bg-neutral-900/90 text-white border-white/20 hover:border-white/40' : 'bg-white text-neutral-900 border-neutral-300 hover:border-neutral-400')">
+                  class="w-full h-12 px-4 rounded-[16px] text-[25px] font-bold flex items-center justify-between transition-all duration-200 focus:outline-none cursor-pointer"
+                  :class="!mpSqFt ? (isDark ? 'animate-pulse-dark bg-[#1e232a] text-[#f1f5f9]' : 'animate-pulse-light bg-[#e6e9ef] text-red-600') : (isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]')"
+                  :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
             <span class="w-full text-center" x-text="mpSqFt ? mpSqFtOptions.find(o => o.value === mpSqFt).label : 'Select Sq Ft'"></span>
-            <svg class="w-4 h-4 shrink-0 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180' : 'rotate-0'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+            <svg class="w-4 h-4 shrink-0 transition-transform duration-200" :class="[dropdownOpen ? 'rotate-180' : 'rotate-0', !mpSqFt && !isDark ? 'text-red-500' : (isDark ? 'text-white' : 'text-neutral-600')]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
           </button>
         </div>
 
@@ -1897,34 +1904,43 @@
         <div :class="!mpSqFt && 'opacity-30 pointer-events-none select-none'" class="flex flex-col gap-4">
           <template x-if="mpSqFt === '6000'">
             <div class="flex items-center justify-between gap-2 px-1">
-              <span class="flex items-start text-[22px] font-bold whitespace-nowrap shrink-0" :class="isDark ? 'text-white' : 'text-neutral-900'">
+              <span class="flex items-start text-[22px] font-bold whitespace-nowrap shrink-0" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
                 <span class="text-[15px] pt-[1px] mr-[0.5px]">$</span>
                 <span x-text="mpCustomRates[mpPortSide][mpService].toFixed(2)"></span>
                 <span class="ml-1">/ Sq Ft</span>
               </span>
-              <div class="flex items-center justify-between rounded-2xl border p-1.5 transition-colors h-[52px] shrink-0" :class="[!mpCustomSqftInput ? (isDark ? 'animate-pulse-dark' : 'animate-pulse-light') : '', isDark ? 'bg-neutral-900 border-white/10' : 'bg-white border-neutral-300 shadow-sm']">
-                <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">-</button>
-                <input type="text" x-model="mpCustomSqftInput" x-init="$nextTick(() => mpSqFt === '6000' && $el.focus())" @input="mpCustomSqftInput = $event.target.value.replace(/[^0-9]/g,'').slice(0,5)" @blur="mpCustomSqft = Math.min(99999, Math.max(6000, parseInt(mpCustomSqftInput) || 6000)); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" placeholder="6,000" class="w-24 h-11 bg-transparent text-center text-[24px] font-black focus:outline-none tabular-nums text-[#E50914] shrink-0" :class="isDark ? 'placeholder-white/40' : 'placeholder-neutral-400'" />
-                <button @click="mpCustomSqft = Math.min(99999, mpCustomSqft + 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-xl font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-neutral-100 text-black'">+</button>
+              <div class="flex items-center justify-between rounded-[16px] p-1.5 transition-colors h-[52px] shrink-0"
+                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                   :style="!mpCustomSqftInput ? (isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">
+                <button @click="mpCustomSqft = Math.max(6000, mpCustomSqft - 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-[#f1f5f9]' : 'hover:bg-black/5 text-[#1e2530]'">-</button>
+                <input type="text" x-model="mpCustomSqftInput" x-init="$nextTick(() => mpSqFt === '6000' && $el.focus())" @input="mpCustomSqftInput = $event.target.value.replace(/[^0-9]/g,'').slice(0,5)" @blur="mpCustomSqft = Math.min(99999, Math.max(6000, parseInt(mpCustomSqftInput) || 6000)); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" placeholder="6,000" class="w-24 h-11 bg-transparent text-center text-[24px] font-black focus:outline-none tabular-nums shrink-0" :class="isDark ? 'text-[#ff2a2a] placeholder-white/40' : 'text-[#e60000] placeholder-neutral-400'" />
+                <button @click="mpCustomSqft = Math.min(99999, mpCustomSqft + 1); mpCustomSqftInput = mpCustomSqft.toLocaleString('en-US')" class="w-11 h-11 rounded-[12px] font-bold text-2xl flex items-center justify-center transition-all active:scale-90 shrink-0" :class="isDark ? 'hover:bg-white/10 text-[#f1f5f9]' : 'hover:bg-black/5 text-[#1e2530]'">+</button>
               </div>
             </div>
           </template>
-          <div class="flex border rounded-2xl p-1.5 gap-1.5 transition-colors duration-300" :class="isDark ? 'bg-black border-[#262626]' : 'bg-neutral-100 border-neutral-200'">
-            <button @click="mpService = 'Standard'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Standard' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">Standard</button>
-            <button @click="mpService = 'Premium'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-xl transition-all cursor-pointer" :class="mpService === 'Premium' ? (isDark ? 'bg-white text-black font-black' : 'bg-neutral-900 text-white font-black') : 'text-[#8E8E93] hover:text-white'">Premium</button>
+          <div class="flex rounded-[16px] p-1.5 gap-1.5 transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <button @click="mpService = 'Standard'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
+                    :class="mpService === 'Standard' ? 'text-white font-black' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
+                    :style="mpService === 'Standard' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">Standard</button>
+            <button @click="mpService = 'Premium'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
+                    :class="mpService === 'Premium' ? 'text-white font-black' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
+                    :style="mpService === 'Premium' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">Premium</button>
           </div>
 
           <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, mpSqFtOptions.find(o => o.value === mpSqFt).label, mpRawTotal, 'tour360')"
                   :disabled="!mpSqFt || state !== 'idle'"
-                  :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'))]"
-                  class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
+                  :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
+                  :style="mpSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                  class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
             <template x-if="state !== 'success'">
               <span class="flex items-center -space-x-3">
-                <svg class="w-10 h-10" :class="!mpSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <svg class="w-10 h-10" :class="!mpSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <svg class="w-14 h-14" :class="!mpSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <svg class="w-14 h-14" :class="!mpSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                   <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
                 </svg>
               </span>
@@ -1955,29 +1971,35 @@
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t rounded-t-[36px] px-5 pt-3 pb-6 z-50 shadow-2xl flex flex-col gap-4 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-[#050505] text-white border-white/20' : 'bg-white text-neutral-900 border-neutral-300'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
         <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex items-center gap-3 pb-1 justify-center">
-          <div class="w-[80px] h-[80px] rounded-2xl flex items-center justify-center shrink-0 border transition-colors duration-300" :class="isDark ? 'bg-white/5 border-white/10 text-white' : 'bg-neutral-100 border-neutral-300 text-neutral-900'">
-            <svg class="w-14 h-14" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
               <path d="M6.7467,18.7878v4.4681c8.0151-3.8259,16.9146-7.41,25.2164-7.9631l2.6543,3.9816c-6.0739,2.7818-10.7292,8.22-13.5327,11.2222,9.27-2.9613,16.8806-3.6837,20.1686-4.5863V18.6941L23.9048,5.5Z"/>
               <path d="M6.7467,27.2374V42.5H41.2533V31.219a111.9752,111.9752,0,0,0-26.7575,5.9792l-2.474-3.7812C17.54,27.6756,21.2133,24.68,24.5935,21.5217A94.3183,94.3183,0,0,0,6.7467,27.2374Z"/>
             </svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[21px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-neutral-400' : 'text-neutral-500'">360 Tour</span>
-            <h1 class="text-[38px] font-black leading-none tracking-tight" :class="isDark ? 'text-white' : 'text-neutral-900'">Zillow 3D Tour</h1>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">360 Tour</span>
+            <h1 class="text-[32px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Zillow 3D Tour</h1>
           </div>
         </div>
 
-        <div class="flex items-baseline justify-center gap-2 pb-1 select-none tabular-nums">
+        <div class="flex items-baseline justify-center gap-2 select-none tabular-nums rounded-[24px] py-2.5"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
           <div class="flex items-baseline">
-            <div class="text-[90px] font-black leading-none flex items-baseline text-[#E50914]" style="letter-spacing:-0.045em;">
+            <div class="text-[90px] font-black leading-none flex items-baseline" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" style="letter-spacing:-0.045em;">
               <template x-if="zillowSqFt"><span class="text-[40px] font-black leading-none self-start pt-[6px] mr-[1px] opacity-90">$</span></template>
               <span x-text="zillowPriceDollars" class="leading-none"></span>
               <span class="text-[40px] font-black leading-none opacity-90 self-baseline" style="letter-spacing:-0.045em;margin-left:-6px;" x-text="zillowPriceCents"></span>
@@ -1994,10 +2016,11 @@
 
         <div class="relative py-1">
           <button type="button" @click="toggleDropdown($event)"
-                  class="w-full h-12 px-4 rounded-2xl text-[25px] font-bold border flex items-center justify-between transition-all duration-200 focus:outline-none shadow-sm cursor-pointer"
-                  :class="!zillowSqFt ? (isDark ? 'animate-pulse-dark bg-neutral-900 text-white border-white/30' : 'animate-pulse-light bg-white text-red-600 border-red-500/80') : (isDark ? 'bg-neutral-900/90 text-white border-white/20 hover:border-white/40' : 'bg-white text-neutral-900 border-neutral-300 hover:border-neutral-400')">
+                  class="w-full h-12 px-4 rounded-[16px] text-[25px] font-bold flex items-center justify-between transition-all duration-200 focus:outline-none cursor-pointer"
+                  :class="!zillowSqFt ? (isDark ? 'animate-pulse-dark bg-[#1e232a] text-[#f1f5f9]' : 'animate-pulse-light bg-[#e6e9ef] text-red-600') : (isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]')"
+                  :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
             <span class="w-full text-center" x-text="zillowSqFt ? zillowSqFtOptions.find(o => o.value === zillowSqFt).label : 'Select Sq Ft'"></span>
-            <svg class="w-4 h-4 shrink-0 transition-transform duration-200" :class="dropdownOpen ? 'rotate-180' : 'rotate-0'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+            <svg class="w-4 h-4 shrink-0 transition-transform duration-200" :class="[dropdownOpen ? 'rotate-180' : 'rotate-0', !zillowSqFt && !isDark ? 'text-red-500' : (isDark ? 'text-white' : 'text-neutral-600')]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
           </button>
         </div>
 
@@ -2023,15 +2046,16 @@
 
         <button @click="addConfiguredItemToCart('Zillow 3D Tour', zillowSqFtOptions.find(o => o.value === zillowSqFt).label, zillowRawTotal, 'tour360')"
                 :disabled="!zillowSqFt || state !== 'idle'"
-                :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-neutral-800 text-neutral-500' : 'opacity-40 cursor-not-allowed bg-neutral-300 text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : (isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'))]"
-                class="w-full h-14 rounded-2xl flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98] shadow-md mt-1">
+                :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-emerald-400 text-black' : 'text-white')]"
+                :style="zillowSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-10 h-10" :class="!zillowSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10" :class="!zillowSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-14 h-14" :class="!zillowSqFt ? 'text-neutral-400' : (isDark ? 'text-black' : 'text-white')" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14" :class="!zillowSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
