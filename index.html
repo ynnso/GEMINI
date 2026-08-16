@@ -877,7 +877,7 @@
 
       <!-- LOGO -->
       <div class="justify-self-start">
-        <div class="h-10 px-4 rounded-full inline-grid place-items-center tracking-tighter transition-colors duration-300"
+        <div class="h-10 px-3 rounded-full inline-grid place-items-center tracking-tighter transition-colors duration-300"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'">
           <span class="font-bold text-[20px]" style="font-variant-numeric: tabular-nums;" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">S<span class="font-black" style="font-size:27px;" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">2</span>S</span>
@@ -940,7 +940,7 @@
             <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-              <svg class="w-[65%] h-[65%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
+              <svg :class="[(key === 'video' || key === 'tour360' || key === 'addons') ? 'w-[78%] h-[78%]' : 'w-[75%] h-[75%]', isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]']" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
             </div>
             <span class="text-[18px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
           </button>
@@ -958,7 +958,7 @@
                 class="rounded-[15px] flex items-center justify-center transition-all active:scale-90 cursor-pointer"
                 :class="[activePrimary === key ? 'w-11 h-11 ring-2 ring-white' : 'w-10 h-10', isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]']"
                 :style="activePrimary === key ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -3px -3px 6px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">
-          <svg :class="[activePrimary === key ? 'w-6 h-6 text-white' : (isDark ? 'w-5 h-5 text-[#94a3b8]' : 'w-5 h-5 text-[#64748b]')]" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
+          <svg :class="[activePrimary === key ? 'w-7 h-7 text-white' : (isDark ? 'w-[23px] h-[23px] text-[#94a3b8]' : 'w-[23px] h-[23px] text-[#64748b]')]" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
         </button>
       </template>
 
