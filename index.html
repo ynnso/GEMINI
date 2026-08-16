@@ -813,6 +813,24 @@
         },
 
         /* SHEET CONTROLS & SMOOTH DRAG MECHANICS */
+        sheetParentMap: {
+          full: 'photosCategory',
+          mini: 'photosCategory',
+          reshoot: 'photosCategory',
+          exterior: 'photosCategory',
+          ranch: 'photosCategory',
+          airbnb: 'photosCategory',
+          port: 'photosCategory'
+        },
+        goBack() {
+          const parent = this.sheetParentMap[this.activeSheet];
+          if (parent) {
+            this.openSheet(parent);
+          } else {
+            this.activePrimary = null;
+            this.closeSheet();
+          }
+        },
         openSheet(sheetName) {
           this.dragY = 0;
           this.activeSheet = null;
@@ -879,14 +897,14 @@
       <!-- LOGO / HOME BUTTON -->
       <div class="justify-self-start flex items-center gap-2">
         <button @click="activePrimary = null; closeSheet()"
-                class="h-10 px-3 rounded-full inline-grid place-items-center tracking-tighter transition-all active:scale-90 cursor-pointer"
+                class="h-10 px-3 rounded-[15px] inline-grid place-items-center tracking-tighter transition-all active:scale-90 cursor-pointer"
                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'">
           <span class="font-bold text-[20px]" style="font-variant-numeric: tabular-nums;" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">S<span class="font-black" style="font-size:27px;" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">2</span>S</span>
         </button>
         <template x-if="activeSheet !== null">
-          <button @click="closeSheet()"
-                  class="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90 cursor-pointer"
+          <button @click="goBack()"
+                  class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
                   :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
                   title="Back">
@@ -900,7 +918,7 @@
       <!-- SUN / MOON OUTLINE ICON TOGGLE -->
       <div class="justify-self-center">
         <button @click="isDark = !isDark"
-                class="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
+                class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
                 :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
                 :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
@@ -923,7 +941,7 @@
       <!-- CART ICON TOP NAV BUTTON -->
       <div class="justify-self-end">
         <button @click="openSheet('cart')"
-                class="w-11 h-11 rounded-full flex items-center justify-center relative transition-all active:scale-90 focus:outline-none cursor-pointer"
+                class="w-11 h-11 rounded-[15px] flex items-center justify-center relative transition-all active:scale-90 focus:outline-none cursor-pointer"
                 :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
                 title="View Quote Cart">
