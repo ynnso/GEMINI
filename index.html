@@ -820,7 +820,8 @@
           exterior: 'photosCategory',
           ranch: 'photosCategory',
           airbnb: 'photosCategory',
-          port: 'photosCategory'
+          port: 'photosCategory',
+          floorplan: 'floorCategory'
         },
         goBack() {
           const parent = this.sheetParentMap[this.activeSheet];
@@ -964,7 +965,7 @@
     <main class="flex-1 flex flex-col items-center px-4 pb-[92px] pt-[96px]">
       <div class="grid grid-cols-2 gap-x-4 gap-y-7 w-full max-w-sm">
         <template x-for="key in ['photos','aerial','floor','video','tour360','addons']" :key="key">
-          <button @click="makeHero(key); openSheet(key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorplan' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon')))))"
+          <button @click="makeHero(key); openSheet(key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorCategory' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon')))))"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;'">
@@ -985,7 +986,7 @@
          :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
 
       <template x-for="key in ['photos','aerial','floor','video','tour360','addons']" :key="key">
-        <button @click="makeHero(key); openSheet(key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorplan' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon')))))"
+        <button @click="makeHero(key); openSheet(key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorCategory' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon')))))"
                 class="rounded-[15px] flex items-center justify-center transition-all active:scale-90 cursor-pointer"
                 :class="[activePrimary === key ? 'w-11 h-11 ring-2 ring-white' : 'w-10 h-10', isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]']"
                 :style="activePrimary === key ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -3px -3px 6px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">
@@ -1561,6 +1562,60 @@
               <svg class="w-[38px] h-[38px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" stroke-width="1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 9.01L10.01 8.99889"/><path d="M14 9.01L14.01 8.99889"/><path d="M10 13.01L10.01 12.9989"/><path d="M14 13.01L14.01 12.9989"/><path d="M10 17.01L10.01 16.9989"/><path d="M14 17.01L14.01 16.9989"/><path d="M6 20.4V5.6C6 5.26863 6.26863 5 6.6 5H12V3.6C12 3.26863 12.2686 3 12.6 3H17.4C17.7314 3 18 3.26863 18 3.6V20.4C18 20.7314 17.7314 21 17.4 21H6.6C6.26863 21 6 20.7314 6 20.4Z"/></svg>
             </div>
             <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">AMF</span>
+          </button>
+        </div>
+
+      </div>
+    </template>
+
+    <!-- FLOOR PLAN CATEGORY SHEET -->
+    <template x-if="activeSheet === 'floorCategory'">
+      <div x-show="activeSheet === 'floorCategory'"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
+           @pointermove.window="dragMove($event)"
+           @pointerup.window="dragEnd()"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 max-h-[90vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+             @pointerdown="dragStart($event)">
+          <div class="w-9 h-1.5 rounded-full" :class="isDark ? 'bg-white/30' : 'bg-neutral-300'"></div>
+        </div>
+
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[59px] h-[59px] rounded-[18px] flex items-center justify-center shrink-0"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-[42px] h-[42px]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2v18h3v-1H3v-6h3V9h5V8H6V3h15v5h-6v1h6v5h-4v1h4v6H11v-7h-1v5H8v1h2v2h12V2zm3 4H3V5h2zm-2 6v-1h2v1zm2-2H3V9h2zM3 8V7h2v1zm2-4H3V3h2z"/></svg>
+          </div>
+          <h1 class="text-[70px] font-black leading-[59px]" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Floor Plan</h1>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <button @click="floorPortSide = 'MLS'; openSheet('floorplan')" class="flex flex-col items-center justify-center gap-2 p-5 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
+                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+            <div class="w-[70px] h-[70px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[44px] h-[44px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2v18h3v-1H3v-6h3V9h5V8H6V3h15v5h-6v1h6v5h-4v1h4v6H11v-7h-1v5H8v1h2v2h12V2zm3 4H3V5h2zm-2 6v-1h2v1zm2-2H3V9h2zM3 8V7h2v1zm2-4H3V3h2z"/></svg>
+            </div>
+            <span class="text-[19px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">MLS</span>
+          </button>
+          <button @click="floorPortSide = 'PORT'; openSheet('floorplan')" class="flex flex-col items-center justify-center gap-2 p-5 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
+                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                  :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+            <div class="w-[70px] h-[70px] rounded-[18px] flex items-center justify-center" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+              <svg class="w-[44px] h-[44px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21" /></svg>
+            </div>
+            <span class="text-[19px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">PORT</span>
           </button>
         </div>
 
