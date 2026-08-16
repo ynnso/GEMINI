@@ -840,6 +840,7 @@ document.addEventListener('alpine:init', () => {
         openSheet(sheetName) {
           this.dragY = 0;
           this.activeSheet = null;
+          this.state = 'idle';
           this.$nextTick(() => {
             this.activeSheet = sheetName;
           });
