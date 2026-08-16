@@ -1089,32 +1089,40 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t-2 rounded-t-[36px] p-5 pt-2 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
-           :class="isDark ? 'bg-black text-white border-white shadow-[0_-10px_25px_rgba(255,255,255,0.15)]' : 'bg-white text-neutral-900 border-neutral-300 shadow-[0_-10px_25px_rgba(0,0,0,0.15)]'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-6 z-50 flex flex-col gap-3 max-h-[92vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
-        <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+        <div class="py-2.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
-               :class="isDark ? 'bg-neutral-600 hover:bg-neutral-400' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
+               :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
         </div>
 
-        <div class="flex justify-between items-center pb-1 px-1">
-          <div class="relative inline-flex items-center group cursor-pointer">
-            <svg class="w-12 h-12 transition group-hover:scale-105" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
-              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17"/>
+        <div class="flex items-center gap-4 p-4 rounded-[24px]"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
+          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 relative transition-colors duration-300"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="absolute top-0 right-0 bg-[#E50914] text-white text-[12px] font-bold w-5 h-5 rounded-full flex items-center justify-center border border-black shadow-md"
+            <span class="absolute -top-1.5 -right-1.5 text-white text-[12px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md"
+                  :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'"
                   x-text="activeCount()"></span>
           </div>
-          
-          <button @click="clearCart()" class="text-neutral-500 hover:text-red-500 active:scale-90 transition p-1.5 cursor-pointer" title="Clear Cart">
-            <svg class="w-7 h-7 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2">
+          <div class="flex flex-col justify-center text-left flex-1">
+            <span class="text-[17px] font-extrabold leading-none tracking-tight mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Your Quote</span>
+            <h1 class="text-[26px] font-black leading-tight tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Cart</h1>
+          </div>
+          <button @click="clearCart()" class="p-2 rounded-[14px] transition-all active:scale-90 cursor-pointer shrink-0" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Clear Cart">
+            <svg class="w-6 h-6 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2">
               <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 001-1h-4a1 1 0 001 1v3M4 7h16"/>
             </svg>
           </button>
         </div>
 
-        <div class="max-h-64 overflow-y-auto no-scrollbar">
+        <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5">
           <template x-for="item in cartItems" :key="item.id">
             <div>
               <div x-show="item.state === 'active'"
@@ -1122,47 +1130,54 @@ document.addEventListener('alpine:init', () => {
                    @touchstart="startX = $event.touches[0].clientX; swiping = true"
                    @touchmove="if(swiping) { offsetX = $event.touches[0].clientX - startX; if(offsetX > 0) offsetX = 0; }"
                    @touchend="swiping = false; if(offsetX < -80) { deleteItem(item); } else { offsetX = 0; }"
-                   class="relative overflow-hidden transition-all duration-200">
+                   class="relative overflow-hidden rounded-[18px] transition-all duration-200">
                    
-                <div class="absolute inset-0 bg-red-600 flex items-center justify-end pr-4 text-white font-extrabold text-[15px]">
+                <div class="absolute inset-0 flex items-center justify-end pr-4 text-white font-extrabold text-[15px]" :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'">
                   <span>DELETE 🗑️</span>
                 </div>
 
-                <div class="px-3 py-5 flex justify-between items-center relative z-10 border-b transition-all duration-150 cursor-pointer select-none min-h-[74px]"
-                     :class="isDark ? 'bg-black border-white/10' : 'bg-white border-neutral-200'"
-                     :style="`transform: translateX(${offsetX}px)`">
+                <div class="px-4 py-3.5 flex justify-between items-center relative z-10 cursor-pointer select-none min-h-[74px] rounded-[18px] transition-colors duration-300"
+                     :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                     :style="`transform: translateX(${offsetX}px); ${isDark ? 'box-shadow: 5px 5px 10px #14171c, -4px -4px 9px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'}`">
                   
                   <div class="flex items-center gap-3 overflow-hidden pr-2">
-                    <template x-if="item.icon === 'camera'">
-                      <svg class="w-7 h-7 shrink-0" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="2" fill="none">
-                        <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                      </svg>
-                    </template>
-                    <template x-if="item.icon === 'refresh'">
-                      <svg class="w-7 h-7 shrink-0" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="2" fill="none">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                      </svg>
-                    </template>
-                    <template x-if="item.icon === 'home'">
-                      <svg class="w-7 h-7 shrink-0" :class="isDark ? 'stroke-white' : 'stroke-neutral-900'" viewBox="0 0 24 24" stroke-width="2" fill="none">
-                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                      </svg>
-                    </template>
-                    
+                    <div class="w-[42px] h-[42px] rounded-[14px] flex items-center justify-center shrink-0" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
+                      <template x-if="item.icon === 'camera'">
+                        <svg class="w-6 h-6 shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor">
+                          <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round"/>
+                          <circle cx="12" cy="13" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </template>
+                      <template x-if="item.icon === 'refresh'">
+                        <svg class="w-6 h-6 shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                      </template>
+                      <template x-if="item.icon === 'home'">
+                        <svg class="w-6 h-6 shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor">
+                          <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </template>
+                      <template x-if="!['camera','refresh','home'].includes(item.icon)">
+                        <svg class="w-6 h-6 shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor">
+                          <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </template>
+                    </div>
                     <div class="truncate">
-                      <div class="text-[19px] font-bold leading-tight truncate" :class="isDark ? 'text-white' : 'text-neutral-900'" x-text="item.title"></div>
-                      <div class="text-[15px] text-neutral-400 truncate" x-text="item.desc"></div>
+                      <div class="text-[16px] font-bold leading-tight truncate" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
+                      <div class="text-[13px] truncate" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
                     </div>
                   </div>
 
                   <div class="flex items-center gap-2 shrink-0">
-                    <span class="flex items-baseline" :class="isDark ? 'text-white' : 'text-neutral-900'">
-                      <span class="text-[13px] font-bold self-start mr-[1px]">$</span>
-                      <span class="text-[22px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
-                      <span class="text-[13px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
+                    <span class="flex items-baseline" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                      <span class="text-[12px] font-bold self-start mr-[1px]">$</span>
+                      <span class="text-[19px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
+                      <span class="text-[12px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
                     </span>
-                    <button @click.stop="deleteItem(item)" class="p-1.5 text-neutral-500/60 hover:text-red-500 transition shrink-0 cursor-pointer" title="Remove">
-                      <span class="text-[15px] font-bold block scale-75">✕</span>
+                    <button @click.stop="deleteItem(item)" class="p-1.5 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
+                      <span class="text-[14px] font-bold block scale-75">✕</span>
                     </button>
                   </div>
 
@@ -1177,20 +1192,22 @@ document.addEventListener('alpine:init', () => {
                    x-transition:enter="transition ease-out duration-200 transform"
                    x-transition:enter-start="scale-95 opacity-0"
                    x-transition:enter-end="scale-100 opacity-100"
-                   class="relative rounded-2xl overflow-hidden border my-1"
-                   :class="isDark ? 'bg-neutral-900 border-neutral-800' : 'bg-neutral-100 border-neutral-300'">
+                   class="relative rounded-[18px] overflow-hidden transition-colors duration-300"
+                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                   :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
                    
-                <div class="bg-white text-black pl-3.5 rounded-2xl flex justify-between items-center shadow-lg transition-transform duration-150 select-none overflow-hidden min-h-[74px]"
+                <div class="pl-3.5 flex justify-between items-center transition-transform duration-150 select-none overflow-hidden min-h-[68px]"
                      :style="`transform: translateX(${toastX}px)`">
                   
                   <div class="flex items-center gap-2.5 overflow-hidden py-2">
-                    <span class="text-[17px] font-extrabold text-red-600 shrink-0">✕</span>
-                    <span class="text-[15px] font-bold tracking-tight text-neutral-900 truncate" x-text="`Removed ${item.title}`"></span>
+                    <span class="text-[16px] font-extrabold shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">✕</span>
+                    <span class="text-[14px] font-bold tracking-tight truncate" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="`Removed ${item.title}`"></span>
                   </div>
 
                   <button @click="restoreItem(item)" 
-                          class="bg-black hover:bg-neutral-900 active:scale-95 text-white font-bold text-[13px] uppercase px-4 self-stretch flex items-center gap-2 transition shrink-0 border-l border-neutral-200 cursor-pointer">
-                    <svg class="w-5 h-5 stroke-white fill-none" viewBox="0 0 24 24" stroke-width="2.5">
+                          class="active:scale-95 text-white font-bold text-[13px] uppercase px-4 self-stretch flex items-center gap-2 transition shrink-0 cursor-pointer"
+                          :style="isDark ? 'background:#ff2a2a;' : 'background:#e60000;'">
+                    <svg class="w-4 h-4 stroke-white fill-none" viewBox="0 0 24 24" stroke-width="2.5">
                       <path d="M4 4v5h5M20 20v-5h-5"/>
                       <path d="M4 9a9 9 0 0114.85-3.36L20 7M4 17l1.15 1.36A9 9 0 0020 15"/>
                     </svg>
@@ -1203,14 +1220,16 @@ document.addEventListener('alpine:init', () => {
           </template>
 
           <template x-if="activeCount() === 0">
-            <div class="py-8 px-4 text-center rounded-2xl border border-dashed space-y-3"
-                 :class="isDark ? 'bg-neutral-950 border-neutral-800' : 'bg-neutral-50 border-neutral-300'">
-              <div class="text-[15px] text-neutral-400 font-semibold">Cart is empty</div>
+            <div class="py-8 px-4 text-center rounded-[20px] space-y-3 transition-colors duration-300"
+                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                 :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
+              <div class="text-[15px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Cart is empty</div>
               <template x-if="clearedCache.length > 0">
                 <div>
                   <button @click="restoreClearedCart()" 
-                          class="bg-white hover:bg-neutral-200 text-black font-bold text-[14px] px-5 py-3 rounded-xl transition shadow-lg active:scale-95 inline-flex items-center gap-2 cursor-pointer border border-white">
-                    <svg class="w-4 h-4 stroke-black fill-none" viewBox="0 0 24 24" stroke-width="2.5">
+                          class="text-white font-bold text-[14px] px-5 py-3 rounded-[14px] transition active:scale-95 inline-flex items-center gap-2 cursor-pointer"
+                          :style="isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 10px rgba(255,42,42,0.3);' : 'background:#e60000; box-shadow: 4px 4px 10px rgba(230,0,0,0.3);'">
+                    <svg class="w-4 h-4 stroke-white fill-none" viewBox="0 0 24 24" stroke-width="2.5">
                       <path d="M4 4v5h5M20 20v-5h-5"/>
                       <path d="M4 9a9 9 0 0114.85-3.36L20 7M4 17l1.15 1.36A9 9 0 0020 15"/>
                     </svg>
@@ -1223,22 +1242,23 @@ document.addEventListener('alpine:init', () => {
 
         </div>
 
-        <div class="pt-1 space-y-3 px-3 w-full transition-colors duration-300">
+        <div class="pt-1 space-y-3 px-1 w-full transition-colors duration-300">
           
-          <div class="flex items-center justify-between gap-2 w-full text-[18px] text-neutral-400">
+          <div class="flex items-center justify-between gap-2 w-full text-[17px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
             <span class="font-medium">Subtotal</span>
-            <span class="flex items-baseline font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <span class="text-[13px] self-start mr-[1px]">$</span>
-              <span class="text-[20px]" x-text="calculateSubtotal().toFixed(2).split('.')[0]"></span>
-              <span class="text-[13px]" x-text="'.' + calculateSubtotal().toFixed(2).split('.')[1]"></span>
+            <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+              <span class="text-[12px] self-start mr-[1px]">$</span>
+              <span class="text-[19px]" x-text="calculateSubtotal().toFixed(2).split('.')[0]"></span>
+              <span class="text-[12px]" x-text="'.' + calculateSubtotal().toFixed(2).split('.')[1]"></span>
             </span>
           </div>
 
-          <div class="flex items-center justify-between gap-2 w-full text-[18px] text-neutral-400">
+          <div class="flex items-center justify-between gap-2 w-full text-[17px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
             <label class="flex items-center gap-2.5 cursor-pointer select-none group">
               <button @click="includeTax = !includeTax" type="button" 
-                      class="w-6 h-6 rounded flex items-center justify-center transition-all duration-150 border shrink-0 cursor-pointer"
-                      :class="includeTax ? 'bg-emerald-400 border-emerald-400' : 'bg-red-600 border-red-600'">
+                      class="w-6 h-6 rounded-[8px] flex items-center justify-center transition-all duration-150 shrink-0 cursor-pointer"
+                      :class="includeTax ? 'bg-emerald-400' : ''"
+                      :style="!includeTax ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : ''">
                 <template x-if="includeTax">
                   <svg class="w-5 h-5 stroke-black fill-none" viewBox="0 0 24 24" stroke-width="4">
                     <path d="M5 13l4 4L19 7"/>
@@ -1249,24 +1269,24 @@ document.addEventListener('alpine:init', () => {
                 </template>
               </button>
 
-              <span class="font-medium" :class="isDark ? 'text-neutral-300' : 'text-neutral-700'">Tax (8.25%)</span>
+              <span class="font-medium" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Tax (8.25%)</span>
             </label>
 
-            <span class="flex items-baseline font-bold" :class="isDark ? 'text-white' : 'text-neutral-900'">
-              <span class="text-[13px] self-start mr-[1px]">$</span>
-              <span class="text-[20px]" x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
-              <span class="text-[13px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
+            <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+              <span class="text-[12px] self-start mr-[1px]">$</span>
+              <span class="text-[19px]" x-text="includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[0] : '0'"></span>
+              <span class="text-[12px]" x-text="'.' + (includeTax ? (calculateSubtotal() * taxRate).toFixed(2).split('.')[1] : '00')"></span>
             </span>
           </div>
 
           <div class="flex items-center justify-between gap-2 w-full pt-2.5 border-t"
-               :class="isDark ? 'border-neutral-900' : 'border-neutral-200'">
-            <span class="text-[19px] font-bold tracking-wider"
-                  :class="isDark ? 'text-white' : 'text-neutral-900'">Total</span>
-            <span class="flex items-baseline font-extrabold text-[#E50914]">
-              <span class="text-[13px] self-start mr-[1px]">$</span>
-              <span class="text-[28px] leading-none" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
-              <span class="text-[13px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
+               :class="isDark ? 'border-white/10' : 'border-black/10'">
+            <span class="text-[18px] font-bold tracking-wider"
+                  :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Total</span>
+            <span class="flex items-baseline font-extrabold" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">
+              <span class="text-[12px] self-start mr-[1px]">$</span>
+              <span class="text-[26px] leading-none" x-text="(calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[0]"></span>
+              <span class="text-[12px]" x-text="'.' + (calculateSubtotal() * (includeTax ? (1 + taxRate) : 1)).toFixed(2).split('.')[1]"></span>
             </span>
           </div>
 
