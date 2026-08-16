@@ -923,10 +923,14 @@ document.addEventListener('alpine:init', () => {
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    html { overflow-x: hidden; }
+    html { overflow-x: hidden; overflow-y: hidden; height: 100%; overscroll-behavior: none; }
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif;
-      overscroll-behavior-y: none;
+      overscroll-behavior: none;
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      touch-action: none;
     }
     .tabular-nums { font-variant-numeric: tabular-nums; }
     [x-cloak] { display: none !important; }
@@ -948,7 +952,7 @@ document.addEventListener('alpine:init', () => {
     .animate-pulse-light { animation: subtle-pulse-red-light 1.8s infinite ease-in-out; }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; touch-action: pan-y; }
   </style>
 </head>
 <body class="w-full min-h-screen transition-colors duration-300"
@@ -1125,22 +1129,21 @@ document.addEventListener('alpine:init', () => {
         <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5 px-3">
           <template x-for="item in cartItems" :key="item.id">
             <div>
-              <div x-show="item.state === 'active'" class="py-3 flex justify-between items-start gap-2 border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
-                <div class="min-w-0 flex-1">
+              <div x-show="item.state === 'active'" class="py-3 pr-6 relative flex justify-between items-start border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
+                <div class="min-w-0 flex-1 pr-2">
                   <div class="text-[14px] font-bold leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
                   <div class="text-[12px] leading-snug" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
                 </div>
 
-                <div class="flex items-center shrink-0">
-                  <span class="flex items-baseline justify-end w-[64px]" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
-                    <span class="text-[11px] font-bold self-start mr-[1px]">$</span>
-                    <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
-                    <span class="text-[11px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
-                  </span>
-                  <button @click.stop="deleteItem(item)" class="p-1 transition shrink-0 cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
-                    <span class="text-[11px] font-bold block">✕</span>
-                  </button>
-                </div>
+                <span class="flex items-baseline shrink-0" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
+                  <span class="text-[11px] font-bold self-start mr-[1px]">$</span>
+                  <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
+                  <span class="text-[11px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
+                </span>
+
+                <button @click.stop="deleteItem(item)" class="absolute right-0 top-1/2 -translate-y-1/2 p-1.5 transition cursor-pointer" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" title="Remove">
+                  <span class="text-[11px] font-bold block">✕</span>
+                </button>
               </div>
 
               <div x-show="item.state === 'deleted'" x-cloak
