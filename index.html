@@ -34,11 +34,48 @@ document.addEventListener('alpine:init', () => {
         },
         openSearch() { this.searchOpen = true; this.$nextTick(() => this.$refs.searchInput?.focus()); },
         closeSearch() { this.searchOpen = false; this.searchQuery = ''; },
-        selectSearchResult(key) { this.makeHero(key); this.openSheet(this.sheetForCategory(key)); this.closeSearch(); },
+        selectSearchResult(result) {
+          if (result.type === 'category') {
+            this.makeHero(result.key);
+            this.openSheet(this.sheetForCategory(result.key));
+          } else {
+            this.makeHero('addons');
+            this.addonsCategory = result.group;
+            this.addonSelected = result.item;
+            this.addonQty = this.addonStepperMin(result.item);
+            this.addonHours = 0.5;
+            this.openSheet('addonProduct');
+          }
+          this.closeSearch();
+        },
+        addonSearchIndex: [
+          { item: 'Rain Blue Sky', group: 'Sky' }, { item: 'Blue Sky', group: 'Sky' },
+          { item: 'Sunset Sky', group: 'Sky' }, { item: 'Sky + Grass Bundle', group: 'Sky' },
+          { item: 'Green Grass', group: 'Grass' }, { item: 'Aerial Green Grass', group: 'Grass' },
+          { item: 'Aerial/Ground Grass Bundle', group: 'Grass' },
+          { item: 'ColorPop', group: 'Digital' }, { item: 'Digital Twilight', group: 'Digital' },
+          { item: 'Home Measurement', group: 'Digital' }, { item: 'Social Media Teaser', group: 'Digital' },
+          { item: 'YouTube', group: 'Digital' }, { item: 'Trueview', group: 'Digital' },
+          { item: 'TV Screen/Monitor', group: 'Digital' }, { item: 'Virtual Staging', group: 'Digital' },
+          { item: 'Keepsake Photo Album', group: 'Market' }, { item: '2 MLS Market Add-On', group: 'Market' },
+          { item: '5 MLS Market Add-On', group: 'Market' }, { item: '10 MLS Market Add-On', group: 'Market' },
+          { item: 'Inclement Weather Return', group: 'Time' }, { item: 'Cancellation Fee', group: 'Time' },
+          { item: 'Sunrise Time Slot', group: 'Time' }, { item: 'Twilight Time Slot', group: 'Time' },
+          { item: 'Night Time Slot', group: 'Time' }, { item: 'Weekend Fee', group: 'Time' },
+          { item: 'Next Day Rush', group: 'Time' }, { item: 'Same Day Rush', group: 'Time' },
+          { item: 'MLS Extended/Hr', group: 'Time' }, { item: 'PORT Extended/Hr', group: 'Time' },
+          { item: 'Processing/Hr', group: 'Time' }
+        ],
         get searchResults() {
           const q = this.searchQuery.trim().toLowerCase();
           if (!q) return [];
-          return this.catList.filter(key => this.catTitle[key].toLowerCase().includes(q));
+          const catMatches = this.catList
+            .filter(key => this.catTitle[key].toLowerCase().includes(q))
+            .map(key => ({ type: 'category', key, label: this.catTitle[key], sub: '' }));
+          const itemMatches = this.addonSearchIndex
+            .filter(r => r.item.toLowerCase().includes(q))
+            .map(r => ({ type: 'item', item: r.item, group: r.group, label: r.item, sub: r.group + ' Add-On' }));
+          return [...catMatches, ...itemMatches];
         },
  videoCategory: 'MLS',
  videoPortSector: 'BCD',
@@ -987,7 +1024,7 @@ document.addEventListener('alpine:init', () => {
             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'">
 
       <!-- LOGO / HOME BUTTON -->
-      <div class="justify-self-start flex items-center gap-2">
+      <div x-show="!searchOpen" class="justify-self-start flex items-center gap-2">
         <button @click="activePrimary = null; closeSheet()"
                 class="h-10 px-3 rounded-[15px] inline-grid place-items-center tracking-tighter transition-all active:scale-90 cursor-pointer"
                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
@@ -1007,8 +1044,10 @@ document.addEventListener('alpine:init', () => {
         </template>
       </div>
 
-      <!-- SEARCH BAR (inline expansion, center slot) -->
-      <div class="justify-self-center relative" style="width:100%;" @click.outside="closeSearch()">
+      <!-- SEARCH BAR (inline expansion, center slot, full-width on open) -->
+      <div class="relative"
+           :class="searchOpen ? 'col-span-3 justify-self-stretch' : 'justify-self-center'"
+           @click.outside="closeSearch()">
         <button x-show="!searchOpen" @click="openSearch()"
                 class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer mx-auto"
                 :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
@@ -1026,13 +1065,13 @@ document.addEventListener('alpine:init', () => {
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
-             class="flex items-center h-11 rounded-[15px] px-3 gap-2 transition-colors duration-300"
+             class="flex items-center h-11 rounded-[15px] px-3 gap-2 transition-colors duration-300 w-full"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: inset 4px 4px 8px #14171c, inset -4px -4px 8px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
           <svg class="w-4 h-4 shrink-0" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
           </svg>
-          <input x-ref="searchInput" x-model="searchQuery" type="text" placeholder="Search services..."
+          <input x-ref="searchInput" x-model="searchQuery" type="text" placeholder="Search services or add-ons..."
                  class="flex-1 min-w-0 bg-transparent outline-none text-[14px] font-semibold"
                  :class="isDark ? 'text-[#f1f5f9] placeholder:text-[#64748b]' : 'text-[#1e2530] placeholder:text-[#94a3b8]'"
                  @keydown.escape="closeSearch()" />
@@ -1051,28 +1090,36 @@ document.addEventListener('alpine:init', () => {
              x-transition:leave="transition ease-in duration-100"
              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
              x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-             class="absolute top-[52px] left-0 right-0 rounded-[16px] overflow-hidden z-[80] transition-colors duration-300"
+             class="absolute top-[52px] left-0 right-0 rounded-[16px] overflow-hidden z-[80] transition-colors duration-300 max-h-[60vh] overflow-y-auto no-scrollbar"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
           <template x-if="searchResults.length === 0">
             <p class="text-[13px] font-semibold text-center py-4 px-3" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'">No matching services</p>
           </template>
-          <template x-for="key in searchResults" :key="key">
-            <button @click="selectSearchResult(key)"
+          <template x-for="(result, idx) in searchResults" :key="result.type + (result.key || result.item)">
+            <button @click="selectSearchResult(result)"
                     class="w-full flex items-center gap-3 px-4 py-3 transition-colors active:scale-[0.98] cursor-pointer"
                     :class="isDark ? 'hover:bg-white/5' : 'hover:bg-black/5'">
               <div class="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                    :style="isDark ? 'box-shadow: inset 3px 3px 6px #12151a, inset -3px -3px 6px #282e38;' : 'box-shadow: inset 2px 2px 4px #c1c7d0, inset -2px -2px 4px #ffffff;'">
-                <svg class="w-[70%] h-[70%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
+                <template x-if="result.type === 'category'">
+                  <svg class="w-[70%] h-[70%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[result.key]"></svg>
+                </template>
+                <template x-if="result.type === 'item'">
+                  <svg class="w-[65%] h-[65%]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="currentColor" x-init="$el.setAttribute('viewBox', addonIconViewBox[result.item] || '0 0 24 24')" x-effect="$el.setAttribute('viewBox', addonIconViewBox[result.item] || '0 0 24 24')" x-html="addonIconMap[result.item]"></svg>
+                </template>
               </div>
-              <span class="text-[14px] font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
+              <div class="flex flex-col items-start min-w-0">
+                <span class="text-[14px] font-bold truncate w-full text-left" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="result.label"></span>
+                <span x-show="result.sub" class="text-[11px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="result.sub"></span>
+              </div>
             </button>
           </template>
         </div>
       </div>
 
       <!-- RIGHT GROUP: SUN/MOON TOGGLE + CART -->
-      <div class="justify-self-end flex items-center gap-2">
+      <div x-show="!searchOpen" class="justify-self-end flex items-center gap-2">
         <button @click="isDark = !isDark"
                 class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
                 :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
