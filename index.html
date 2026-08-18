@@ -965,7 +965,9 @@ document.addEventListener('alpine:init', () => {
       x-data="app">
 
   <!-- APP CONTAINER -->
-  <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28">
+  <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28 transition-transform duration-300 ease-out"
+       :class="activeSheet !== null ? 'scale-[0.95] rounded-[16px] overflow-hidden' : ''"
+       style="transform-origin: center;">
 
     <!-- APP HEADER -->
     <header class="fixed top-0 left-0 right-0 px-6 h-[76px] grid grid-cols-3 items-center z-[70] transition-colors duration-300"
