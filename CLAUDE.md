@@ -145,3 +145,15 @@ Confirm real browser-based visual testing actually works in this environment bef
 4. Only once that's confirmed working, proceed to the sheet-by-sheet spacing audit (Section 5) using real rendered screenshots — not code-only guesses.
 
 **Do not report any layout/visual task as complete without a real screenshot backing it up. This is the entire reason this project moved from claude.ai chat to Claude Code.**
+
+---
+
+## 8. Git Workflow — Commit & Push Policy
+
+**Committing locally:** low-risk, do it automatically after any approved change, with a real descriptive message (not "Update index.html").
+
+**Pushing to GitHub — conditional, not blanket-manual:**
+- **Push without asking** once a change has been through the FULL verification loop for that change: real rendered screenshots confirming the visual result, a functional test where relevant (e.g. cart-add still works), Golden Dataset spot-check if pricing-adjacent, and console clean. If all of that already happened and passed, the confidence is earned — push it.
+- **Hold and ask first** if any of the following is true: verification is partial or still in progress, multiple files/sheets are being edited in one pass and not all have been individually confirmed yet, or something unexpected was found mid-change (a bug, a mismatch, a surprise) that hasn't been fully resolved and re-verified.
+- Rationale: a bad local commit costs nothing — it's undo-able and never left the machine. A bad push updates the live, deployed site (`ynnso.github.io/GEMINI`) within minutes, with no review step in between, and is used by Photogs in the field. The asymmetry is in the cost of being wrong, not the odds of being wrong — so the bar for "push without asking" is "already fully verified," not "seems likely fine."
+- This session's real bugs (wrong Video sheet edited, CTA overflowing off-screen, CTA hidden behind nav) were all caught specifically because verification happened before anything was pushed — that check should not be removed, just gated correctly so it doesn't apply to already-verified work.
