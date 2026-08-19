@@ -3159,7 +3159,7 @@ document.addEventListener('alpine:init', () => {
                      :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" />
 
               <button @click="updatePortQty('up')" :disabled="portQty >= 999"
-                      :class="portQty >= 50 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
+                      :class="portQty >= 999 ? 'opacity-20 cursor-not-allowed' : (isDark ? 'hover:bg-white/10 text-[#f1f5f9] cursor-pointer' : 'hover:bg-black/5 text-[#1e2530] cursor-pointer')"
                       class="w-9 h-9 rounded-[10px] font-bold text-xl flex items-center justify-center transition-all active:scale-90 shrink-0">+</button>
             </div>
           </div>
