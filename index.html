@@ -945,6 +945,9 @@ document.addEventListener('alpine:init', () => {
           this.activeSheet = null;
           if (this.ctaTimeoutId) { clearTimeout(this.ctaTimeoutId); this.ctaTimeoutId = null; }
           this.state = 'idle';
+          if (sheetName === 'floorplan') { this.floorSqFt = '0-3999'; this.floorPlanType = '2D'; }
+          if (sheetName === 'matterport') { this.mpSqFt = '0-1999'; this.mpService = 'Standard'; }
+          if (sheetName === 'zillow') { this.zillowSqFt = '0-1999'; }
           this.$nextTick(() => {
             this.activeSheet = sheetName;
           });
