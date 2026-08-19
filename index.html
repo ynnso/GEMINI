@@ -1425,8 +1425,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -1539,11 +1541,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('MLS Photos: Reshoot', reshootCount + ' Photos', reshootRawTotal, 'refresh')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1863,8 +1867,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 min-h-[60vh] max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[60vh] max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-2 pb-3 flex flex-col gap-2">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -1875,10 +1881,10 @@ document.addEventListener('alpine:init', () => {
         <div class="flex items-center gap-4 p-4 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+          <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shrink-0 transition-colors duration-300"
                :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
-            <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2v18h3v-1H3v-6h3V9h5V8H6V3h15v5h-6v1h6v5h-4v1h4v6H11v-7h-1v5H8v1h2v2h12V2zm3 4H3V5h2zm-2 6v-1h2v1zm2-2H3V9h2zM3 8V7h2v1zm2-4H3V3h2z"/></svg>
+            <svg class="w-8 h-8" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><path d="M2 2v18h3v-1H3v-6h3V9h5V8H6V3h15v5h-6v1h6v5h-4v1h4v6H11v-7h-1v5H8v1h2v2h12V2zm3 4H3V5h2zm-2 6v-1h2v1zm2-2H3V9h2zM3 8V7h2v1zm2-4H3V3h2z"/></svg>
           </div>
           <div class="flex flex-col justify-center text-left">
             <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5"
@@ -1977,11 +1983,13 @@ document.addEventListener('alpine:init', () => {
           </template>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart(floorPortSide + ' Floor Plan: ' + floorPlanType, floorSqFtOptions.find(o => o.value === floorSqFt).label, floorRawTotal, 'floorplan')"
                 :disabled="!floorSqFt || state !== 'idle'"
                 :class="[!floorSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                 :style="floorSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10" :class="!floorSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -2021,8 +2029,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 min-h-[60vh] max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[60vh] max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-2 pb-3 flex flex-col gap-2">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -2031,10 +2041,10 @@ document.addEventListener('alpine:init', () => {
         <div class="flex items-center gap-4 p-4 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-          <div class="w-[68px] h-[68px] rounded-[18px] flex items-center justify-center shrink-0 transition-colors duration-300"
+          <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shrink-0 transition-colors duration-300"
                :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
-            <svg class="w-[53px] h-[53px]" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
+            <svg class="w-8 h-8" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
           </div>
           <div class="flex flex-col justify-center text-left">
             <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="mpPortSide + ' 360 Tour'"></span>
@@ -2118,33 +2128,35 @@ document.addEventListener('alpine:init', () => {
                     :class="mpService === 'Premium' ? 'text-white font-black' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
                     :style="mpService === 'Premium' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">Premium</button>
           </div>
-
-          <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, (mpSqFt === '6000' ? mpCustomSqft.toLocaleString('en-US') + ' Sq Ft' : mpSqFtOptions.find(o => o.value === mpSqFt).label), mpRawTotal, 'tour360')"
-                  :disabled="!mpSqFt || state !== 'idle'"
-                  :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
-                  :style="mpSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                  class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
-            <template x-if="state !== 'success'">
-              <span class="flex items-center -space-x-3">
-                <svg class="w-10 h-10" :class="!mpSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <svg class="w-14 h-14" :class="!mpSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
-                  <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
-                </svg>
-              </span>
-            </template>
-            <template x-if="state === 'success'">
-              <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
-                <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
-                <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
-                <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
-              </svg>
-            </template>
-          </button>
         </div>
+
+        </div>
+
+        <button @click="addConfiguredItemToCart(mpPortSide + ' Matterport: ' + mpService, (mpSqFt === '6000' ? mpCustomSqft.toLocaleString('en-US') + ' Sq Ft' : mpSqFtOptions.find(o => o.value === mpSqFt).label), mpRawTotal, 'tour360')"
+                :disabled="!mpSqFt || state !== 'idle'"
+                :class="[!mpSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
+                :style="mpSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
+          <template x-if="state !== 'success'">
+            <span class="flex items-center -space-x-3">
+              <svg class="w-10 h-10" :class="!mpSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg class="w-14 h-14" :class="!mpSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
+              </svg>
+            </span>
+          </template>
+          <template x-if="state === 'success'">
+            <svg class="w-6 h-6 text-[#e60000]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 3.5h2l2.3 8.8a2 2 0 001.9 1.5h8.6a2 2 0 001.9-1.5l1.8-6.8" stroke-width="2.3" />
+              <circle cx="9" cy="19.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor" />
+              <path d="M11 7.5l2 2 4.2-4.5" stroke-width="2.8" stroke="currentColor" />
+            </svg>
+          </template>
+        </button>
 
       </div>
     </template>
@@ -2161,8 +2173,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -2234,11 +2248,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('Zillow 3D Tour', zillowSqFtOptions.find(o => o.value === zillowSqFt).label, zillowRawTotal, 'tour360')"
                 :disabled="!zillowSqFt || state !== 'idle'"
                 :class="[!zillowSqFt ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                 :style="zillowSqFt && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10" :class="!zillowSqFt ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -2366,8 +2382,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 min-h-[30vh] max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[30vh] max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -2406,11 +2424,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart(videoSelectedSide + ' Video: ' + videoSelected + (videoSelectedSide === 'PORT' ? ' (' + videoPortSector + ')' : ''), '', videoRawTotal, 'video')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -2551,7 +2571,9 @@ document.addEventListener('alpine:init', () => {
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            :class="[(addonHasStepper(addonSelected) || addonIsHourly(addonSelected)) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]']"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -2644,11 +2666,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
+        </div>
+
         <button @click="addonHasStepper(addonSelected) ? addConfiguredItemToCart('Add-On: ' + addonSelected, addonQty + ' Photos', addonRawTotal, 'addon') : (addonIsHourly(addonSelected) ? addConfiguredItemToCart('Add-On: ' + addonSelected, addonHours + ' hrs', addonRawTotal, 'addon') : addConfiguredItemToCart('Add-On: ' + addonSelected, '', addonRawTotal, 'addon'))"
                 :disabled="!addonSelected || state !== 'idle'"
                 :class="[!addonSelected ? (isDark ? 'opacity-30 cursor-not-allowed bg-[#1e232a] text-neutral-500' : 'opacity-40 cursor-not-allowed bg-[#e6e9ef] text-neutral-500') : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')]"
                 :style="addonSelected && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10" :class="!addonSelected ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -2841,7 +2865,9 @@ document.addEventListener('alpine:init', () => {
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            :class="[aerialHasImageStepper(aerialSelected) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]']"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300" :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-neutral-300 hover:bg-neutral-400'"></div>
@@ -2921,10 +2947,12 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
+        </div>
+
         <button @click="aerialHasImageStepper(aerialSelected) ? addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, aerialQty + ' Photos', aerialRawTotal, 'aerial') : addConfiguredItemToCart(aerialSelectedSide + ' Aerial: ' + aerialSelected, '', aerialRawTotal, 'aerial')" :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -2964,8 +2992,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-2 pb-3 flex flex-col gap-2">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -3135,18 +3165,20 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('PORT Photos: ' + portBrand, portQty + ' Photos', portRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-12 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-2">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <svg class="w-11 h-11 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+              <svg class="w-14 h-14 text-white" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
               </svg>
             </span>
@@ -3179,8 +3211,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -3400,6 +3434,8 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('MLS Photos: Full Shoot', selectedSqFtLabel + ' (' + count + ' Photos)', rawTotal, 'camera')"
                 :disabled="!holdsSelection || state !== 'idle'"
                 :class="[
@@ -3408,10 +3444,10 @@ document.addEventListener('alpine:init', () => {
                     : (state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white')
                 ]"
                 :style="holdsSelection && state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-12 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-2">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
-              <svg class="w-8 h-8" :class="!holdsSelection ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <svg class="w-10 h-10" :class="!holdsSelection ? 'text-neutral-400' : 'text-white'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 6V18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M6 12H18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -3449,8 +3485,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -3563,11 +3601,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('MLS Photos: Exterior Only', exteriorCount + ' Photos', exteriorRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -3608,8 +3648,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -3720,11 +3762,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('MLS Photos: Mini Shoot', miniCount + ' Photos', miniRawTotal, 'camera')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -3765,8 +3809,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -3879,11 +3925,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('Airbnb / Lease Photos', airbnbCount + ' Photos', airbnbRawTotal, 'home')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -3924,8 +3972,10 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-3 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
@@ -4080,11 +4130,13 @@ document.addEventListener('alpine:init', () => {
           </div>
         </div>
 
+        </div>
+
         <button @click="addConfiguredItemToCart('MLS Photos: Ranch Shoot', ranchCount + ' Photos', ranchRawTotal, 'home')"
                 :disabled="state !== 'idle'"
                 :class="state === 'success' ? 'bg-white text-[#e60000] border-2 border-[#e60000]' : 'text-white'"
                 :style="state !== 'success' ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : ''"
-                class="w-full h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] mt-1 mb-[84px]">
+                class="h-14 rounded-[16px] flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.97] shrink-0 mx-5 mb-[84px]">
           <template x-if="state !== 'success'">
             <span class="flex items-center -space-x-3">
               <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
