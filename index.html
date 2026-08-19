@@ -143,7 +143,7 @@ document.addEventListener('alpine:init', () => {
  { label: '8,000 – 9,999 Sq Ft', value: '8000-9999' },
  { label: '10,000+ Sq Ft', value: '10000+' }
  ],
- floorSqFt: '',
+ floorSqFt: '0-3999',
  floorPlanType: '2D',
  floorPortSide: 'MLS',
  floorNumFloors: 1,
@@ -183,10 +183,10 @@ document.addEventListener('alpine:init', () => {
  { label: '7,000 – 9,999 Sq Ft', value: '7000-9999' },
  { label: '10,000 – 12,999 Sq Ft', value: '10000-12999' }
  ],
- mpSqFt: '',
+ mpSqFt: '0-1999',
  mpPortSide: 'MLS',
  mpService: 'Standard',
- zillowSqFt: '',
+ zillowSqFt: '0-1999',
  get mpRawTotal() {
  if (!this.mpSqFt) return 0;
  if (this.mpSqFt === '6000') {
@@ -1958,15 +1958,13 @@ document.addEventListener('alpine:init', () => {
         </template>
 
         <div :class="!floorSqFt && 'opacity-30 pointer-events-none select-none'" class="flex flex-col gap-4">
-          <div class="flex rounded-[16px] p-1.5 gap-1.5 transition-colors duration-300"
-               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
-            <button @click="floorPlanType = '2D'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
-                    :class="floorPlanType === '2D' ? 'text-white font-black' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
-                    :style="floorPlanType === '2D' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">2D</button>
-            <button @click="floorPlanType = '3D'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
-                    :class="floorPlanType === '3D' ? 'text-white font-black' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
-                    :style="floorPlanType === '3D' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">3D</button>
+          <div class="grid grid-cols-2 gap-3">
+            <button @click="floorPlanType = '2D'" class="py-3.5 text-[25px] font-bold text-center rounded-[16px] transition-all cursor-pointer active:scale-[0.97]"
+                    :class="floorPlanType === '2D' ? 'text-white font-black' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                    :style="floorPlanType === '2D' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">2D</button>
+            <button @click="floorPlanType = '3D'" class="py-3.5 text-[25px] font-bold text-center rounded-[16px] transition-all cursor-pointer active:scale-[0.97]"
+                    :class="floorPlanType === '3D' ? 'text-white font-black' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                    :style="floorPlanType === '3D' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">3D</button>
           </div>
 
           <template x-if="floorPlanType === '3D'">
@@ -2118,15 +2116,13 @@ document.addEventListener('alpine:init', () => {
               </div>
             </div>
           </template>
-          <div class="flex rounded-[16px] p-1.5 gap-1.5 transition-colors duration-300"
-               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
-            <button @click="mpService = 'Standard'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
-                    :class="mpService === 'Standard' ? 'text-white font-black' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
-                    :style="mpService === 'Standard' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">Standard</button>
-            <button @click="mpService = 'Premium'" class="flex-1 py-3.5 text-[19px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
-                    :class="mpService === 'Premium' ? 'text-white font-black' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
-                    :style="mpService === 'Premium' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : ''">Premium</button>
+          <div class="grid grid-cols-2 gap-3">
+            <button @click="mpService = 'Standard'" class="py-3.5 text-[25px] font-bold text-center rounded-[16px] transition-all cursor-pointer active:scale-[0.97]"
+                    :class="mpService === 'Standard' ? 'text-white font-black' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                    :style="mpService === 'Standard' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">Standard</button>
+            <button @click="mpService = 'Premium'" class="py-3.5 text-[25px] font-bold text-center rounded-[16px] transition-all cursor-pointer active:scale-[0.97]"
+                    :class="mpService === 'Premium' ? 'text-white font-black' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
+                    :style="mpService === 'Premium' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">Premium</button>
           </div>
         </div>
 
