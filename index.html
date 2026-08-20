@@ -1129,6 +1129,163 @@ document.addEventListener('alpine:init', () => {
           this.restoreFaveParams(sheet, backup);
           return price;
         },
+        computeSheetPrice(sheet, overrides) {
+          const getterName = this.faveRawTotalGetter[sheet];
+          if (!getterName) return null;
+          const backup = this.captureFaveParams(sheet);
+          this.restoreFaveParams(sheet, Object.assign({}, backup, overrides));
+          const price = this[getterName];
+          this.restoreFaveParams(sheet, backup);
+          return price;
+        },
+
+        /* SMART SEARCH / Q&A — answers built only from real numbers already in the app (no invented pricing) */
+        smartStepperMeta: {
+          mini:     { label: 'MLS Mini Shoot',    baseCount: 12, baseCost: 119, extraCost: 10, countKey: 'miniCount',     hero: 'photos' },
+          reshoot:  { label: 'MLS Reshoot',       baseCount: 8,  baseCost: 89,  extraCost: 10, countKey: 'reshootCount',  hero: 'photos' },
+          exterior: { label: 'MLS Exterior Only', baseCount: 8,  baseCost: 79,  extraCost: 10, countKey: 'exteriorCount', hero: 'photos' },
+          airbnb:   { label: 'Airbnb Package',    baseCount: 12, baseCost: 169, extraCost: 12, countKey: 'airbnbCount',   hero: 'photos' },
+          ranch:    { label: 'MLS Ranch Shoot',   baseCount: 25, baseCost: 299, extraCost: 5,  countKey: 'ranchCount',    hero: 'photos' }
+        },
+        smartCategoryAliases: [
+          ['full hd', 'videoFullHD'], ['hd highlight', 'videoHD'], ['highlight video', 'videoHD'],
+          ['buzzreels', 'videoBuzz'], ['buzz reels', 'videoBuzz'],
+          ['floor plan', 'floorplan'], ['floorplan', 'floorplan'],
+          ['matterport', 'matterport'], ['zillow', 'zillow'],
+          ['exterior only', 'exterior'], ['exterior', 'exterior'],
+          ['ranch shoot', 'ranch'], ['ranch', 'ranch'],
+          ['mini shoot', 'mini'], ['mini', 'mini'],
+          ['full shoot', 'full'],
+          ['airbnb', 'airbnb'], ['lease', 'airbnb'],
+          ['reshoot', 'reshoot'],
+          ['full', 'full']
+        ],
+        parseSmartQuery(qRaw) {
+          const q = (qRaw || '').trim().toLowerCase();
+          if (!q) return null;
+          const isQuestion = /\?|how much|how many|price|cost|per extra|per additional|per image|what is|what's|whats/.test(q);
+          if (!isQuestion) return null;
+
+          const side = /\bport\b/.test(q) ? 'PORT' : (/\bmls\b/.test(q) ? 'MLS' : null);
+          const sqftMatch = q.match(/(\d[\d,]*)\s*(?:sq\s*\.?\s*ft|sqft|square\s*feet)/);
+          const sqft = sqftMatch ? parseInt(sqftMatch[1].replace(/,/g, ''), 10) : null;
+          const countMatch = q.match(/(\d+)\s*(?:photos?|images?|pics?|pictures?)/);
+          const count = countMatch ? parseInt(countMatch[1], 10) : null;
+          const brandMatch = q.match(/\b(bcd|cr|amf)\b/);
+          const brand = brandMatch ? brandMatch[1].toUpperCase() : null;
+          const wantsExtraRate = /(per\s+extra|per\s+additional|extra\s+photo|additional\s+photo|per\s+image)/.test(q);
+          const wantsBaseCount = /how\s+many/.test(q) && count == null;
+
+          let sheet = null;
+          for (const [kw, key] of this.smartCategoryAliases) {
+            if (q.includes(kw)) { sheet = key; break; }
+          }
+          if (!sheet && (brand || /\bport\b/.test(q))) sheet = 'port';
+          if (!sheet && sqft != null && count != null) sheet = 'full';
+
+          let addonItem = null;
+          if (!sheet) {
+            for (const entry of this.addonSearchIndex) {
+              if (q.includes(entry.item.toLowerCase())) { addonItem = entry.item; break; }
+            }
+          }
+
+          if (!sheet && !addonItem) return null;
+          return { q, side, sqft, count, brand, wantsExtraRate, wantsBaseCount, sheet, addonItem };
+        },
+        smartSqftTierFor(sqftNum) {
+          if (sqftNum == null) return null;
+          return this.sqFtOptions.find(o => {
+            const [lo, hiRaw] = o.value.split('-');
+            const loNum = parseInt(lo.replace('+', ''), 10);
+            if (o.value.endsWith('+')) return sqftNum >= loNum;
+            const hiNum = parseInt(hiRaw, 10);
+            return sqftNum >= loNum && sqftNum <= hiNum;
+          }) || null;
+        },
+        get smartAnswer() {
+          const parsed = this.parseSmartQuery(this.searchQuery);
+          if (!parsed) return null;
+
+          // Add-on
+          if (parsed.addonItem) {
+            const item = parsed.addonItem;
+            const hasStepper = this.addonHasStepper(item);
+            const isHourly = this.addonIsHourly(item);
+            if (parsed.wantsExtraRate && hasStepper) {
+              const rate = { 'Aerial Green Grass': 10, 'ColorPop': 15, 'Digital Twilight': 15 }[item] || 5;
+              return { text: item + ': $' + rate + ' per extra beyond the base ' + this.addonStepperMin(item) + '.', sheet: 'addonProduct', hero: 'addons', setState: () => { this.addonSelected = item; this.addonQty = this.addonStepperMin(item); } };
+            }
+            const qty = parsed.count;
+            const backup = { addonSelected: this.addonSelected, addonQty: this.addonQty, addonHours: this.addonHours };
+            this.addonSelected = item;
+            if (hasStepper) this.addonQty = qty != null ? Math.max(qty, this.addonStepperMin(item)) : this.addonStepperMin(item);
+            if (isHourly) this.addonHours = qty != null ? qty : 0.5;
+            const price = this.addonRawTotal;
+            this.addonSelected = backup.addonSelected; this.addonQty = backup.addonQty; this.addonHours = backup.addonHours;
+            return { text: item + (qty ? ' × ' + qty : '') + ': $' + price + '.', sheet: 'addonProduct', hero: 'addons', setState: () => { this.addonSelected = item; if (hasStepper) this.addonQty = qty != null ? Math.max(qty, this.addonStepperMin(item)) : this.addonStepperMin(item); if (isHourly) this.addonHours = qty != null ? qty : 0.5; } };
+          }
+
+          // PORT
+          if (parsed.sheet === 'port') {
+            if (parsed.wantsExtraRate) {
+              return { text: 'PORT: $20 per extra photo (same rate across BCD, CR, and AMF) — holds until the next 10-photo block, where it plateaus and jumps a flat step.', sheet: 'port', hero: 'aerial', setState: parsed.brand ? () => { this.portBrand = parsed.brand; } : null };
+            }
+            if (!parsed.brand) {
+              return { text: 'PORT base price depends on brand (BCD, CR, or AMF). Which brand?', sheet: 'port', hero: 'aerial' };
+            }
+            const qty = parsed.count || 2;
+            const price = this.portTierPrice(parsed.brand, qty);
+            return { text: 'PORT ' + parsed.brand + ', ' + qty + ' photos: $' + price + '.', sheet: 'port', hero: 'aerial', setState: () => { this.portBrand = parsed.brand; this.portQty = qty; } };
+          }
+
+          // Full Shoot (Smart-Cap)
+          if (parsed.sheet === 'full') {
+            if (parsed.wantsExtraRate) {
+              return { text: 'MLS Full Shoot: $5 per extra photo beyond the 25-photo base — capped by the next flat tier price, whichever is cheaper.', sheet: 'full', hero: 'photos' };
+            }
+            const tier = this.smartSqftTierFor(parsed.sqft);
+            if (tier) {
+              const count = parsed.count || 25;
+              const price = this.computeSheetPrice('full', { selectedSqFt: tier.value, count: count });
+              return { text: 'MLS Full Shoot, ' + tier.label + ', ' + count + ' photos: $' + price + '.', sheet: 'full', hero: 'photos', setState: () => { this.selectedSqFt = tier.value; this.count = count; this.evaluateCheapestBase(); } };
+            }
+            return { text: 'MLS Full Shoot starts at $' + this.priceMatrix['0-1999'][25] + ' (25 photos, smallest sq ft tier). $5 per extra photo.', sheet: 'full', hero: 'photos' };
+          }
+
+          // Simple linear steppers (mini, reshoot, exterior, airbnb, ranch)
+          const meta = this.smartStepperMeta[parsed.sheet];
+          if (meta) {
+            if (parsed.wantsExtraRate) {
+              return { text: meta.label + ': $' + meta.extraCost + ' per extra photo beyond the base ' + meta.baseCount + '.', sheet: parsed.sheet, hero: meta.hero };
+            }
+            if (parsed.wantsBaseCount) {
+              return { text: meta.label + ' includes ' + meta.baseCount + ' photos in the base, at $' + meta.baseCost + '.', sheet: parsed.sheet, hero: meta.hero };
+            }
+            if (parsed.count != null && parsed.sheet !== 'ranch') {
+              const price = meta.baseCost + Math.max(0, parsed.count - meta.baseCount) * meta.extraCost;
+              return { text: meta.label + ', ' + parsed.count + ' photos: $' + price + '.', sheet: parsed.sheet, hero: meta.hero, setState: () => { this[meta.countKey] = parsed.count; } };
+            }
+            return { text: meta.label + ': $' + meta.baseCost + ' base (' + meta.baseCount + ' photos). $' + meta.extraCost + ' per extra photo.', sheet: parsed.sheet, hero: meta.hero };
+          }
+
+          // Flat-tier categories — no per-extra concept
+          if (['matterport', 'zillow', 'floorplan', 'videoBuzz', 'videoHD', 'videoFullHD'].includes(parsed.sheet)) {
+            if (parsed.wantsExtraRate) {
+              return { text: this.catTitle[this.faveHeroMap[parsed.sheet]] + ' is a flat tier rate — no per-photo add-on.', sheet: parsed.sheet, hero: this.faveHeroMap[parsed.sheet] };
+            }
+            return null;
+          }
+
+          return null;
+        },
+        goToSmartAnswer(answer) {
+          if (!answer || !answer.sheet) return;
+          this.openSheet(answer.sheet);
+          if (answer.setState) answer.setState();
+          this.makeHero(answer.hero);
+          this.closeSearch();
+        },
         get currentFaveIndex() {
           if (!this.faveProductSheets.includes(this.activeSheet)) return -1;
           const params = this.captureFaveParams(this.activeSheet);
@@ -1399,14 +1556,23 @@ document.addEventListener('alpine:init', () => {
              class="absolute top-[52px] left-0 right-0 rounded-[16px] overflow-hidden z-[80] transition-colors duration-300 max-h-[60vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
              :class="isDark ? 'bg-[#1e232a]/95' : 'bg-[#e6e9ef]/95'"
              :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
-          <template x-if="searchQuery.trim().length === 0">
+          <template x-if="smartAnswer">
+            <div class="m-3 p-4 rounded-[16px]" :class="isDark ? 'bg-[#ff2a2a]/15' : 'bg-[#e60000]/10'">
+              <p class="text-[11px] font-bold uppercase tracking-wider mb-1.5" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">Answer</p>
+              <p class="text-[15px] font-bold leading-snug mb-3" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="smartAnswer.text"></p>
+              <template x-if="smartAnswer.sheet">
+                <button @click="goToSmartAnswer(smartAnswer)" class="text-[13px] font-bold px-3 py-2 rounded-[10px] transition-all active:scale-95 cursor-pointer" :class="isDark ? 'bg-[#ff2a2a] text-white' : 'bg-[#e60000] text-white'">View sheet →</button>
+              </template>
+            </div>
+          </template>
+          <template x-if="!smartAnswer && searchQuery.trim().length === 0">
             <p class="text-[11px] font-bold uppercase tracking-wider px-4 pt-3 pb-1" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'">Popular</p>
           </template>
-          <template x-if="searchQuery.trim().length > 0 && searchResults.length === 0">
+          <template x-if="!smartAnswer && searchQuery.trim().length > 0 && searchResults.length === 0">
             <p class="text-[13px] font-semibold text-center py-4 px-3" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'">No matching services</p>
           </template>
           <template x-for="(result, idx) in searchResults" :key="result.type + '-' + idx + '-' + result.label">
-            <button @click="selectSearchResult(result)"
+            <button x-show="!smartAnswer" @click="selectSearchResult(result)"
                     class="w-full flex items-center gap-3 px-4 py-3 transition-colors active:scale-[0.98] cursor-pointer"
                     :class="[idx % 2 === 0 ? (isDark ? 'bg-white/[0.02]' : 'bg-white/60') : 'bg-transparent', isDark ? 'hover:bg-white/5' : 'hover:bg-black/5']">
               <div class="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
