@@ -1288,7 +1288,7 @@ document.addEventListener('alpine:init', () => {
 
       <template x-for="key in ['photos','aerial','floor','video','tour360','addons']" :key="key">
         <button @click="makeHero(key); openSheet(sheetForCategory(key))"
-                class="rounded-[15px] flex items-center justify-center transition-all active:scale-90 cursor-pointer"
+                class="rounded-[17px] flex items-center justify-center transition-all active:scale-90 cursor-pointer"
                 :class="[activePrimary === key ? 'w-11 h-11 ring-2 ring-white' : 'w-10 h-10', isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]']"
                 :style="activePrimary === key ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -3px -3px 6px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">
           <svg :class="[activePrimary === key ? 'w-7 h-7 text-white' : (isDark ? 'w-[23px] h-[23px] text-[#94a3b8]' : 'w-[23px] h-[23px] text-[#64748b]')]" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
