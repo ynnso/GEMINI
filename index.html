@@ -1148,6 +1148,14 @@ document.addEventListener('alpine:init', () => {
           this.makeHero(entry.hero);
           this.showFave5Sheet = false;
         },
+        removeFaveEntry(entry) {
+          const i = this.fave5.indexOf(entry);
+          if (i > -1) {
+            this.fave5.splice(i, 1);
+            this.saveFave5();
+            if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(30);
+          }
+        },
         toggleFaveHeart() {
           if (this.showFave5Sheet) { this.showFave5Sheet = false; this.faveRemoveConfirmIndex = null; return; }
           const idx = this.currentFaveIndex;
@@ -1692,16 +1700,15 @@ document.addEventListener('alpine:init', () => {
            :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
-           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-[55] flex flex-col max-h-[82vh] transition-colors duration-300 backdrop-blur-sm"
-           :class="isDark ? 'bg-[#4a0f14]/95 text-[#f1f5f9]' : 'bg-[#f8b4b4]/95 text-[#1e2530]'">
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-[55] flex flex-col max-h-[82vh] transition-colors duration-300"
+           :class="isDark ? 'bg-[#4a0f14] text-[#f1f5f9]' : 'bg-[#e04848] text-white'">
 
         <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-2 pb-[100px] flex flex-col gap-2">
 
         <div class="relative py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
-          <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
-               :class="isDark ? 'bg-white/30 hover:bg-white/50' : 'bg-[#e0b8b8] hover:bg-[#d4a0a0]'"></div>
-          <button @click.stop="showFave5Sheet = false" class="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-[12px] flex items-center justify-center transition-all active:scale-90 cursor-pointer" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" title="Close">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300 bg-white/40 hover:bg-white/60"></div>
+          <button @click.stop="showFave5Sheet = false" class="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-[12px] flex items-center justify-center transition-all active:scale-90 cursor-pointer text-white" title="Close">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -1710,40 +1717,55 @@ document.addEventListener('alpine:init', () => {
 
         <div class="flex items-center gap-4 p-4 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
-             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #e0b8b8, -6px -6px 12px #ffffff;'">
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);'">
           <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shrink-0 transition-colors duration-300"
                :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
-               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #e0b8b8, inset -5px -5px 10px #ffffff;'">
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);'">
             <svg class="w-9 h-9" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="currentColor" viewBox="0 0 24 24">
               <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
             </svg>
           </div>
           <div class="flex flex-col justify-center text-left flex-1">
-            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#94a3b8]'">Favorites</span>
-            <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Fave 5</h1>
+            <span class="block text-[15px] font-extrabold leading-tight tracking-tight" :class="isDark ? 'text-[#94a3b8]' : 'text-[#94a3b8]'">Favorites</span>
+            <h1 class="text-[40px] font-black leading-[0.95] tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Fave 5</h1>
           </div>
         </div>
 
         <template x-if="fave5.length === 0">
-          <p class="text-[14px] font-semibold text-center py-10" :class="isDark ? 'text-[#e8a3a8]' : 'text-[#b06868]'">No favorites yet. Search or browse to add.</p>
+          <div class="flex flex-col items-center gap-1 text-center py-10">
+            <p class="text-[16px] font-black text-white">Build Fave 5</p>
+            <p class="text-[14px] font-semibold text-white/90">❤️ any item</p>
+            <p class="text-[14px] font-semibold text-white/90">1 tap lookups!</p>
+          </div>
         </template>
 
         <div x-show="fave5.length > 0" x-init="$nextTick(() => initFaveSortable($el))" class="flex flex-col gap-2 py-1">
           <template x-for="(entry, idx) in fave5" :key="entry.sheet + '-' + entry.label">
-            <div class="flex items-center gap-1.5 p-2.5 rounded-[18px] transition-colors"
-                 :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
-                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #e0b8b8, -5px -5px 10px #ffffff;'">
-              <div class="fave-drag-handle w-5 h-5 flex items-center justify-center shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
-                   :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+            <div class="relative rounded-[18px] overflow-hidden"
+                 x-data="{ swipeX: 0, dragging: false, startX: 0 }">
+              <div class="absolute inset-0 flex items-center justify-end pr-5 rounded-[18px]" :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#c81e1e]'">
+                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 001-1h-4a1 1 0 001 1v3M4 7h16"/>
                 </svg>
               </div>
-              <div class="w-4 text-center text-[13px] font-black shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" x-text="idx + 1"></div>
-              <button @click="jumpToFave(entry)" class="flex-1 min-w-0 text-left cursor-pointer py-1">
-                <span class="block text-[14px] font-bold leading-snug line-clamp-2" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="entry.label"></span>
-              </button>
-              <span class="shrink-0 text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'$' + faveEntryPrice(entry)"></span>
+              <div class="relative flex items-center gap-1.5 p-2.5 rounded-[18px]"
+                   :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
+                   :style="`transform: translateX(${swipeX}px); transition: ${dragging ? 'none' : 'transform 0.25s ease'}; ` + (isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 0 1px 3px rgba(0,0,0,0.15);')"
+                   @pointerdown="if ($event.target.closest('.fave-drag-handle')) return; startX = $event.clientX; dragging = true"
+                   @pointermove.window="if (!dragging) return; const dx = $event.clientX - startX; swipeX = Math.min(0, Math.max(dx, -120));"
+                   @pointerup.window="if (!dragging) return; dragging = false; if (swipeX < -70) { removeFaveEntry(entry); } else { swipeX = 0; }">
+                <div class="fave-drag-handle w-5 h-5 flex items-center justify-center shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
+                     :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+                  </svg>
+                </div>
+                <div class="w-4 text-center text-[13px] font-black shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" x-text="idx + 1"></div>
+                <button @click="jumpToFave(entry)" class="flex-1 min-w-0 text-left cursor-pointer py-1">
+                  <span class="block text-[14px] font-bold leading-snug line-clamp-2" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="entry.label"></span>
+                </button>
+                <span class="shrink-0 text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'$' + faveEntryPrice(entry)"></span>
+              </div>
             </div>
           </template>
         </div>
