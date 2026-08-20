@@ -1824,22 +1824,22 @@ document.addEventListener('alpine:init', () => {
           </button>
         </div>
 
-        <div class="flex items-center gap-4 p-3 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)"
+        <div class="flex items-center gap-4 p-4 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="dragStart($event)"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
-          <div class="w-10 h-10 rounded-[13px] flex items-center justify-center shrink-0 relative transition-colors duration-300"
+          <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shrink-0 relative transition-colors duration-300"
                :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-               :style="isDark ? 'box-shadow: inset 5px 5px 10px #12151a, inset -4px -4px 9px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-            <svg class="w-7 h-7" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+            <svg class="w-8 h-8" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" stroke-width="1.8" fill="none" stroke="currentColor">
               <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span class="absolute -top-0.5 -right-0.5 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-sm"
+            <span class="absolute -top-1 -right-1 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-sm"
                   :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'"
                   x-text="activeCount()"></span>
           </div>
           <div class="flex flex-col justify-center text-left flex-1">
-            <span class="text-[12px] font-extrabold leading-none tracking-tight mb-1" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="tr('yourQuote')"></span>
-            <h1 class="text-[26px] font-black leading-tight tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('cart')"></h1>
+            <span class="block text-[15px] font-extrabold leading-tight tracking-tight" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="tr('yourQuote')"></span>
+            <h1 class="text-[36px] font-black leading-[0.95] tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('cart')"></h1>
           </div>
           <button @click="clearCart()" class="p-2 rounded-[14px] transition-all active:scale-90 cursor-pointer shrink-0" :class="isDark ? 'text-[#94a3b8] hover:text-[#ff2a2a]' : 'text-[#64748b] hover:text-[#e60000]'" :title="tr('clearCart')">
             <svg class="w-6 h-6 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2">
@@ -1848,19 +1848,19 @@ document.addEventListener('alpine:init', () => {
           </button>
         </div>
 
-        <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5 px-3 mt-2">
-          <template x-for="item in cartItems" :key="item.id">
+        <div class="max-h-64 overflow-y-auto no-scrollbar flex flex-col gap-2.5 px-1 mt-2">
+          <template x-for="(item, itemIdx) in cartItems" :key="item.id">
             <div>
-              <div x-show="item.state === 'active'" class="py-2 flex justify-between items-start gap-2 border-b transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'">
+              <div x-show="item.state === 'active'" class="py-2 px-2 flex justify-between items-start gap-2 border-b rounded-[10px] transition-colors duration-300" :class="isDark ? 'border-white/10' : 'border-black/10'" :style="itemIdx % 2 === 0 ? (isDark ? 'background: rgba(255,255,255,0.02);' : 'background: rgba(255,255,255,0.6);') : ''">
                 <div class="min-w-0 flex-1">
-                  <div class="text-[13px] font-bold leading-[1.15]" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
-                  <div class="text-[11px] leading-tight whitespace-nowrap" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
+                  <div class="text-[14px] font-bold leading-[1.15]" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="item.title"></div>
+                  <div class="text-[12px] leading-tight whitespace-nowrap" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="item.desc"></div>
                 </div>
 
                 <span class="flex items-baseline shrink-0" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
-                  <span class="text-[11px] font-bold self-start mr-[1px]">$</span>
-                  <span class="text-[17px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
-                  <span class="text-[11px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
+                  <span class="text-[12px] font-bold self-start mr-[1px]">$</span>
+                  <span class="text-[19px] font-bold leading-none" x-text="Math.floor(item.price)"></span>
+                  <span class="text-[12px] font-bold" x-text="'.' + item.price.toFixed(2).split('.')[1]"></span>
                 </span>
               </div>
 
@@ -1880,12 +1880,12 @@ document.addEventListener('alpine:init', () => {
                      :style="`transform: translateX(${toastX}px)`">
                   
                   <div class="flex items-center gap-2.5 overflow-hidden py-2">
-                    <span class="text-[16px] font-extrabold shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">✕</span>
-                    <span class="text-[14px] font-bold tracking-tight truncate" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="`Removed ${item.title}`"></span>
+                    <span class="text-[17px] font-extrabold shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">✕</span>
+                    <span class="text-[15px] font-bold tracking-tight truncate" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="`Removed ${item.title}`"></span>
                   </div>
 
-                  <button @click="restoreItem(item)" 
-                          class="active:scale-95 text-white font-bold text-[13px] uppercase px-4 self-stretch flex items-center gap-2 transition shrink-0 cursor-pointer"
+                  <button @click="restoreItem(item)"
+                          class="active:scale-95 text-white font-bold text-[14px] uppercase px-4 self-stretch flex items-center gap-2 transition shrink-0 cursor-pointer"
                           :style="isDark ? 'background:#ff2a2a;' : 'background:#e60000;'">
                     <svg class="w-4 h-4 stroke-white fill-none" viewBox="0 0 24 24" stroke-width="2.5">
                       <path d="M4 4v5h5M20 20v-5h-5"/>
@@ -1903,11 +1903,11 @@ document.addEventListener('alpine:init', () => {
             <div class="py-8 px-4 text-center rounded-[20px] space-y-3 transition-colors duration-300"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
-              <div class="text-[15px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="tr('cartIsEmpty')"></div>
+              <div class="text-[16px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="tr('cartIsEmpty')"></div>
               <template x-if="clearedCache.length > 0">
                 <div>
-                  <button @click="restoreClearedCart()" 
-                          class="text-white font-bold text-[14px] px-5 py-3 rounded-[14px] transition active:scale-95 inline-flex items-center gap-2 cursor-pointer"
+                  <button @click="restoreClearedCart()"
+                          class="text-white font-bold text-[15px] px-5 py-3 rounded-[14px] transition active:scale-95 inline-flex items-center gap-2 cursor-pointer"
                           :style="isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 10px rgba(255,42,42,0.3);' : 'background:#e60000; box-shadow: 4px 4px 10px rgba(230,0,0,0.3);'">
                     <svg class="w-4 h-4 stroke-white fill-none" viewBox="0 0 24 24" stroke-width="2.5">
                       <path d="M4 4v5h5M20 20v-5h-5"/>
@@ -1922,8 +1922,8 @@ document.addEventListener('alpine:init', () => {
 
         </div>
 
-        <div class="pt-1.5 space-y-1.5 px-3 w-full transition-colors duration-300">
-          
+        <div class="pt-1 space-y-1 px-3 w-full transition-colors duration-300">
+
           <div class="flex items-center justify-between gap-2 w-full text-[16px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
             <span class="font-medium" x-text="tr('subtotal')"></span>
             <span class="flex items-baseline font-bold" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">
@@ -1934,21 +1934,15 @@ document.addEventListener('alpine:init', () => {
           </div>
 
           <div class="flex items-center justify-between gap-2 w-full text-[16px]" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2">
               <span class="font-medium" x-text="tr('tax') + ' (8.25%)'"></span>
-              <button @click="includeTax = !includeTax" type="button" 
-                      class="p-1.5 -m-1.5 flex items-center justify-center cursor-pointer shrink-0">
-                <span class="w-[17px] h-[17px] rounded-[6px] flex items-center justify-center transition-all duration-150"
-                      :class="includeTax ? 'bg-emerald-400' : ''"
-                      :style="!includeTax ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : ''">
-                  <template x-if="includeTax">
-                    <svg class="w-3.5 h-3.5 stroke-black fill-none" viewBox="0 0 24 24" stroke-width="4">
-                      <path d="M5 13l4 4L19 7"/>
-                    </svg>
-                  </template>
-                  <template x-if="!includeTax">
-                    <span class="text-white text-[14px] font-bold leading-none">✕</span>
-                  </template>
+              <button @click="includeTax = !includeTax" type="button" class="cursor-pointer shrink-0">
+                <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[10px] font-black tracking-wider transition-all duration-300 backdrop-blur-md border leading-tight"
+                      :class="[
+                        includeTax
+                          ? 'bg-emerald-400/20 text-emerald-400 border-emerald-400/50 shadow-[0_0_6px_rgba(52,211,153,0.3)]'
+                          : (isDark ? 'bg-white/5 text-neutral-400 border-white/10 hover:border-white/20 hover:text-white' : 'bg-black/5 text-neutral-500 border-black/10 hover:border-black/20 hover:text-black')
+                      ]" x-text="tr('tax')">
                 </span>
               </button>
             </div>
@@ -1959,7 +1953,7 @@ document.addEventListener('alpine:init', () => {
             </span>
           </div>
 
-          <div class="flex items-center justify-between gap-2 w-full pt-2 border-t"
+          <div class="flex items-center justify-between gap-2 w-full pt-1.5 border-t"
                :class="isDark ? 'border-white/10' : 'border-black/10'">
             <span class="text-[17px] font-bold tracking-wider"
                   :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('total')"></span>
