@@ -2273,7 +2273,7 @@ document.addEventListener('alpine:init', () => {
           <h1 class="text-[57px] font-black leading-[59px] whitespace-nowrap" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('tour360Caption')"></h1>
         </div>
 
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));">
           <button @click="mpPortSide = 'MLS'; openSheet('matterport')" class="aspect-square rounded-[22px] flex flex-col items-center justify-center gap-1.5 pt-3 pb-2 px-1 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 7px 7px 14px #14171c, -6px -6px 13px #282e38;' : 'box-shadow: 7px 7px 14px #b8bec9, -7px -7px 14px #ffffff;'">
@@ -2363,7 +2363,7 @@ document.addEventListener('alpine:init', () => {
         </div>
 
         <div class="flex flex-col gap-3" x-show="photosCategoryTab === 'MLS'">
-          <div class="grid grid-cols-3 gap-3">
+          <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));">
             <button @click="openSheet('full')" class="aspect-square rounded-[22px] flex flex-col items-center justify-center gap-1.5 pt-3 pb-2 px-1 transition-all active:scale-[0.97] cursor-pointer"
                     :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                     :style="isDark ? 'box-shadow: 7px 7px 14px #14171c, -6px -6px 13px #282e38;' : 'box-shadow: 7px 7px 14px #b8bec9, -7px -7px 14px #ffffff;'">
@@ -3019,7 +3019,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));">
           <button @click="videoSelected = 'BuzzReels Trio'; openSheet('videoBuzz')" class="aspect-square rounded-[22px] flex flex-col items-center justify-center gap-1.5 pt-3 pb-2 px-1 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 7px 7px 14px #14171c, -6px -6px 13px #282e38;' : 'box-shadow: 7px 7px 14px #b8bec9, -7px -7px 14px #ffffff;'">
@@ -3204,7 +3204,7 @@ document.addEventListener('alpine:init', () => {
                   :style="addonsCategory === 'Market' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('marketGroup')"></button>
         </div>
 
-        <div class="grid grid-cols-3 gap-3" x-show="addonsCategory === 'Sky' || addonsCategory === 'Grass' || addonsCategory === 'Market'">
+        <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));" x-show="addonsCategory === 'Sky' || addonsCategory === 'Grass' || addonsCategory === 'Market'">
           <template x-for="item in ({
             Sky: ['Rain Blue Sky','Blue Sky','Sunset Sky','Sky + Grass Bundle'],
             Grass: ['Green Grass','Aerial Green Grass','Aerial/Ground Grass Bundle'],
@@ -3509,7 +3509,7 @@ document.addEventListener('alpine:init', () => {
           </button>
         </div>
 
-        <div class="grid grid-cols-3 gap-3" x-show="aerialFilter === 'Combo'">
+        <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));" x-show="aerialFilter === 'Combo'">
           <button @click="aerialSelected = 'Aerial Mini 2 Images + Curb Appeal Vid 30 sec'; openSheet('aerialProduct')" class="aspect-square rounded-[22px] flex flex-col items-center justify-center gap-1.5 pt-3 pb-2 px-1 transition-all active:scale-[0.97] cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 7px 7px 14px #14171c, -6px -6px 13px #282e38;' : 'box-shadow: 7px 7px 14px #b8bec9, -7px -7px 14px #ffffff;'">
