@@ -39,7 +39,10 @@ document.addEventListener('alpine:init', () => {
             searchByVoice: 'Search by voice', searchCategories: 'Search categories', close: 'Close',
             popular: 'Popular', noMatchingServices: 'No matching services', answer: 'Answer', viewSheet: 'View sheet',
             switchToDark: 'Switch to Dark Mode', switchToLight: 'Switch to Light Mode', viewQuoteCart: 'View Quote Cart',
-            toggleSalesTax: 'Toggle Sales Tax', cartIsEmpty: 'Cart is empty', subtotal: 'Subtotal', total: 'Total'
+            toggleSalesTax: 'Toggle Sales Tax', cartIsEmpty: 'Cart is empty', subtotal: 'Subtotal', total: 'Total',
+            undo: 'UNDO', restoreItems: 'Restore Items', removed: 'Removed', back: 'Back',
+            skyGroup: 'Sky', grassGroup: 'Grass', digitalGroup: 'Digital', timeGroup: 'Time', marketGroup: 'Market',
+            standard: 'Standard', premium: 'Premium'
           },
           es: {
             yourQuote: 'Tu Cotización', cart: 'Carrito', clearCart: 'Vaciar Carrito',
@@ -54,7 +57,10 @@ document.addEventListener('alpine:init', () => {
             searchByVoice: 'Buscar por voz', searchCategories: 'Buscar categorías', close: 'Cerrar',
             popular: 'Popular', noMatchingServices: 'Sin resultados', answer: 'Respuesta', viewSheet: 'Ver detalle',
             switchToDark: 'Modo Oscuro', switchToLight: 'Modo Claro', viewQuoteCart: 'Ver Cotización',
-            toggleSalesTax: 'Activar Impuesto', cartIsEmpty: 'El carrito está vacío', subtotal: 'Subtotal', total: 'Total'
+            toggleSalesTax: 'Activar Impuesto', cartIsEmpty: 'El carrito está vacío', subtotal: 'Subtotal', total: 'Total',
+            undo: 'DESHACER', restoreItems: 'Restaurar Ítems', removed: 'Eliminado', back: 'Atrás',
+            skyGroup: 'Cielo', grassGroup: 'Césped', digitalGroup: 'Digital', timeGroup: 'Horario', marketGroup: 'Mercadeo',
+            standard: 'Estándar', premium: 'Premium'
           }
         },
         tr(key) {
@@ -1564,7 +1570,7 @@ document.addEventListener('alpine:init', () => {
                   class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
                   :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
-                  title="Back">
+                  :title="tr('back')">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
@@ -1726,7 +1732,7 @@ document.addEventListener('alpine:init', () => {
                   class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
                   :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                   :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
-                  title="Favorites">
+                  :title="tr('favorites')">
             <svg class="w-5 h-5" :class="(showFave5Sheet || currentFaveIndex !== -1) ? (isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]') : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
                  :fill="(showFave5Sheet || currentFaveIndex !== -1) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -1881,7 +1887,7 @@ document.addEventListener('alpine:init', () => {
                   
                   <div class="flex items-center gap-2.5 overflow-hidden py-2">
                     <span class="text-[17px] font-extrabold shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">✕</span>
-                    <span class="text-[15px] font-bold tracking-tight truncate" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="`Removed ${item.title}`"></span>
+                    <span class="text-[15px] font-bold tracking-tight truncate" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="tr('removed') + ' ' + item.title"></span>
                   </div>
 
                   <button @click="restoreItem(item)"
@@ -1891,7 +1897,7 @@ document.addEventListener('alpine:init', () => {
                       <path d="M4 4v5h5M20 20v-5h-5"/>
                       <path d="M4 9a9 9 0 0114.85-3.36L20 7M4 17l1.15 1.36A9 9 0 0020 15"/>
                     </svg>
-                    <span>UNDO</span>
+                    <span x-text="tr('undo')"></span>
                   </button>
                 </div>
               </div>
@@ -1913,7 +1919,7 @@ document.addEventListener('alpine:init', () => {
                       <path d="M4 4v5h5M20 20v-5h-5"/>
                       <path d="M4 9a9 9 0 0114.85-3.36L20 7M4 17l1.15 1.36A9 9 0 0020 15"/>
                     </svg>
-                    <span>Restore Items</span>
+                    <span x-text="tr('restoreItems')"></span>
                   </button>
                 </div>
               </template>
@@ -2363,7 +2369,7 @@ document.addEventListener('alpine:init', () => {
                 <svg class="w-[34px] h-[34px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.91" stroke-linecap="round" stroke-linejoin="round"><polyline points="20.59 8.18 20.59 22.5 3.41 22.5 3.41 8.18"/><line x1="0.55" y1="22.5" x2="23.45" y2="22.5"/><polyline points="0.55 11.04 12 1.5 23.45 11.04"/><rect x="9.14" y="14.86" width="5.73" height="7.64"/><circle cx="12" cy="9.14" r="1.91"/><polyline points="16.77 5.48 16.77 1.5 20.59 1.5 20.59 8.66"/></svg>
               </div>
               <div class="flex flex-col items-center -space-y-0.5">
-              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Full Shoot</span>
+              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('fullShoot')"></span>
               <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">from <span class="text-[10px] relative top-[-1px]">$</span>139</span>
               </div>
             </button>
@@ -2374,7 +2380,7 @@ document.addEventListener('alpine:init', () => {
                 <svg class="w-[36px] h-[36px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.91" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4M15 3h4a2 2 0 012 2v4M9 21H5a2 2 0 01-2-2v-4M15 21h4a2 2 0 002-2v-4"/><path d="M14 10l4-4M14 10V6M14 10h4M10 14l-4 4M10 14v4M10 14H6"/></svg>
               </div>
               <div class="flex flex-col items-center -space-y-0.5">
-              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Mini Shoot</span>
+              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('miniShoot')"></span>
               <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'"><span class="text-[10px] relative top-[-1px]">$</span><span x-text="miniBasePrice"></span></span>
               </div>
             </button>
@@ -2385,7 +2391,7 @@ document.addEventListener('alpine:init', () => {
                 <svg class="w-[34px] h-[34px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 256 256" fill="currentColor"><path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z"/></svg>
               </div>
               <div class="flex flex-col items-center -space-y-0.5">
-              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Reshoot</span>
+              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('reshoot')"></span>
               <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'"><span class="text-[10px] relative top-[-1px]">$</span><span x-text="reshootBasePrice"></span></span>
               </div>
             </button>
@@ -2396,7 +2402,7 @@ document.addEventListener('alpine:init', () => {
                 <svg class="w-[31px] h-[31px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 -1 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(1,2)"><path d="M14,49 L14,57 C14,58.1 13.1,59 12,59 L2,59 C0.9,59 0,58.1 0,57 L0,9 C0,7.9 7,1 7,1 C7,1 14,7.9 14,9 L14,19"/><path d="M14,23 L14,45"/><path d="M38,49 L38,57 C38,58.1 37.1,59 36,59 L26,59 C24.9,59 24,58.1 24,57 L24,49"/><path d="M38,23 L38,45"/><path d="M24,19 L24,9 C24,7.9 31,0 31,0 C31,0 38,7.9 38,9 L38,19"/><path d="M24,45 L24,23"/><path d="M48,45 L48,23"/><path d="M48,19 L48,9 C48,7.9 55,0 55,0 C55,0 62,7.9 62,9 L62,57 C62,58.1 61.1,59 60,59 L50,59 C48.9,59 48,58.1 48,57 L48,49"/><path d="M38,43 L48,43"/><path d="M14,43 L24,43"/><path d="M24,51 L14,51"/><path d="M48,51 L38,51"/><path d="M38,17 L48,17"/><path d="M14,17 L24,17"/><path d="M24,25 L14,25"/><path d="M48,25 L38,25"/></g></svg>
               </div>
               <div class="flex flex-col items-center -space-y-0.5">
-              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Exterior Only</span>
+              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('exteriorOnly')"></span>
               <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'"><span class="text-[10px] relative top-[-1px]">$</span><span x-text="exteriorBasePrice"></span></span>
               </div>
             </button>
@@ -2407,7 +2413,7 @@ document.addEventListener('alpine:init', () => {
                 <svg class="w-[38px] h-[38px] shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 256 256" fill="currentColor"><path d="M240,192h-8V130.57l1.49,2.08a8,8,0,1,0,13-9.3l-40-56a8,8,0,0,0-2-1.94L137,18.77l-.1-.07a16,16,0,0,0-17.76,0l-.1.07L51.45,65.42a8,8,0,0,0-2,1.94l-40,56a8,8,0,1,0,13,9.3L24,130.57V192H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM40,108.17,61.7,77.79,128,32l66.3,45.78L216,108.17V192H192V120a8,8,0,0,0-8-8H72a8,8,0,0,0-8,8v72H40Zm88,42L97,128H159Zm48-14.62v48.91L141.76,160ZM114.24,160,80,184.46V135.55ZM128,169.83,159,192H97ZM104,88a8,8,0,0,1,8-8h32a8,8,0,1,1,0,16H112A8,8,0,0,1,104,88Z"/></svg>
               </div>
               <div class="flex flex-col items-center -space-y-0.5">
-              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Ranch Shoot</span>
+              <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('ranchShoot')"></span>
               <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">from <span class="text-[10px] relative top-[-1px]">$</span>299</span>
               </div>
             </button>
@@ -2425,7 +2431,7 @@ document.addEventListener('alpine:init', () => {
               </svg>
             </div>
             <div class="flex flex-col items-center -space-y-0.5">
-            <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Airbnb / Lease</span>
+            <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('airbnbLease')"></span>
             <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" ><span class="text-[10px] relative top-[-1px]">$</span><span x-text="airbnbBasePrice"></span></span>
             </div>
           </button>
@@ -2794,10 +2800,10 @@ document.addEventListener('alpine:init', () => {
           <div class="grid grid-cols-2 gap-3">
             <button @click="mpService = 'Standard'" class="py-3.5 text-[25px] font-bold text-center rounded-[16px] transition-all cursor-pointer active:scale-[0.97]"
                     :class="mpService === 'Standard' ? 'text-white font-black' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                    :style="mpService === 'Standard' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">Standard</button>
+                    :style="mpService === 'Standard' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')" x-text="tr('standard')"></button>
             <button @click="mpService = 'Premium'" class="py-3.5 text-[25px] font-bold text-center rounded-[16px] transition-all cursor-pointer active:scale-[0.97]"
                     :class="mpService === 'Premium' ? 'text-white font-black' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                    :style="mpService === 'Premium' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')">Premium</button>
+                    :style="mpService === 'Premium' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;')" x-text="tr('premium')"></button>
           </div>
         </div>
 
@@ -3182,19 +3188,19 @@ document.addEventListener('alpine:init', () => {
         <div class="grid grid-cols-5 gap-1.5">
           <button @click="addonsCategory = 'Sky'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
                   :class="addonsCategory === 'Sky' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="addonsCategory === 'Sky' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Sky</button>
+                  :style="addonsCategory === 'Sky' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('skyGroup')"></button>
           <button @click="addonsCategory = 'Grass'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
                   :class="addonsCategory === 'Grass' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="addonsCategory === 'Grass' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Grass</button>
+                  :style="addonsCategory === 'Grass' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('grassGroup')"></button>
           <button @click="addonsCategory = 'Digital'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
                   :class="addonsCategory === 'Digital' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="addonsCategory === 'Digital' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Digital</button>
+                  :style="addonsCategory === 'Digital' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('digitalGroup')"></button>
           <button @click="addonsCategory = 'Time'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
                   :class="addonsCategory === 'Time' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="addonsCategory === 'Time' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Time</button>
+                  :style="addonsCategory === 'Time' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('timeGroup')"></button>
           <button @click="addonsCategory = 'Market'" class="py-2 text-[12px] font-bold text-center rounded-[10px] transition-all cursor-pointer"
                   :class="addonsCategory === 'Market' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="addonsCategory === 'Market' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Market</button>
+                  :style="addonsCategory === 'Market' ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('marketGroup')"></button>
         </div>
 
         <div class="grid grid-cols-2 gap-3" x-show="addonsCategory === 'Sky' || addonsCategory === 'Grass' || addonsCategory === 'Market'">
@@ -3443,13 +3449,13 @@ document.addEventListener('alpine:init', () => {
         <div class="flex gap-2">
           <button @click="aerialFilter = 'Photos'" class="flex-1 py-2 text-[14px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
                   :class="aerialFilter === 'Photos' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="aerialFilter === 'Photos' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Photos</button>
+                  :style="aerialFilter === 'Photos' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('photos')"></button>
           <button @click="aerialFilter = 'Video'" class="flex-1 py-2 text-[14px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
                   :class="aerialFilter === 'Video' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="aerialFilter === 'Video' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Video</button>
+                  :style="aerialFilter === 'Video' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('video')"></button>
           <button @click="aerialFilter = 'Combo'" class="flex-1 py-2 text-[14px] font-bold text-center rounded-[12px] transition-all cursor-pointer"
                   :class="aerialFilter === 'Combo' ? 'text-white' : (isDark ? 'bg-[#1e232a] text-[#94a3b8]' : 'bg-[#e6e9ef] text-[#64748b]')"
-                  :style="aerialFilter === 'Combo' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')">Combo</button>
+                  :style="aerialFilter === 'Combo' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')" x-text="tr('combo')"></button>
         </div>
 
         <div class="grid grid-cols-2 gap-4" x-show="aerialFilter === 'Photos'">
