@@ -97,9 +97,15 @@ A previous attempt to scale the app container to 95% with rounded corners when a
 
 ## 5. Layout & Viewport — Testing Standard
 
-**Baseline test device:** iPhone SE, 375×667px. If it fits with zero scroll here, it fits everywhere larger — larger viewports only gain space.
+**Changed 2026-08-20** — SE was the original baseline but the field team carries recent phones, not SE. Designing small-first and patching bigger screens after caused real problems (dead space, centering hacks). Flipped the standard:
 
-**No-scroll rule:** app-wide by default. Every screen (home, category sheets, product sheets) must fit and function with zero vertical scroll at the 375×667 baseline. Exceptions (e.g. Cart with many items, Add-Ons grid overflow) are handled case-by-case when they actually occur — not assumed in advance.
+**Primary design target:** 393×852 (iPhone 16/17 standard). Screens should look intentionally designed and fully use the space here — not just "not broken."
+
+**Stress-test floor:** iPhone SE, 375×667px. Must not scroll, clip, or break here — but no longer needs to look polished, just functional.
+
+**Stress-test ceiling:** 440×956 (iPhone 16/17 Pro Max). Must not look stretched, sparse, or leave large unused space here.
+
+**No-scroll rule:** app-wide by default at the 375×667 floor. Every screen (home, category sheets, product sheets) must fit and function with zero vertical scroll there. Exceptions (e.g. Cart with many items, Add-Ons grid overflow) are handled case-by-case when they actually occur — not assumed in advance.
 
 **Fixed chrome (persistent, all screens):**
 | Element | Height | Position | Z-index |
