@@ -1751,8 +1751,8 @@ document.addEventListener('alpine:init', () => {
     </header>
 
     <!-- DASHBOARD CONTENT -->
-    <main class="flex-1 flex flex-col items-center px-4 pb-[92px] pt-[96px]">
-      <div class="grid grid-cols-2 gap-x-4 gap-y-7 w-full max-w-sm">
+    <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px]">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-4 w-full max-w-sm">
         <template x-for="key in ['photos','aerial','floor','video','tour360','addons']" :key="key">
           <button @click="makeHero(key); openSheet(sheetForCategory(key))"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
