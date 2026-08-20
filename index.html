@@ -34,6 +34,16 @@ document.addEventListener('alpine:init', () => {
         },
         openSearch() { this.searchOpen = true; this.$nextTick(() => this.$refs.searchInput?.focus()); },
         closeSearch() { this.searchOpen = false; this.searchQuery = ''; },
+        handleSearchEnter() {
+          const results = this.searchResults;
+          if (!results.length) return;
+          const first = results[0];
+          const catKey = first.type === 'category' ? first.key : first.hero;
+          if (!catKey) return;
+          this.makeHero(catKey);
+          this.openSheet(this.sheetForCategory(catKey));
+          this.closeSearch();
+        },
         searchInputFocused: false,
         levenshtein(a, b) {
           const m = a.length, n = b.length;
@@ -71,11 +81,11 @@ document.addEventListener('alpine:init', () => {
           return label.slice(0, idx) + '<strong>' + label.slice(idx, idx + query.length) + '</strong>' + label.slice(idx + query.length);
         },
         zeroStateIndex: [
-          { type: 'product', label: 'Full Shoot', sheet: 'full', hero: 'photos', sub: 'Photos' },
-          { type: 'product', label: 'Mini Shoot', sheet: 'mini', hero: 'photos', sub: 'Photos' },
-          { type: 'product', label: 'Aerial Photos', sheet: 'aerial', hero: 'aerial', sub: 'Aerial', setState() { this.aerialCategory = 'MLS'; this.aerialFilter = 'Photos'; } },
-          { type: 'product', label: 'HD Highlight Video', sheet: 'videoHD', hero: 'video', sub: 'Video', setState() { this.videoSelected = 'HD Highlight'; } },
-          { type: 'product', label: 'Floor Plan 2D', sheet: 'floorplan', hero: 'floor', sub: 'Floor Plan', setState() { this.floorPortSide = 'MLS'; this.floorSqFt = '0-3999'; this.floorPlanType = '2D'; } }
+          { type: 'product', label: 'MLS Full Shoot', sheet: 'full', hero: 'photos', sub: 'Photos' },
+          { type: 'product', label: 'MLS Mini Shoot', sheet: 'mini', hero: 'photos', sub: 'Photos' },
+          { type: 'product', label: 'MLS Aerial Photos', sheet: 'aerial', hero: 'aerial', sub: 'Aerial', setState() { this.aerialCategory = 'MLS'; this.aerialFilter = 'Photos'; } },
+          { type: 'product', label: 'MLS HD Highlight Video', sheet: 'videoHD', hero: 'video', sub: 'Video', setState() { this.videoSelected = 'HD Highlight'; this.videoSelectedSide = 'MLS'; } },
+          { type: 'product', label: 'MLS Floor Plan 2D', sheet: 'floorplan', hero: 'floor', sub: 'Floor Plan', setState() { this.floorPortSide = 'MLS'; this.floorSqFt = '0-3999'; this.floorPlanType = '2D'; } }
         ],
         selectSearchResult(result) {
           if (result.type === 'category') {
@@ -105,9 +115,18 @@ document.addEventListener('alpine:init', () => {
           { label: 'Zillow 3D Tour', sheet: 'zillow', hero: 'tour360' },
           { label: 'Matterport MLS', sheet: 'matterport', hero: 'tour360', setState() { this.mpPortSide = 'MLS'; } },
           { label: 'Matterport PORT', sheet: 'matterport', hero: 'tour360', setState() { this.mpPortSide = 'PORT'; } },
-          { label: 'BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', setState() { this.videoSelected = 'BuzzReels Trio'; } },
-          { label: 'HD Highlight Video', sheet: 'videoHD', hero: 'video', setState() { this.videoSelected = 'HD Highlight'; } },
-          { label: 'Full HD Video', sheet: 'videoFullHD', hero: 'video', setState() { this.videoSelected = 'Full HD'; } },
+          { label: 'MLS BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', setState() { this.videoSelected = 'BuzzReels Trio'; this.videoSelectedSide = 'MLS'; } },
+          { label: 'PORT BCD BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', setState() { this.videoSelected = 'BuzzReels Trio'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'BCD'; } },
+          { label: 'PORT CR BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', setState() { this.videoSelected = 'BuzzReels Trio'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'CR'; } },
+          { label: 'PORT AMF BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', setState() { this.videoSelected = 'BuzzReels Trio'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'AMF'; } },
+          { label: 'MLS HD Highlight Video', sheet: 'videoHD', hero: 'video', setState() { this.videoSelected = 'HD Highlight'; this.videoSelectedSide = 'MLS'; } },
+          { label: 'PORT BCD HD Highlight Video', sheet: 'videoHD', hero: 'video', setState() { this.videoSelected = 'HD Highlight'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'BCD'; } },
+          { label: 'PORT CR HD Highlight Video', sheet: 'videoHD', hero: 'video', setState() { this.videoSelected = 'HD Highlight'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'CR'; } },
+          { label: 'PORT AMF HD Highlight Video', sheet: 'videoHD', hero: 'video', setState() { this.videoSelected = 'HD Highlight'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'AMF'; } },
+          { label: 'MLS Full HD Video', sheet: 'videoFullHD', hero: 'video', setState() { this.videoSelected = 'Full HD'; this.videoSelectedSide = 'MLS'; } },
+          { label: 'PORT BCD Full HD Video', sheet: 'videoFullHD', hero: 'video', setState() { this.videoSelected = 'Full HD'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'BCD'; } },
+          { label: 'PORT CR Full HD Video', sheet: 'videoFullHD', hero: 'video', setState() { this.videoSelected = 'Full HD'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'CR'; } },
+          { label: 'PORT AMF Full HD Video', sheet: 'videoFullHD', hero: 'video', setState() { this.videoSelected = 'Full HD'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'AMF'; } },
           { label: 'Floor Plan MLS', sheet: 'floorplan', hero: 'floor', setState() { this.floorPortSide = 'MLS'; } },
           { label: 'Floor Plan PORT', sheet: 'floorplan', hero: 'floor', setState() { this.floorPortSide = 'PORT'; } },
           { label: 'Aerial Mini 2 Images', sheet: 'aerialProduct', hero: 'aerial', setState() { this.aerialSelected = 'Aerial Mini 2 Images'; } },
@@ -1151,7 +1170,7 @@ document.addEventListener('alpine:init', () => {
                  class="flex-1 min-w-0 bg-transparent outline-none text-[14px] font-semibold"
                  :class="searchInputFocused ? 'text-white placeholder:text-white/70' : (isDark ? 'text-[#f1f5f9] placeholder:text-[#64748b]' : 'text-[#1e2530] placeholder:text-[#94a3b8]')"
                  @focus="searchInputFocused = true" @blur="searchInputFocused = false"
-                 @keydown.escape="closeSearch()" />
+                 @keydown.escape="closeSearch()" @keydown.enter="handleSearchEnter()" />
           <button @click="closeSearch()" class="shrink-0 w-5 h-5 flex items-center justify-center" :class="searchInputFocused ? 'text-white' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
