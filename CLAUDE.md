@@ -107,6 +107,17 @@ A previous attempt to scale the app container to 95% with rounded corners when a
 
 **No-scroll rule:** app-wide by default at the 375×667 floor. Every screen (home, category sheets, product sheets) must fit and function with zero vertical scroll there. Exceptions (e.g. Cart with many items, Add-Ons grid overflow) are handled case-by-case when they actually occur — not assumed in advance.
 
+### FAILED ATTEMPT 2026-08-20 — rolled back, read before touching this again
+Tried to apply the 393×852 standard to Photos/Aerial/Video/360 Tour/Add-Ons in one long session, immediately after adopting it. Went through multiple different approaches in a row (fixed-size tiles + centering → content-sized sheets → CSS auto-fit columns → reverting to big PORT-Photos-style tiles) and **pushed each one to the live site without testing on Sonny's actual phone first**. Every round looked fine in the emulated browser sizes but was wrong on the real device — tiny tiles marooned in huge empty space, forced 3-column grids on screens that only had 3-4 items. Sonny had to catch it, get furious, and ask for a rollback three times before landing on a stable point.
+
+**Everything from that session was reverted.** Live code is back to `add68d0` — Home screen overlap fix only. Photos, Aerial, Video, 360 Tour, and Add-Ons are still on the **original, untouched, SE-only 2-column design** and have never been verified against the 393×852 primary target.
+
+**If this is attempted again:**
+1. One screen only. Get it right, get it confirmed by Sonny on his actual phone, before touching a second screen.
+2. Never push a layout change based on emulated-browser screenshots alone when the standard is calibrated to a real device. Ask Sonny to test on his phone before pushing the next one, not after.
+3. Do not invent a new layout technique (centering hacks, auto-fit grids, column-count schemes) to solve a spacing problem without asking first. The existing PORT Photos 2-column tile pattern is the known-good reference — match it, don't reinvent it.
+4. A little scroll at the SE floor is fine and already an accepted exception (see No-scroll rule above). Do not contort tile sizes or column counts trying to eliminate it.
+
 **Fixed chrome (persistent, all screens):**
 | Element | Height | Position | Z-index |
 |---|---|---|---|
@@ -174,3 +185,4 @@ Confirm real browser-based visual testing actually works in this environment bef
 - **Hold and ask first** if any of the following is true: verification is partial or still in progress, multiple files/sheets are being edited in one pass and not all have been individually confirmed yet, or something unexpected was found mid-change (a bug, a mismatch, a surprise) that hasn't been fully resolved and re-verified.
 - Rationale: a bad local commit costs nothing — it's undo-able and never left the machine. A bad push updates the live, deployed site (`ynnso.github.io/GEMINI`) within minutes, with no review step in between, and is used by Photogs in the field. The asymmetry is in the cost of being wrong, not the odds of being wrong — so the bar for "push without asking" is "already fully verified," not "seems likely fine."
 - This session's real bugs (wrong Video sheet edited, CTA overflowing off-screen, CTA hidden behind nav) were all caught specifically because verification happened before anything was pushed — that check should not be removed, just gated correctly so it doesn't apply to already-verified work.
+- **Added 2026-08-20 after a bad session:** emulated-browser screenshots at a given width/height are NOT equivalent to testing on Sonny's actual phone, especially when a layout change is calibrated to real device behavior (see Section 5's failed-attempt note). When a change targets "how it looks on the real phone," push one small change, ask Sonny to check it on his phone, and wait for confirmation before pushing the next one — do not chain several unverified layout changes together.
