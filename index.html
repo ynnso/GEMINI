@@ -2362,6 +2362,7 @@ document.addEventListener('alpine:init', () => {
                   :style="photosCategoryTab === 'PORT' ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">PORT</button>
         </div>
 
+        <div class="flex-1 flex flex-col justify-center">
         <div class="flex flex-col gap-3" x-show="photosCategoryTab === 'MLS'">
           <div class="grid grid-cols-3 gap-3">
             <button @click="openSheet('full')" class="aspect-square rounded-[22px] flex flex-col items-center justify-center gap-1.5 pt-3 pb-2 px-1 transition-all active:scale-[0.97] cursor-pointer"
@@ -2463,6 +2464,7 @@ document.addEventListener('alpine:init', () => {
             </div>
             <span class="text-[17px] font-black text-center" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">AMF</span>
           </button>
+        </div>
         </div>
 
       </div>
