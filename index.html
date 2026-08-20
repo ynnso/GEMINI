@@ -549,6 +549,7 @@ document.addEventListener('alpine:init', () => {
         taxRate: 0.0825,
 
         init() {
+          this.loadFave5();
           setInterval(() => {
             if (this.state === 'success') {
               if (!this.stateStuckAt) this.stateStuckAt = Date.now();
@@ -1023,6 +1024,132 @@ document.addEventListener('alpine:init', () => {
           setTimeout(() => { this.dragY = 0; }, 300);
         },
 
+        /* FAVE 5 */
+        fave5: [],
+        showFave5Sheet: false,
+        faveRemoveConfirmIndex: null,
+        faveRemoveConfirmTimer: null,
+        faveProductSheets: ['full','mini','reshoot','exterior','ranch','airbnb','zillow','matterport','videoBuzz','videoHD','videoFullHD','floorplan','aerialProduct','port','addonProduct'],
+        faveHeroMap: { full:'photos', mini:'photos', reshoot:'photos', exterior:'photos', ranch:'photos', airbnb:'photos', zillow:'tour360', matterport:'tour360', videoBuzz:'video', videoHD:'video', videoFullHD:'video', floorplan:'floor', aerialProduct:'aerial', port:'aerial', addonProduct:'addons' },
+        saveFave5() { try { sessionStorage.setItem('fave5', JSON.stringify(this.fave5)); } catch (e) {} },
+        loadFave5() {
+          try { this.fave5 = JSON.parse(sessionStorage.getItem('fave5')) || []; }
+          catch (e) { this.fave5 = []; }
+        },
+        sqFtLabelFor(value, options) {
+          const found = (options || []).find(o => o.value === value);
+          return found ? found.label : value;
+        },
+        captureFaveParams(sheet) {
+          switch (sheet) {
+            case 'full': return { selectedSqFt: this.selectedSqFt, count: this.count };
+            case 'mini': return { miniCount: this.miniCount };
+            case 'reshoot': return { reshootCount: this.reshootCount };
+            case 'exterior': return { exteriorCount: this.exteriorCount };
+            case 'ranch': return { ranchCount: this.ranchCount, ranchSelectedBase: this.ranchSelectedBase };
+            case 'airbnb': return { airbnbCount: this.airbnbCount };
+            case 'zillow': return { zillowSqFt: this.zillowSqFt };
+            case 'matterport': return { mpPortSide: this.mpPortSide, mpSqFt: this.mpSqFt, mpService: this.mpService, mpCustomSqft: this.mpCustomSqft };
+            case 'videoBuzz': case 'videoHD': case 'videoFullHD':
+              return { videoSelectedSide: this.videoSelectedSide, videoPortSector: this.videoPortSector, videoSelected: this.videoSelected };
+            case 'floorplan': return { floorPortSide: this.floorPortSide, floorSqFt: this.floorSqFt, floorPlanType: this.floorPlanType, floorNumFloors: this.floorNumFloors };
+            case 'aerialProduct': return { aerialSelectedSide: this.aerialSelectedSide, aerialSelected: this.aerialSelected, aerialQty: this.aerialQty };
+            case 'port': return { portBrand: this.portBrand, portQty: this.portQty };
+            case 'addonProduct': return { addonsCategory: this.addonsCategory, addonSelected: this.addonSelected, addonQty: this.addonQty, addonHours: this.addonHours };
+            default: return {};
+          }
+        },
+        restoreFaveParams(sheet, p) {
+          switch (sheet) {
+            case 'full': this.selectedSqFt = p.selectedSqFt; this.count = p.count; this.evaluateCheapestBase(); break;
+            case 'mini': this.miniCount = p.miniCount; break;
+            case 'reshoot': this.reshootCount = p.reshootCount; break;
+            case 'exterior': this.exteriorCount = p.exteriorCount; break;
+            case 'ranch': this.ranchCount = p.ranchCount; this.ranchSelectedBase = p.ranchSelectedBase; break;
+            case 'airbnb': this.airbnbCount = p.airbnbCount; break;
+            case 'zillow': this.zillowSqFt = p.zillowSqFt; break;
+            case 'matterport': this.mpPortSide = p.mpPortSide; this.mpSqFt = p.mpSqFt; this.mpService = p.mpService; this.mpCustomSqft = p.mpCustomSqft; break;
+            case 'videoBuzz': case 'videoHD': case 'videoFullHD':
+              this.videoSelectedSide = p.videoSelectedSide; this.videoPortSector = p.videoPortSector; this.videoSelected = p.videoSelected; break;
+            case 'floorplan': this.floorPortSide = p.floorPortSide; this.floorSqFt = p.floorSqFt; this.floorPlanType = p.floorPlanType; this.floorNumFloors = p.floorNumFloors; break;
+            case 'aerialProduct': this.aerialSelectedSide = p.aerialSelectedSide; this.aerialSelected = p.aerialSelected; this.aerialQty = p.aerialQty; break;
+            case 'port': this.portBrand = p.portBrand; this.portQty = p.portQty; break;
+            case 'addonProduct': this.addonsCategory = p.addonsCategory; this.addonSelected = p.addonSelected; this.addonQty = p.addonQty; this.addonHours = p.addonHours; break;
+          }
+        },
+        faveLabel(sheet, p) {
+          switch (sheet) {
+            case 'full': return 'MLS Full Shoot ' + p.count + ' Photos';
+            case 'mini': return 'MLS Mini Shoot ' + p.miniCount + ' Photos';
+            case 'reshoot': return 'MLS Reshoot ' + p.reshootCount + ' Photos';
+            case 'exterior': return 'MLS Exterior Only ' + p.exteriorCount + ' Photos';
+            case 'ranch': return 'MLS Ranch Shoot ' + p.ranchCount + ' Photos';
+            case 'airbnb': return 'Airbnb Package ' + p.airbnbCount + ' Photos';
+            case 'zillow': return 'Zillow 3D Tour ' + this.sqFtLabelFor(p.zillowSqFt, this.zillowSqFtOptions);
+            case 'matterport': return p.mpPortSide + ' Matterport ' + p.mpService + ' ' + (p.mpSqFt === '6000' ? (p.mpCustomSqft + ' Sq Ft') : this.sqFtLabelFor(p.mpSqFt, this.mpSqFtOptions));
+            case 'videoBuzz': case 'videoHD': case 'videoFullHD':
+              return (p.videoSelectedSide === 'PORT' ? ('PORT ' + p.videoPortSector) : 'MLS') + ' ' + p.videoSelected;
+            case 'floorplan': return p.floorPortSide + ' Floor Plan ' + this.sqFtLabelFor(p.floorSqFt, this.floorSqFtOptions) + ' ' + p.floorPlanType;
+            case 'aerialProduct': return p.aerialSelectedSide + ' ' + p.aerialSelected;
+            case 'port': return 'PORT ' + p.portBrand + ' ' + p.portQty + ' Photos';
+            case 'addonProduct': return 'Add-Ons ' + p.addonSelected;
+            default: return this.catTitle[sheet] || sheet;
+          }
+        },
+        get currentFaveIndex() {
+          if (!this.faveProductSheets.includes(this.activeSheet)) return -1;
+          const params = this.captureFaveParams(this.activeSheet);
+          return this.fave5.findIndex(f => f.sheet === this.activeSheet && JSON.stringify(f.params) === JSON.stringify(params));
+        },
+        addCurrentToFave() {
+          const sheet = this.activeSheet;
+          const params = this.captureFaveParams(sheet);
+          const entry = { sheet, hero: this.faveHeroMap[sheet], label: this.faveLabel(sheet, params), params };
+          this.fave5.unshift(entry);
+          if (this.fave5.length > 5) this.fave5.length = 5;
+          this.saveFave5();
+        },
+        jumpToFave(entry) {
+          this.openSheet(entry.sheet);
+          this.restoreFaveParams(entry.sheet, entry.params);
+          this.makeHero(entry.hero);
+          this.showFave5Sheet = false;
+        },
+        toggleFaveHeart() {
+          if (this.showFave5Sheet) { this.showFave5Sheet = false; this.faveRemoveConfirmIndex = null; return; }
+          const idx = this.currentFaveIndex;
+          if (idx !== -1) {
+            if (this.faveRemoveConfirmIndex === idx) {
+              this.fave5.splice(idx, 1);
+              this.saveFave5();
+              this.faveRemoveConfirmIndex = null;
+              if (this.faveRemoveConfirmTimer) clearTimeout(this.faveRemoveConfirmTimer);
+              return;
+            }
+            this.faveRemoveConfirmIndex = idx;
+            if (this.faveRemoveConfirmTimer) clearTimeout(this.faveRemoveConfirmTimer);
+            this.faveRemoveConfirmTimer = setTimeout(() => { this.faveRemoveConfirmIndex = null; }, 2500);
+            return;
+          }
+          if (this.faveProductSheets.includes(this.activeSheet)) {
+            this.addCurrentToFave();
+          }
+          this.showFave5Sheet = true;
+        },
+        initFaveSortable(el) {
+          if (typeof Sortable === 'undefined') return;
+          if (el._sortableInstance) return;
+          el._sortableInstance = Sortable.create(el, {
+            handle: '.fave-drag-handle',
+            animation: 150,
+            onEnd: (evt) => {
+              const moved = this.fave5.splice(evt.oldIndex, 1)[0];
+              this.fave5.splice(evt.newIndex, 0, moved);
+              this.saveFave5();
+            }
+          });
+        },
+
         dragStart(e) {
           const clientY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
           this.startY = clientY;
@@ -1066,6 +1193,7 @@ document.addEventListener('alpine:init', () => {
       }));
 });
 </script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1258,6 +1386,26 @@ document.addEventListener('alpine:init', () => {
                  x-text="activeCount()"></div>
           </template>
         </button>
+
+        <div class="relative">
+          <button @click="toggleFaveHeart()"
+                  class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
+                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                  :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
+                  title="Favorites">
+            <svg class="w-5 h-5" :class="(showFave5Sheet || currentFaveIndex !== -1) ? (isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]') : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
+                 :fill="(showFave5Sheet || currentFaveIndex !== -1) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            </svg>
+          </button>
+          <template x-if="faveRemoveConfirmIndex !== null && faveRemoveConfirmIndex === currentFaveIndex">
+            <div class="absolute top-[46px] right-0 whitespace-nowrap px-2.5 py-1.5 rounded-[10px] text-[11px] font-bold z-[90]"
+                 :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#1e2530] text-white'"
+                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'">
+              Tap again to remove
+            </div>
+          </template>
+        </div>
       </div>
 
     </header>
@@ -1298,7 +1446,7 @@ document.addEventListener('alpine:init', () => {
     </div>
 
     <!-- BACKDROP WITH ADAPTIVE OPACITY & BLUR -->
-    <div x-show="activeSheet !== null"
+    <div x-show="activeSheet !== null || showFave5Sheet"
          x-cloak
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -1306,7 +1454,7 @@ document.addEventListener('alpine:init', () => {
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         @click="closeSheet()"
+         @click="closeSheet(); showFave5Sheet = false"
          class="fixed inset-0 z-40 transition-colors duration-300 backdrop-blur-sm"
          :class="isDark ? 'bg-black/45' : 'bg-black/25'"></div>
 
@@ -1478,6 +1626,58 @@ document.addEventListener('alpine:init', () => {
             </span>
           </div>
 
+        </div>
+
+      </div>
+    </template>
+
+    <!-- FAVE 5 BOTTOM SHEET -->
+    <template x-if="showFave5Sheet">
+      <div x-show="showFave5Sheet"
+           x-cloak
+           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter-start="translate-y-full"
+           x-transition:enter-end="translate-y-0"
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-[55] flex flex-col gap-1 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <div class="flex items-center gap-2 py-2">
+          <button @click="showFave5Sheet = false"
+                  class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 cursor-pointer shrink-0"
+                  :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
+                  :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
+                  title="Close">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          <h1 class="text-[24px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Favorites</h1>
+        </div>
+
+        <template x-if="fave5.length === 0">
+          <p class="text-[14px] font-semibold text-center py-10" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'">No favorites yet.</p>
+        </template>
+
+        <div x-show="fave5.length > 0" x-init="$nextTick(() => initFaveSortable($el))" class="flex flex-col gap-2 py-1">
+          <template x-for="(entry, idx) in fave5" :key="entry.sheet + '-' + entry.label">
+            <div class="flex items-center gap-3 p-3 rounded-[20px] transition-colors"
+                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'">
+              <div class="fave-drag-handle w-7 h-7 flex items-center justify-center shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
+                   :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
+                </svg>
+              </div>
+              <div class="w-6 text-center text-[14px] font-black shrink-0" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" x-text="idx + 1"></div>
+              <button @click="jumpToFave(entry)" class="flex-1 min-w-0 text-left cursor-pointer">
+                <span class="block text-[14px] font-bold truncate" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="entry.label"></span>
+              </button>
+            </div>
+          </template>
         </div>
 
       </div>
