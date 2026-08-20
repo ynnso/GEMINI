@@ -1320,6 +1320,7 @@ document.addEventListener('alpine:init', () => {
           </svg>
         </button>
 
+        <template x-if="searchOpen">
         <div x-show="searchOpen" x-cloak
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
@@ -1344,8 +1345,10 @@ document.addEventListener('alpine:init', () => {
             </svg>
           </button>
         </div>
+        </template>
 
         <!-- PREDICTIVE RESULTS DROPDOWN -->
+        <template x-if="searchOpen">
         <div x-show="searchOpen" x-cloak
              x-transition:enter="transition ease-out duration-150"
              x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
@@ -1385,6 +1388,7 @@ document.addEventListener('alpine:init', () => {
             </button>
           </template>
         </div>
+        </template>
       </div>
 
       <!-- RIGHT GROUP: SUN/MOON TOGGLE + CART -->
