@@ -34,7 +34,7 @@ document.addEventListener('alpine:init', () => {
             reshoot: 'Reshoot', fullShoot: 'Full Shoot', miniShoot: 'Mini Shoot', exteriorOnly: 'Exterior Only', airbnbLease: 'Airbnb / Lease', ranchShoot: 'Ranch Shoot',
             photos: 'Photos', video: 'Video', floorPlan: 'Floor Plan', addOns: 'Add-Ons', aerial: 'Aerial',
             matterport: 'Matterport', zillow3DTour: 'Zillow 3D Tour',
-            sqFt: 'Sq Ft', totalPhotos: 'Total Photos', tax: 'Tax', base: 'Base', extra: 'Extra',
+            sqFt: 'Sq Ft', totalPhotos: 'Total Photos', tax: 'Tax', base: 'Base', extra: 'Extra', combo: 'Combo',
             searchPlaceholder: 'Search services or add-ons...',
             searchByVoice: 'Search by voice', searchCategories: 'Search categories', close: 'Close',
             popular: 'Popular', noMatchingServices: 'No matching services', answer: 'Answer', viewSheet: 'View sheet',
@@ -49,7 +49,7 @@ document.addEventListener('alpine:init', () => {
             reshoot: 'Retoma', fullShoot: 'Sesión Completa', miniShoot: 'Sesión Mini', exteriorOnly: 'Solo Exterior', airbnbLease: 'Airbnb / Renta', ranchShoot: 'Sesión Rancho',
             photos: 'Fotos', video: 'Video', floorPlan: 'Plano', addOns: 'Extras', aerial: 'Aéreo',
             matterport: 'Matterport', zillow3DTour: 'Tour 3D Zillow',
-            sqFt: 'Pies²', totalPhotos: 'Total de Fotos', tax: 'Impuesto', base: 'Base', extra: 'Extra',
+            sqFt: 'Pies²', totalPhotos: 'Total de Fotos', tax: 'Impuesto', base: 'Base', extra: 'Extra', combo: 'Combo',
             searchPlaceholder: 'Buscar servicios o extras...',
             searchByVoice: 'Buscar por voz', searchCategories: 'Buscar categorías', close: 'Cerrar',
             popular: 'Popular', noMatchingServices: 'Sin resultados', answer: 'Respuesta', viewSheet: 'Ver detalle',
@@ -2720,7 +2720,7 @@ document.addEventListener('alpine:init', () => {
             <svg class="w-8 h-8" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2"/><path d="M12 18h2v-5h2V9c0-1.103-.897-2-2-2h-4c-1.103 0-2 .897-2 2v4h2v5h2z"/><path d="m18.446 11.386-.893 1.789C19.108 13.95 20 14.98 20 16c0 1.892-3.285 4-8 4s-8-2.108-8-4c0-1.02.892-2.05 2.446-2.825l-.893-1.789C3.295 12.512 2 14.193 2 16c0 3.364 4.393 6 10 6s10-2.636 10-6c0-1.807-1.295-3.488-3.554-4.614z"/></svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="mpPortSide + ' 360 Tour'"></span>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="mpPortSide + ' ' + tr('tour360Caption')"></span>
             <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="tr('matterport')"></h1>
           </div>
         </div>
@@ -3086,7 +3086,7 @@ document.addEventListener('alpine:init', () => {
             <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="videoSelectedSide + ' Video' + (videoSelectedSide === 'PORT' ? ' — ' + videoPortSector : '')"></span>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="videoSelectedSide + ' ' + tr('video') + (videoSelectedSide === 'PORT' ? ' — ' + videoPortSector : '')"></span>
             <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="videoSelected"></h1>
           </div>
         </div>
@@ -3284,7 +3284,7 @@ document.addEventListener('alpine:init', () => {
             <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="currentColor" x-init="$el.setAttribute('viewBox', addonIconViewBox[addonSelected] || '0 0 24 24')" x-effect="$el.setAttribute('viewBox', addonIconViewBox[addonSelected] || '0 0 24 24')" x-html="addonIconMap[addonSelected]"></svg>
           </div>
           <div class="flex flex-col justify-center text-left">
-            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Add-Ons</span>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="tr('addOns')"></span>
             <h1 class="text-[36px] font-black leading-none tracking-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="addonDisplayLabel(addonSelected)"></h1>
           </div>
         </div>
@@ -3588,7 +3588,7 @@ document.addEventListener('alpine:init', () => {
             <svg class="w-11 h-11" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M20,7H18V5h2a1,1,0,0,0,0-2H14a1,1,0,0,0,0,2h2V7H8V5h2a1,1,0,0,0,0-2H4A1,1,0,0,0,4,5H6V7H4a3,3,0,0,0,0,6H6.1a4.955,4.955,0,0,0,.99,2.092A5,5,0,0,0,3,20a1,1,0,0,0,2,0,3,3,0,0,1,3-3h3v2a1,1,0,0,0,2,0V17h3a3,3,0,0,1,3,3,1,1,0,0,0,2,0,5,5,0,0,0-4.091-4.908A4.955,4.955,0,0,0,17.9,13H20a3,3,0,0,0,0-6Zm0,4H17a1,1,0,0,0-1,1,3,3,0,0,1-3,3H11a3,3,0,0,1-3-3,1,1,0,0,0-1-1H4A1,1,0,0,1,4,9H20a1,1,0,0,1,0,2Zm-6,1a2,2,0,0,1-4,0,1.929,1.929,0,0,1,.1-.581A1,1,0,1,0,11.417,10.1,1.978,1.978,0,0,1,12,10,2,2,0,0,1,14,12Z"/></svg>
           </div>
           <div class="flex flex-col justify-center text-left min-w-0">
-            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="aerialSelectedSide + ' Aerial ' + (aerialSelected.includes('+') ? 'Combo' : (aerialSelected.includes('Video') ? 'Video' : 'Photos'))"></span>
+            <span class="text-[17px] font-extrabold leading-none tracking-tight capitalize mb-1.5" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="aerialSelectedSide + ' ' + tr('aerial') + ' ' + (aerialSelected.includes('+') ? tr('combo') : (aerialSelected.includes('Video') ? tr('video') : tr('photos')))"></span>
             <h1 class="font-black leading-tight tracking-tight" :class="[isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]', aerialHeaderSize(aerialSelected)]" x-text="aerialDisplayLabel(aerialSelected)"></h1>
           </div>
         </div>
