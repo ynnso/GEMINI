@@ -1550,7 +1550,7 @@ document.addEventListener('alpine:init', () => {
       x-data="app">
 
   <!-- APP CONTAINER -->
-  <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28">
+  <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative">
 
     <!-- APP HEADER -->
     <header class="fixed top-0 left-0 right-0 px-6 h-[76px] grid items-center z-[70] transition-colors duration-300"
@@ -1752,6 +1752,7 @@ document.addEventListener('alpine:init', () => {
 
     <!-- DASHBOARD CONTENT -->
     <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px]">
+      <div class="flex-1 flex items-center justify-center w-full max-w-sm">
       <div class="grid grid-cols-2 gap-x-4 gap-y-4 w-full max-w-sm">
         <template x-for="key in ['photos','aerial','floor','video','tour360','addons']" :key="key">
           <button @click="makeHero(key); openSheet(sheetForCategory(key))"
@@ -1766,6 +1767,7 @@ document.addEventListener('alpine:init', () => {
             <span class="text-[18px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
           </button>
         </template>
+      </div>
       </div>
     </main>
 
