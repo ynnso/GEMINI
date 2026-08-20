@@ -1740,9 +1740,9 @@ document.addEventListener('alpine:init', () => {
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-[55] flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#4a0f14] text-[#f1f5f9]' : 'bg-[#e60000] text-white'">
 
-        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-2 pb-[100px] flex flex-col gap-5">
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-1 pb-24 flex flex-col gap-2.5">
 
-        <div class="relative py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+        <div class="relative py-1.5 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="faveDragStart($event)">
           <div class="w-12 h-1.5 rounded-full transition-colors duration-300 bg-white/40 hover:bg-white/60"></div>
           <button @click.stop="showFave5Sheet = false" class="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-[12px] flex items-center justify-center transition-all active:scale-90 cursor-pointer text-white" title="Close">
@@ -1752,7 +1752,7 @@ document.addEventListener('alpine:init', () => {
           </button>
         </div>
 
-        <div class="flex items-center gap-4 p-4 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="faveDragStart($event)"
+        <div class="flex items-center gap-4 p-2.5 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="faveDragStart($event)"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
              :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);'">
           <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shrink-0 transition-colors duration-300"
@@ -1776,7 +1776,7 @@ document.addEventListener('alpine:init', () => {
           </div>
         </template>
 
-        <div x-show="fave5.length > 0" x-init="$nextTick(() => initFaveSortable($el))" class="flex flex-col gap-3.5">
+        <div x-show="fave5.length > 0" x-init="$nextTick(() => initFaveSortable($el))" class="flex flex-col gap-2">
           <template x-for="(entry, idx) in fave5" :key="entry.sheet + '-' + entry.label">
             <div class="relative rounded-[20px] overflow-hidden"
                  x-data="{ swipeX: 0, dragging: false, startX: 0 }">
