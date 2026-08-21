@@ -1281,13 +1281,15 @@ document.addEventListener('alpine:init', () => {
         goBack() {
           const parent = this.sheetParentMap[this.activeSheet];
           if (parent) {
-            this.openSheet(parent);
+            this.openSheet(parent, 'back');
           } else {
             this.activePrimary = null;
             this.closeSheet();
           }
         },
-        openSheet(sheetName) {
+        navDirection: 'forward',
+        openSheet(sheetName, direction = 'forward') {
+          this.navDirection = direction;
           this.activeSheet = null;
           if (this.ctaTimeoutId) { clearTimeout(this.ctaTimeoutId); this.ctaTimeoutId = null; }
           this.state = 'idle';
@@ -1861,13 +1863,24 @@ document.addEventListener('alpine:init', () => {
     /* Revolut-style staggered content entrance: direct children of the sheet's content wrapper
        fade + slide in one after another instead of all appearing at once. Plain CSS animation,
        not a Tailwind-scanned utility class or JS-timed sequence -- re-triggers automatically every
-       time x-if freshly mounts the sheet, no orchestration needed, no JIT-timing risk. */
+       time x-if freshly mounts the sheet, no orchestration needed, no JIT-timing risk.
+       Horizontal, not vertical: a small vertical nudge got lost entirely under the sheet's own
+       much bigger vertical slide-up happening at the same time. Horizontal motion doesn't compete
+       with that, and direction carries meaning -- arriving from the right reads as moving forward/
+       deeper (default), arriving from the left reads as backing out, matching goBack(). */
     @keyframes sheet-stagger-in {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateX(28px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes sheet-stagger-in-back {
+      from { opacity: 0; transform: translateX(-28px); }
+      to { opacity: 1; transform: translateX(0); }
     }
     .sheet-stagger-content > * {
       animation: sheet-stagger-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .sheet-stagger-content.nav-back > * {
+      animation-name: sheet-stagger-in-back;
     }
     .sheet-stagger-content > *:nth-child(1) { animation-delay: 0.02s; }
     .sheet-stagger-content > *:nth-child(2) { animation-delay: 0.08s; }
@@ -2764,7 +2777,7 @@ document.addEventListener('alpine:init', () => {
         </div>
 
         <div class="flex flex-col gap-3" x-show="photosCategoryTab === 'MLS'">
-          <div class="sheet-stagger-content grid grid-cols-2 gap-2">
+          <div class="sheet-stagger-content grid grid-cols-2 gap-2" :class="navDirection === 'back' ? 'nav-back' : ''">
             <button @click="openSheet('full')" class="flex flex-col items-center justify-center gap-2 pt-3 pb-1.5 px-3 rounded-[24px] transition-all active:scale-[0.97] cursor-pointer"
                     :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                     :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
