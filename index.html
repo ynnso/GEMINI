@@ -1746,6 +1746,88 @@ document.addEventListener('alpine:init', () => {
           };
           requestAnimationFrame(waitForSheet);
         },
+
+        /* PACKAGE WIZARD (SANDBOX / TEST ONLY) -- reads real price numbers but its state is
+           entirely separate from the live sheets (miniCount, reshootCount, exteriorCount,
+           selectedSqFt, cart). Nothing in the real flow calls into this, and this never writes
+           back into real state. Reachable only from the hamburger drawer while it's being tested. */
+        wizTestOpen: false,
+        wizTestPackage: 'MINI',
+        wizTestQty: '12',
+        wizTestSqft: '',
+        openWizTestSheet() {
+          this.wizTestOpen = true;
+          let waitFrames = 0;
+          const waitForSheet = () => {
+            const el = this.$refs.wizTestDragSheet;
+            if (!el) {
+              waitFrames++;
+              if (waitFrames < 30) requestAnimationFrame(waitForSheet);
+              return;
+            }
+            el.style.transition = 'none';
+            el.style.transform = 'translateY(' + (window.innerHeight + 100) + 'px)';
+            void el.offsetHeight;
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform 0.63s cubic-bezier(0.34, 1.56, 0.64, 1)';
+              el.style.transform = 'translateY(0px)';
+            });
+          };
+          requestAnimationFrame(waitForSheet);
+        },
+        wizTestSetPackage(pkg) {
+          this.wizTestPackage = pkg;
+          this.wizTestQty = pkg === 'MINI' ? '12' : (pkg === 'FULL' ? '25' : '8');
+        },
+        wizTestUpdateQty(dir) {
+          const floor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 1 : 8);
+          let val = parseInt(this.wizTestQty) || floor;
+          val = dir === 'up' ? val + 1 : Math.max(floor, val - 1);
+          this.wizTestQty = String(val);
+        },
+        wizTestPrices() {
+          const tiers = [25, 36, 40, 50];
+          const sqftTable = (this.wizTestSqft && this.priceMatrix[this.wizTestSqft]) ? this.priceMatrix[this.wizTestSqft] : null;
+          const fullTierFor = (n) => { for (const t of tiers) { if (n <= t) return t; } return 50; };
+          const qFloor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 1 : 8);
+          const rawQty = parseInt(this.wizTestQty) || 0;
+          const q = Math.max(qFloor, rawQty || (this.wizTestPackage === 'FULL' ? 25 : qFloor));
+          const reshoot = 89 + Math.max(0, q - 8) * 10;
+          const ext = 79 + Math.max(0, q - 8) * 10;
+          const mini = 119 + Math.max(0, q - 12) * 10;
+          const fullTier = fullTierFor(q);
+          const full = sqftTable ? sqftTable[fullTier] : null;
+          const current = this.wizTestPackage === 'RESHOOT' ? reshoot : (this.wizTestPackage === 'EXT' ? ext : (this.wizTestPackage === 'FULL' ? full : mini));
+          const currentLabel = this.wizTestPackage === 'RESHOOT' ? 'Reshoot' : (this.wizTestPackage === 'EXT' ? 'Exterior' : (this.wizTestPackage === 'FULL' ? 'Full' : 'Mini'));
+          const candidates = [{ key: 'current', label: currentLabel + ' ' + (this.wizTestPackage === 'FULL' ? q + ' img (' + fullTier + ' tier)' : q + ' img'), price: current, imgs: q }];
+          if (this.wizTestPackage !== 'MINI' && q <= 24) candidates.push({ key: 'mini', label: 'Mini ' + Math.max(q, 12) + ' img', price: mini, imgs: Math.max(q, 12) });
+          if (full !== null && full !== undefined && this.wizTestPackage !== 'FULL') candidates.push({ key: 'full', label: 'Full ' + fullTier + ' img', price: full, imgs: fullTier });
+          const validCandidates = candidates.filter(c => c.price !== null && c.price !== undefined);
+          if (!validCandidates.length) { candidates.forEach(c => { c.isBest = false; }); return candidates; }
+          const minPrice = Math.min(...validCandidates.map(c => c.price));
+          const tiedForLowest = validCandidates.filter(c => c.price === minPrice);
+          const mostImagesAtLowest = Math.max(...tiedForLowest.map(c => c.imgs));
+          const winners = tiedForLowest.filter(c => c.imgs === mostImagesAtLowest);
+          let winner = winners.find(c => c.key === 'current') || winners[0];
+          if (this.wizTestPackage === 'EXT' && winner && winner.key === 'current') {
+            const miniC = winners.find(c => c.key === 'mini');
+            if (miniC) winner = miniC;
+          }
+          candidates.forEach(c => { c.isBest = (c === winner); });
+          return candidates;
+        },
+        wizTestSelectCandidate(c) {
+          if (c.key === 'current') { this.wizTestOpen = false; return; }
+          if (c.key === 'mini') {
+            this.wizTestPackage = 'MINI';
+            this.wizTestQty = String(Math.max(parseInt(this.wizTestQty) || 12, 12));
+          } else if (c.key === 'full') {
+            this.wizTestPackage = 'FULL';
+            this.wizTestQty = String(c.imgs);
+          }
+          this.wizTestOpen = false;
+        },
+
         initFaveSortable(el) {
           if (typeof Sortable === 'undefined') return;
           if (el._sortableInstance) return;
@@ -2365,6 +2447,16 @@ document.addEventListener('alpine:init', () => {
         </template>
       </button>
 
+      <!-- PACKAGE WIZARD (sandbox/test only -- not wired to any real sheet or cart state) -->
+      <button @click="drawerOpen = false; setTimeout(() => openWizTestSheet(), 950)"
+              class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
+              title="Package Wizard (test)">
+        <svg class="drawer-icon-svg w-10 h-10 text-[#64748b]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>
+          <path d="M12 8l1.6 3.4L17 13l-3.4 1.6L12 18l-1.6-3.4L7 13l3.4-1.6z"/>
+        </svg>
+      </button>
+
     </div>
 
     <!-- DASHBOARD CONTENT -->
@@ -2374,7 +2466,7 @@ document.addEventListener('alpine:init', () => {
          reverted attempt: a transform on an ancestor of position:fixed elements changes their
          containing block and clips them off the real viewport. Header/nav sit outside it here. -->
     <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[84px] transition-all duration-300"
-          :style="(activeSheet !== null || showFave5Sheet) ? 'transform: scale(0.82); border-radius: 32px; overflow: hidden; filter: brightness(0.8);' : ''">
+          :style="(activeSheet !== null || showFave5Sheet || wizTestOpen) ? 'transform: scale(0.82); border-radius: 32px; overflow: hidden; filter: brightness(0.8);' : ''">
 
       <div x-ref="homeGrid" @click.self="exitHomeEditMode()"
            @pointermove.window="homeTileDragMove($event)" @pointerup.window="endHomeTileDrag($event)" @pointercancel.window="endHomeTileDrag()"
@@ -2434,7 +2526,7 @@ document.addEventListener('alpine:init', () => {
     </div>
 
     <!-- BACKDROP WITH ADAPTIVE OPACITY & BLUR -->
-    <div x-show="activeSheet !== null || showFave5Sheet"
+    <div x-show="activeSheet !== null || showFave5Sheet || wizTestOpen"
          x-cloak
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -2442,7 +2534,7 @@ document.addEventListener('alpine:init', () => {
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         @click="closeSheet(); showFave5Sheet = false"
+         @click="closeSheet(); showFave5Sheet = false; wizTestOpen = false"
          class="fixed inset-0 z-40 transition-colors duration-300 backdrop-blur-sm"
          :class="isDark ? 'bg-black/45' : 'bg-black/25'"
          :style="(isDragging || faveIsDragging || dismissMomentum || faveDismissMomentum) ? ('opacity:' + (1 - backdropDragProgress) + '; backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px); -webkit-backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px);') : ''"></div>
@@ -2704,6 +2796,92 @@ document.addEventListener('alpine:init', () => {
                 <span class="shrink-0 text-[15px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="'$' + faveEntryPrice(entry)"></span>
               </div>
             </div>
+          </template>
+        </div>
+
+        </div>
+      </div>
+    </template>
+
+    <!-- PACKAGE WIZARD SHEET (sandbox/test only) -->
+    <template x-if="wizTestOpen">
+      <div x-show="wizTestOpen"
+           x-cloak
+           x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+           x-transition:leave-start="translate-y-0"
+           x-transition:leave-end="translate-y-full"
+           x-ref="wizTestDragSheet"
+           class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-[56] flex flex-col max-h-[82vh] transition-colors duration-300"
+           :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
+
+        <button @click.stop="wizTestOpen = false" class="absolute left-0 top-0 w-[72px] h-[72px] pt-[7px] rounded-tl-[28px] rounded-br-[16px] flex items-start justify-center transition-all active:scale-90 cursor-pointer" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" title="Close">
+          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.25">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-[100px] flex flex-col gap-3">
+
+        <div class="relative py-3 w-full flex justify-center cursor-default select-none">
+          <div class="w-12 h-1.5 rounded-full transition-colors duration-300"
+               :class="isDark ? 'bg-white/30' : 'bg-neutral-300'"></div>
+        </div>
+
+        <div class="text-center mb-1">
+          <span class="text-[11px] font-bold uppercase tracking-wide" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">Test Sandbox — Not Live</span>
+          <h1 class="text-[26px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Package Wizard</h1>
+        </div>
+
+        <!-- Package picker -->
+        <div class="grid grid-cols-4 gap-2">
+          <template x-for="pkg in [['FULL','Full'],['MINI','Mini'],['RESHOOT','Reshoot'],['EXT','Ext']]" :key="pkg[0]">
+            <button @click="wizTestSetPackage(pkg[0])"
+                    class="h-11 rounded-[12px] text-[13px] font-black transition-all active:scale-95 cursor-pointer"
+                    :class="wizTestPackage === pkg[0] ? 'text-white' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
+                    :style="wizTestPackage === pkg[0] ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')"
+                    x-text="pkg[1]"></button>
+          </template>
+        </div>
+
+        <!-- Qty stepper + Sq Ft -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="h-14 rounded-[16px] flex items-center justify-between px-3"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+            <button @click="wizTestUpdateQty('down')" class="w-8 h-8 rounded-[10px] flex items-center justify-center text-[18px] font-black cursor-pointer active:scale-90" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">–</button>
+            <span class="text-[18px] font-black tabular-nums" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="wizTestQty + ' img'"></span>
+            <button @click="wizTestUpdateQty('up')" class="w-8 h-8 rounded-[10px] flex items-center justify-center text-[18px] font-black cursor-pointer active:scale-90" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">+</button>
+          </div>
+          <select x-model="wizTestSqft"
+                  class="h-14 rounded-[16px] px-3 text-[14px] font-bold text-center outline-none appearance-none cursor-pointer"
+                  :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
+                  :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+            <option value="">Sq Ft?</option>
+            <template x-for="opt in sqFtOptions" :key="opt.value">
+              <option :value="opt.value" x-text="opt.label"></option>
+            </template>
+          </select>
+        </div>
+
+        <!-- Live price -->
+        <div class="flex items-baseline justify-center gap-1 rounded-[24px] py-4"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
+          <span class="text-[24px] font-black self-start pt-1" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">$</span>
+          <span class="text-[52px] font-black leading-none" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" x-text="wizTestPrices().find(c => c.key === 'current').price ?? '--'"></span>
+        </div>
+
+        <!-- Candidates -->
+        <div class="grid gap-2.5" :class="wizTestPrices().length === 3 ? 'grid-cols-3' : (wizTestPrices().length === 1 ? 'grid-cols-1' : 'grid-cols-2')">
+          <template x-for="c in wizTestPrices()" :key="c.key">
+            <button @click="wizTestSelectCandidate(c)"
+                    class="rounded-[16px] px-2 py-3 text-center cursor-pointer transition-all active:scale-95"
+                    :class="c.isBest ? 'text-white' : (isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]')"
+                    :style="c.isBest ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">
+              <p class="text-[10px] font-bold uppercase tracking-wide mb-1" :class="c.isBest ? 'text-white/80' : (isDark ? 'text-[#64748b]' : 'text-[#94a3b8]')" x-text="c.isBest ? 'Best Pkg' : c.label.split(' ')[0]"></p>
+              <p class="text-[18px] font-black leading-none" x-text="'$' + (c.price ?? '--')"></p>
+              <p class="text-[10px] font-bold mt-1 opacity-70" x-text="c.label"></p>
+            </button>
           </template>
         </div>
 
