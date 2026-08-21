@@ -1708,8 +1708,8 @@ document.addEventListener('alpine:init', () => {
     <div x-show="!searchOpen" class="fixed top-[18px] right-[32px] z-[80]">
       <button @click="drawerOpen = !drawerOpen"
               class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
-              :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
-              :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
+              :class="drawerOpen ? '' : (isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]')"
+              :style="drawerOpen ? 'background:#e6e9ef; box-shadow: 4px 4px 9px rgba(0,0,0,0.45), -3px -3px 7px rgba(255,255,255,0.08);' : (isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;')"
               :title="drawerOpen ? tr('close') : tr('menu')">
         <div class="w-5 h-4 relative flex flex-col justify-between">
           <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
