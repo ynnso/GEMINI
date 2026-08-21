@@ -1669,12 +1669,25 @@ document.addEventListener('alpine:init', () => {
           }
         },
 
+        dismissMomentum: false,
+        dismissDuration: 260,
         dragEnd() {
           if (!this.isDragging) return;
           this.isDragging = false;
 
           if (this.dragY > 100 || this.velocityY > 0.45) {
-            this.closeSheet();
+            // Keep going in the direction they flicked instead of cutting to a generic fade --
+            // the sheet finishes leaving under its own dragged-out momentum. Faster flick = quicker
+            // exit; a slow deliberate drag past the threshold gets a touch more time.
+            const speed = Math.max(Math.abs(this.velocityY), 0.5);
+            this.dismissDuration = Math.max(160, Math.min(320, 260 / speed));
+            this.dismissMomentum = true;
+            this.dragY = window.innerHeight + 200;
+            setTimeout(() => {
+              this.closeSheet();
+              this.dragY = 0;
+              this.dismissMomentum = false;
+            }, this.dismissDuration);
           } else {
             this.dragY = 0;
           }
@@ -1706,12 +1719,21 @@ document.addEventListener('alpine:init', () => {
           this.faveLastTime = now;
           this.faveDragY = deltaY < 0 ? this.rubberBand(deltaY) : deltaY;
         },
+        faveDismissMomentum: false,
+        faveDismissDuration: 260,
         faveDragEnd() {
           if (!this.faveIsDragging) return;
           this.faveIsDragging = false;
           if (this.faveDragY > 100 || this.faveVelocityY > 0.45) {
-            this.showFave5Sheet = false;
-            setTimeout(() => { this.faveDragY = 0; }, 300);
+            const speed = Math.max(Math.abs(this.faveVelocityY), 0.5);
+            this.faveDismissDuration = Math.max(160, Math.min(320, 260 / speed));
+            this.faveDismissMomentum = true;
+            this.faveDragY = window.innerHeight + 200;
+            setTimeout(() => {
+              this.showFave5Sheet = false;
+              this.faveDragY = 0;
+              this.faveDismissMomentum = false;
+            }, this.faveDismissDuration);
           } else {
             this.faveDragY = 0;
           }
@@ -2109,7 +2131,7 @@ document.addEventListener('alpine:init', () => {
          @click="closeSheet(); showFave5Sheet = false"
          class="fixed inset-0 z-40 transition-colors duration-300 backdrop-blur-sm"
          :class="isDark ? 'bg-black/45' : 'bg-black/25'"
-         :style="(isDragging || faveIsDragging) ? ('opacity:' + (1 - backdropDragProgress) + '; backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px); -webkit-backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px);') : ''"></div>
+         :style="(isDragging || faveIsDragging || dismissMomentum || faveDismissMomentum) ? ('opacity:' + (1 - backdropDragProgress) + '; backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px); -webkit-backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px);') : ''"></div>
 
     <!-- CART QUOTE BOTTOM SHEET -->
     <template x-if="activeSheet === 'cart'">
@@ -2121,7 +2143,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-1 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
@@ -2293,7 +2315,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${faveDragY}px); transition: ${faveIsDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${faveDragY}px); transition: ${faveIsDragging ? 'none' : (faveDismissMomentum ? 'transform ' + faveDismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="faveDragMove($event)"
            @pointerup.window="faveDragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-[55] flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -2383,7 +2405,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -2550,7 +2572,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
@@ -2626,7 +2648,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
@@ -2785,7 +2807,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
@@ -2844,7 +2866,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[60vh] max-h-[82vh] transition-colors duration-300"
@@ -3008,7 +3030,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[60vh] max-h-[82vh] transition-colors duration-300"
@@ -3155,7 +3177,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -3281,7 +3303,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
@@ -3374,7 +3396,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[30vh] max-h-[82vh] transition-colors duration-300"
@@ -3467,7 +3489,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
@@ -3572,7 +3594,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            :class="[(addonHasStepper(addonSelected) || addonIsHourly(addonSelected)) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]']"
@@ -3719,7 +3741,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
@@ -3876,7 +3898,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            :class="[aerialHasImageStepper(aerialSelected) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]']"
@@ -4009,7 +4031,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -4232,7 +4254,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -4510,7 +4532,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -4677,7 +4699,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -4842,7 +4864,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -5009,7 +5031,7 @@ document.addEventListener('alpine:init', () => {
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)'}`"
+           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
            @pointermove.window="dragMove($event)"
            @pointerup.window="dragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
