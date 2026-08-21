@@ -2209,8 +2209,14 @@ document.addEventListener('alpine:init', () => {
       <button @click="exitHomeEditMode()" class="h-10 px-4 rounded-[15px] flex items-center justify-center text-[18px] font-black transition-all active:scale-90 cursor-pointer" :class="isDark ? 'bg-[#ff2a2a] text-white' : 'bg-[#e60000] text-white'">Done</button>
     </div>
 
-    <!-- MORPHING HAMBURGER TRIGGER (independent, always above header + drawer so it never gets covered) -->
-    <div x-show="!searchOpen && !homeEditMode" class="fixed top-[12px] right-8 z-[80] flex justify-center">
+    <!-- MORPHING HAMBURGER TRIGGER (independent, always above header + drawer so it never gets covered).
+         Two different alignment targets depending on state: closed (hamburger), it matches the tile
+         grid's right edge like the rest of the header icons. Open (X), it needs to match the drawer's
+         own icon column instead, which is centered within a wider 40% box -- those are two different
+         reference points, not one, which is why the X drifted out of line before. -->
+    <div x-show="!searchOpen && !homeEditMode"
+         class="fixed top-[12px] z-[80] flex justify-center"
+         :class="drawerOpen ? 'right-0 w-[40%]' : 'right-8'">
       <button @click="drawerOpen = !drawerOpen"
               class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
               :class="drawerOpen ? '' : (isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]')"
@@ -2239,14 +2245,14 @@ document.addEventListener('alpine:init', () => {
          x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-[900ms] transform"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="translate-x-full"
-         class="fixed top-0 right-0 bottom-0 w-[33%] z-[71] flex flex-col items-center justify-center gap-6"
+         class="fixed top-0 right-0 bottom-0 w-[40%] z-[71] flex flex-col items-center justify-center gap-6"
          style="background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: -8px 0 24px rgba(0,0,0,0.5);">
 
       <!-- FAVORITES -->
       <button @click="drawerOpen = false; setTimeout(() => toggleFaveHeart(), 950)"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
               :title="tr('favorites')">
-        <svg class="drawer-icon-svg w-8 h-8" :class="currentFaveIndex !== -1 ? 'text-[#ff2a2a]' : 'text-[#64748b]'"
+        <svg class="drawer-icon-svg w-10 h-10" :class="currentFaveIndex !== -1 ? 'text-[#ff2a2a]' : 'text-[#64748b]'"
              :fill="currentFaveIndex !== -1 ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
              :style="currentFaveIndex !== -1 ? 'filter: drop-shadow(0 0 6px rgba(255,42,42,0.75));' : ''">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -2257,7 +2263,7 @@ document.addEventListener('alpine:init', () => {
       <button @click="drawerOpen = false; setTimeout(() => openSheet('cart'), 950)"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center relative cursor-pointer"
               :title="tr('viewQuoteCart')">
-        <svg class="drawer-icon-svg w-[37px] h-[37px] text-[#64748b]" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+        <svg class="drawer-icon-svg w-[46px] h-[46px] text-[#64748b]" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
           <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
         </svg>
         <template x-if="activeCount() > 0">
@@ -2271,11 +2277,7 @@ document.addEventListener('alpine:init', () => {
       <button @click="appLang = appLang === 'en' ? 'es' : 'en'"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
               :title="appLang === 'en' ? 'Switch to Spanish' : 'Switch to English'">
-        <svg class="drawer-icon-svg w-8 h-8 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-          <circle cx="12" cy="12" r="9"/>
-          <ellipse cx="12" cy="12" rx="4" ry="9"/>
-          <path d="M3 12h18"/>
-        </svg>
+        <span class="drawer-icon-svg text-[#64748b] font-black text-[25px] tracking-tight" x-text="appLang === 'en' ? 'ES' : 'EN'"></span>
       </button>
 
       <!-- THEME -->
@@ -2283,12 +2285,12 @@ document.addEventListener('alpine:init', () => {
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
               :title="isDark ? tr('switchToLight') : tr('switchToDark')">
         <template x-if="isDark">
-          <svg class="drawer-icon-svg w-8 h-8 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="drawer-icon-svg w-10 h-10 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
           </svg>
         </template>
         <template x-if="!isDark">
-          <svg class="drawer-icon-svg w-8 h-8 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="drawer-icon-svg w-10 h-10 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m8.966-8.966h-2.25m-13.5 0H3m15.364-6.364l-1.591 1.591M6.758 17.242l-1.591 1.591m12.728 0l-1.591-1.591M6.758 6.758L5.167 5.167M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z" />
           </svg>
         </template>
