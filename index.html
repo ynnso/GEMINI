@@ -1713,7 +1713,13 @@ document.addEventListener('alpine:init', () => {
     * {
       -webkit-tap-highlight-color: transparent;
       -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
       user-select: none;
+    }
+    img, svg {
+      -webkit-user-drag: none;
+      pointer-events: none;
     }
     html { overflow-x: hidden; overflow-y: hidden; height: 100%; overscroll-behavior: none; }
     body { 
