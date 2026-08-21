@@ -243,7 +243,34 @@ document.addEventListener('alpine:init', () => {
         sheetForCategory(key) {
           return key === 'photos' ? 'photosCategory' : (key === 'aerial' ? 'aerial' : (key === 'floor' ? 'floorCategory' : (key === 'video' ? 'video' : (key === 'tour360' ? 'tourCategory' : 'addon'))));
         },
-        openSearch() { this.searchOpen = true; this.$nextTick(() => this.$refs.searchInput?.focus()); },
+        openSearch() {
+          this.searchOpen = true;
+          // Same proven technique as the sheet-open spring: direct DOM writes on the actual
+          // element, not Alpine's reactive :style (which batched things away last time we tried
+          // that route) and not Tailwind's translate/scale utility classes (unreliable timing from
+          // the CDN's live compiler). A single scaleX transition with the app's spring curve
+          // naturally overshoots past 1 and eases back -- no separate 'peak then settle' step needed.
+          let waitFrames = 0;
+          const waitForBar = () => {
+            const el = this.$refs.searchBarEl;
+            if (!el) {
+              waitFrames++;
+              if (waitFrames < 30) requestAnimationFrame(waitForBar);
+              return;
+            }
+            this.$refs.searchInput?.focus();
+            el.style.transition = 'none';
+            el.style.transform = 'scaleX(0.15)';
+            el.style.opacity = '0';
+            void el.offsetHeight;
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease-out';
+              el.style.transform = 'scaleX(1)';
+              el.style.opacity = '1';
+            });
+          };
+          requestAnimationFrame(waitForBar);
+        },
         closeSearch() { this.searchOpen = false; this.searchQuery = ''; },
         handleSearchEnter() {
           const results = this.searchResults;
@@ -1940,9 +1967,7 @@ document.addEventListener('alpine:init', () => {
 
         <template x-if="searchOpen">
         <div x-show="searchOpen" x-cloak
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100"
+             x-ref="searchBarEl"
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
