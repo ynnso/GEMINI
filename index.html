@@ -1546,13 +1546,13 @@ document.addEventListener('alpine:init', () => {
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; touch-action: pan-y; }
 
     .drawer-icon-btn {
-      background: rgba(255,255,255,0.07);
-      box-shadow: -3px -3px 7px rgba(255,255,255,0.07), 4px 4px 9px rgba(0,0,0,0.55);
+      background: #e6e9ef;
+      box-shadow: 4px 4px 9px rgba(0,0,0,0.45), -3px -3px 7px rgba(255,255,255,0.08);
       transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     }
     .drawer-icon-btn:active {
       background: #e60000;
-      box-shadow: inset 3px 3px 7px rgba(0,0,0,0.5), inset -2px -2px 5px rgba(255,255,255,0.15);
+      box-shadow: inset 3px 3px 7px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);
       transform: scale(0.96);
     }
     .drawer-icon-btn:active .drawer-icon-svg { transform: scale(1.18); color: #fff !important; }
@@ -1733,7 +1733,7 @@ document.addEventListener('alpine:init', () => {
       <button @click="drawerOpen = false; toggleFaveHeart()"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
               :title="tr('favorites')">
-        <svg class="drawer-icon-svg w-8 h-8" :class="currentFaveIndex !== -1 ? 'text-[#ff2a2a]' : 'text-white/85'"
+        <svg class="drawer-icon-svg w-8 h-8" :class="currentFaveIndex !== -1 ? 'text-[#ff2a2a]' : 'text-[#64748b]'"
              :fill="currentFaveIndex !== -1 ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
              :style="currentFaveIndex !== -1 ? 'filter: drop-shadow(0 0 6px rgba(255,42,42,0.75));' : ''">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
@@ -1744,7 +1744,7 @@ document.addEventListener('alpine:init', () => {
       <button @click="drawerOpen = false; openSheet('cart')"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center relative cursor-pointer"
               :title="tr('viewQuoteCart')">
-        <svg class="drawer-icon-svg w-[37px] h-[37px] text-white/85" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+        <svg class="drawer-icon-svg w-[37px] h-[37px] text-[#64748b]" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
           <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
         </svg>
         <template x-if="activeCount() > 0">
@@ -1758,7 +1758,7 @@ document.addEventListener('alpine:init', () => {
       <button @click="appLang = appLang === 'en' ? 'es' : 'en'"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
               :title="appLang === 'en' ? 'Switch to Spanish' : 'Switch to English'">
-        <svg class="drawer-icon-svg w-8 h-8 text-white/85" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+        <svg class="drawer-icon-svg w-8 h-8 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
           <circle cx="12" cy="12" r="9"/>
           <ellipse cx="12" cy="12" rx="4" ry="9"/>
           <path d="M3 12h18"/>
@@ -1770,12 +1770,12 @@ document.addEventListener('alpine:init', () => {
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
               :title="isDark ? tr('switchToLight') : tr('switchToDark')">
         <template x-if="isDark">
-          <svg class="drawer-icon-svg w-8 h-8 text-white/85" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="drawer-icon-svg w-8 h-8 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
           </svg>
         </template>
         <template x-if="!isDark">
-          <svg class="drawer-icon-svg w-8 h-8 text-white/85" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="drawer-icon-svg w-8 h-8 text-[#64748b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21m8.966-8.966h-2.25m-13.5 0H3m15.364-6.364l-1.591 1.591M6.758 17.242l-1.591 1.591m12.728 0l-1.591-1.591M6.758 6.758L5.167 5.167M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z" />
           </svg>
         </template>
