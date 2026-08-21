@@ -2072,7 +2072,7 @@ document.addEventListener('alpine:init', () => {
              x-transition:leave-end="opacity-0 -translate-y-4"
              @pointermove.window="searchDragMove($event)"
              @pointerup.window="searchDragEnd()"
-             class="fixed top-[64px] left-0 right-0 max-w-md mx-auto rounded-b-[16px] overflow-hidden z-[90] transition-colors duration-300 max-h-[70vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
+             class="fixed top-[64px] left-0 right-0 max-w-md mx-auto rounded-b-[28px] overflow-hidden z-[90] transition-colors duration-300 max-h-[70vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
              :class="isDark ? 'bg-[#1e232a]/95' : 'bg-[#e6e9ef]/95'"
              :style="(isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;') + ((searchDragY !== 0 || searchIsDragging || searchDismissMomentum) ? ('transform: translateY(' + searchDragY + 'px); transition: ' + (searchIsDragging ? 'none' : (searchDismissMomentum ? 'transform ' + searchDismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)')) + ';') : '')">
           <template x-if="smartAnswer">
