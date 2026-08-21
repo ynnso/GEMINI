@@ -2028,7 +2028,7 @@ document.addEventListener('alpine:init', () => {
             </div>
           </template>
           <template x-if="!smartAnswer && searchQuery.trim().length === 0">
-            <p class="text-[18px] font-bold pl-[60px] pr-4 pt-3 pb-1" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'" x-text="tr('popular')"></p>
+            <p class="text-[18px] font-bold pl-[60px] pr-4 py-2" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'" x-text="tr('popular')"></p>
           </template>
           <template x-if="!smartAnswer && searchQuery.trim().length > 0 && searchResults.length === 0">
             <p class="text-[13px] font-semibold text-center py-4 px-3" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'" x-text="tr('noMatchingServices')"></p>
