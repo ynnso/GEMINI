@@ -238,11 +238,20 @@ document.addEventListener('alpine:init', () => {
           if (!q) {
             return this.zeroStateIndex.map(p => ({ ...p }));
           }
+          // Exact abbreviation match: show ONLY the tagged entries, skip loose
+          // substring search entirely (prevents e.g. "ap" incidentally matching
+          // "Appeal" inside an unrelated label).
+          const isKnownAbbrev = this.productSearchIndex.some(p => p.syn && p.syn.includes(q));
+          if (isKnownAbbrev) {
+            return this.productSearchIndex
+              .filter(p => p.syn && p.syn.includes(q))
+              .map(p => ({ type: 'product', ...p, sub: this.catTitle[p.hero] }));
+          }
           const catMatches = this.catList
             .filter(key => this.fuzzyMatch(q, this.catTitle[key]))
             .map(key => ({ type: 'category', key, label: this.catTitle[key], sub: '' }));
           const productMatches = this.productSearchIndex
-            .filter(p => this.fuzzyMatch(q, p.label) || (p.syn && p.syn.some(s => this.fuzzyMatch(q, s))))
+            .filter(p => this.fuzzyMatch(q, p.label))
             .map(p => ({ type: 'product', ...p, sub: this.catTitle[p.hero] }));
           const itemMatches = this.addonSearchIndex
             .filter(r => this.fuzzyMatch(q, r.item))
