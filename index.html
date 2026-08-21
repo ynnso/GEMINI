@@ -1697,28 +1697,33 @@ document.addEventListener('alpine:init', () => {
         </template>
       </div>
 
-      <!-- RIGHT: MORPHING HAMBURGER TRIGGER -->
-      <div x-show="!searchOpen" class="justify-self-end flex items-center gap-2 pr-2">
-        <button @click="drawerOpen = !drawerOpen"
-                class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
-                :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
-                :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
-                :title="drawerOpen ? tr('close') : tr('menu')">
-          <div class="w-5 h-4 relative flex flex-col justify-between">
-            <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
-                  :class="isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
-                  :style="drawerOpen ? 'transform: translateY(7px) rotate(45deg);' : 'transform: translateY(0) rotate(0);'"></span>
-            <span class="hamburger-bar-mid block h-[2px] w-full rounded-full"
-                  :class="isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
-                  :style="drawerOpen ? 'opacity:0;' : 'opacity:1;'"></span>
-            <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
-                  :class="isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
-                  :style="drawerOpen ? 'transform: translateY(-7px) rotate(-45deg);' : 'transform: translateY(0) rotate(0);'"></span>
-          </div>
-        </button>
+      <!-- RIGHT: header spacer (trigger now lives as an independent always-on-top element below) -->
+      <div x-show="!searchOpen" class="justify-self-end flex items-center gap-2 pr-2 opacity-0 pointer-events-none">
+        <div class="w-10 h-10"></div>
       </div>
 
     </header>
+
+    <!-- MORPHING HAMBURGER TRIGGER (independent, always above header + drawer so it never gets covered) -->
+    <div x-show="!searchOpen" class="fixed top-[18px] right-[32px] z-[80]">
+      <button @click="drawerOpen = !drawerOpen"
+              class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
+              :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
+              :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
+              :title="drawerOpen ? tr('close') : tr('menu')">
+        <div class="w-5 h-4 relative flex flex-col justify-between">
+          <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
+                :class="(isDark || drawerOpen) ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
+                :style="drawerOpen ? 'transform: translateY(7px) rotate(45deg);' : 'transform: translateY(0) rotate(0);'"></span>
+          <span class="hamburger-bar-mid block h-[2px] w-full rounded-full"
+                :class="(isDark || drawerOpen) ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
+                :style="drawerOpen ? 'opacity:0;' : 'opacity:1;'"></span>
+          <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
+                :class="(isDark || drawerOpen) ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
+                :style="drawerOpen ? 'transform: translateY(-7px) rotate(-45deg);' : 'transform: translateY(0) rotate(0);'"></span>
+        </div>
+      </button>
+    </div>
 
     <!-- NAV FLYOUT DRAWER (frosted dark glass, no scrim/blur on main content) -->
     <div x-show="drawerOpen" x-cloak
@@ -1729,7 +1734,7 @@ document.addEventListener('alpine:init', () => {
          x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-[900ms] transform"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="translate-x-full"
-         class="fixed top-0 right-0 bottom-0 w-[33%] z-[65] flex flex-col items-end justify-center gap-6 pr-6"
+         class="fixed top-0 right-0 bottom-0 w-[33%] z-[71] flex flex-col items-center justify-center gap-6"
          style="background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: -8px 0 24px rgba(0,0,0,0.5);">
 
       <!-- FAVORITES -->
