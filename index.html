@@ -44,7 +44,7 @@ document.addEventListener('alpine:init', () => {
         homeDragGapX: 16,
         homeDragGapY: 16,
         homeDragPendingTarget: null,
-        homeDragSwapTimer: null,
+        homeFlipToken: 0,
         loadHomeTileOrder() {
           try {
             const saved = JSON.parse(localStorage.getItem('homeTileOrder'));
@@ -97,7 +97,11 @@ document.addEventListener('alpine:init', () => {
           this.homeDragKey = key;
           if (navigator.vibrate) navigator.vibrate(30);
         },
-        homeTileTargetIndex(e) {
+        homeTileDragMove(e) {
+          if (!this.homeDragKey) return;
+          this.homeDragX = e.clientX - this.homeDragOffsetX;
+          this.homeDragY = e.clientY - this.homeDragOffsetY;
+
           const colW = this.homeDragTileW + this.homeDragGapX;
           const rowH = this.homeDragTileH + this.homeDragGapY;
           const relX = e.clientX - this.homeDragGridRect.left;
@@ -105,41 +109,29 @@ document.addEventListener('alpine:init', () => {
           let col = Math.floor(relX / colW);
           let row = Math.floor(relY / rowH);
           col = Math.max(0, Math.min(1, col));
-          row = Math.max(0, Math.min(Math.ceil(this.homeTileDisplayOrder.length / 2) - 1, row));
-          return Math.min(this.homeTileDisplayOrder.length - 1, row * 2 + col);
-        },
-        homeTileDragMove(e) {
-          if (!this.homeDragKey) return;
-          this.homeDragX = e.clientX - this.homeDragOffsetX;
-          this.homeDragY = e.clientY - this.homeDragOffsetY;
+          const maxRow = Math.ceil(this.homeTileDisplayOrder.length / 2) - 1;
+          row = Math.max(0, Math.min(maxRow, row));
+          const targetIndex = Math.min(this.homeTileDisplayOrder.length - 1, row * 2 + col);
 
-          const targetIndex = this.homeTileTargetIndex(e);
+          // Hysteresis, not a timer: a timer's delay either feels early or late depending on how
+          // fast the finger is actually moving, which is unpredictable. Instead only commit when
+          // the pointer is well inside the target cell's CENTER zone, not just barely past its
+          // edge -- so a graze/pass-through on the way somewhere else can't trigger a swap, but
+          // there's no artificial wait once you're genuinely over a slot.
+          const cellCenterX = (col + 0.5) * colW;
+          const cellCenterY = (row + 0.5) * rowH;
+          const dist = Math.hypot(relX - cellCenterX, relY - cellCenterY);
+          const coreRadius = Math.min(this.homeDragTileW, this.homeDragTileH) * 0.4;
+          if (dist > coreRadius) return;
+
           const fromIndex = this.homeTileDisplayOrder.indexOf(this.homeDragKey);
-          if (targetIndex === fromIndex || fromIndex === -1) {
-            if (this.homeDragSwapTimer) { clearTimeout(this.homeDragSwapTimer); this.homeDragSwapTimer = null; }
-            this.homeDragPendingTarget = null;
-            return;
-          }
-
-          // Preview live (so the grid isn't a dead gap while you're still deciding), but don't
-          // react to every cell edge crossing -- only commit the preview once the pointer has
-          // settled on the new slot for a beat. This never touches homeTileOrder/localStorage;
-          // that only happens once, in endHomeTileDrag, at the moment you actually let go.
-          if (targetIndex !== this.homeDragPendingTarget) {
-            this.homeDragPendingTarget = targetIndex;
-            if (this.homeDragSwapTimer) clearTimeout(this.homeDragSwapTimer);
-            this.homeDragSwapTimer = setTimeout(() => {
-              this.homeDragSwapTimer = null;
-              const currentFrom = this.homeTileDisplayOrder.indexOf(this.homeDragKey);
-              if (currentFrom !== -1 && this.homeDragPendingTarget !== null && this.homeDragPendingTarget !== currentFrom) {
-                this.reorderHomeTiles(currentFrom, this.homeDragPendingTarget);
-              }
-            }, 130);
-          }
+          if (targetIndex === fromIndex || fromIndex === -1) return;
+          if (targetIndex === this.homeDragPendingTarget) return;
+          this.homeDragPendingTarget = targetIndex;
+          this.reorderHomeTiles(fromIndex, targetIndex);
         },
         endHomeTileDrag() {
           if (!this.homeDragKey) return;
-          if (this.homeDragSwapTimer) { clearTimeout(this.homeDragSwapTimer); this.homeDragSwapTimer = null; }
           this.homeDragKey = null;
           this.homeDragPendingTarget = null;
           if (navigator.vibrate) navigator.vibrate(20);
@@ -157,10 +149,16 @@ document.addEventListener('alpine:init', () => {
           this.homeTileDisplayOrder.splice(toIdx, 0, moved);
           if (navigator.vibrate) navigator.vibrate(8);
 
+          // Guard against a second reorder's FLIP interrupting one still mid-flight -- each call
+          // gets a token, and only the latest one is allowed to finish applying its animation.
+          this.homeFlipToken = (this.homeFlipToken || 0) + 1;
+          const myToken = this.homeFlipToken;
+
           // Manual FLIP: Alpine's keyed x-for reuses these same DOM nodes, it just moves them
           // to new positions -- so measuring before/after on the same element reference and
           // animating the delta gives the 'secondary tile slides out of the way' motion.
           this.$nextTick(() => {
+            if (myToken !== this.homeFlipToken) return; // a newer reorder has already started
             tiles.forEach((el) => {
               const first = firstRects.get(el);
               if (!first) return;
@@ -172,6 +170,7 @@ document.addEventListener('alpine:init', () => {
               el.style.transform = `translate(${dx}px, ${dy}px)`;
               el.getBoundingClientRect();
               requestAnimationFrame(() => {
+                if (myToken !== this.homeFlipToken) return;
                 el.style.transition = 'transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)';
                 el.style.transform = '';
               });
