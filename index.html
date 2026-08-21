@@ -1857,6 +1857,26 @@ document.addEventListener('alpine:init', () => {
       50% { transform: rotate(1deg); }
     }
     .tile-jiggle { animation: tile-jiggle 0.24s ease-in-out infinite; }
+
+    /* Revolut-style staggered content entrance: direct children of the sheet's content wrapper
+       fade + slide in one after another instead of all appearing at once. Plain CSS animation,
+       not a Tailwind-scanned utility class or JS-timed sequence -- re-triggers automatically every
+       time x-if freshly mounts the sheet, no orchestration needed, no JIT-timing risk. */
+    @keyframes sheet-stagger-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .sheet-stagger-content > * {
+      animation: sheet-stagger-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .sheet-stagger-content > *:nth-child(1) { animation-delay: 0.02s; }
+    .sheet-stagger-content > *:nth-child(2) { animation-delay: 0.08s; }
+    .sheet-stagger-content > *:nth-child(3) { animation-delay: 0.14s; }
+    .sheet-stagger-content > *:nth-child(4) { animation-delay: 0.20s; }
+    .sheet-stagger-content > *:nth-child(5) { animation-delay: 0.26s; }
+    .sheet-stagger-content > *:nth-child(6) { animation-delay: 0.32s; }
+    .sheet-stagger-content > *:nth-child(7) { animation-delay: 0.38s; }
+    .sheet-stagger-content > *:nth-child(n+8) { animation-delay: 0.44s; }
   </style>
 </head>
 <body class="w-full min-h-screen transition-colors duration-300"
@@ -4313,7 +4333,7 @@ document.addEventListener('alpine:init', () => {
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
-        <div class="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
+        <div class="sheet-stagger-content flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pt-3 pb-4 flex flex-col gap-3">
 
         <div class="relative py-3 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
              @pointerdown="dragStart($event)">
