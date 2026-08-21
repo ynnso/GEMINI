@@ -183,7 +183,7 @@ document.addEventListener('alpine:init', () => {
         /* How far dismissed the current sheet drag is, 0 (closed/resting) to 1 (fully dragged
            away) -- drives the backdrop live instead of it only fading on open/close click. */
         get backdropDragProgress() {
-          const d = Math.max(this.dragY || 0, this.faveDragY || 0, 0);
+          const d = Math.max(this.dragY || 0, this.faveDragY || 0, Math.abs(this.searchDragY || 0), 0);
           return Math.min(1, d / 400);
         },
 
@@ -1769,6 +1769,61 @@ document.addEventListener('alpine:init', () => {
           }
         },
 
+        /* SEARCH TOP SHEET — mirrored from the bottom sheet drag: this sheet drops down from the
+           top, so the dismiss direction is UP (negative deltaY), not down. Pulling DOWN past rest
+           (nothing more above to reveal) gets rubber-band resistance instead, using the same
+           rubberBand() helper the bottom sheets use. */
+        searchDragY: 0,
+        searchIsDragging: false,
+        searchStartY: 0,
+        searchLastY: 0,
+        searchLastTime: 0,
+        searchVelocityY: 0,
+        searchDismissMomentum: false,
+        searchDismissDuration: 260,
+        searchDragStart(e) {
+          const clientY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+          this.searchStartY = clientY;
+          this.searchLastY = clientY;
+          this.searchLastTime = Date.now();
+          this.searchVelocityY = 0;
+          this.searchIsDragging = true;
+        },
+        searchDragMove(e) {
+          if (!this.searchIsDragging) return;
+          const currentY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+          const now = Date.now();
+          const deltaY = currentY - this.searchStartY;
+          const dt = now - this.searchLastTime;
+          if (dt > 0) this.searchVelocityY = (currentY - this.searchLastY) / dt;
+          this.searchLastY = currentY;
+          this.searchLastTime = now;
+
+          if (deltaY > 0) {
+            this.searchDragY = this.rubberBand(deltaY);
+          } else {
+            this.searchDragY = deltaY;
+          }
+        },
+        searchDragEnd() {
+          if (!this.searchIsDragging) return;
+          this.searchIsDragging = false;
+
+          if (this.searchDragY < -80 || this.searchVelocityY < -0.45) {
+            const speed = Math.max(Math.abs(this.searchVelocityY), 0.5);
+            this.searchDismissDuration = Math.max(160, Math.min(320, 260 / speed));
+            this.searchDismissMomentum = true;
+            this.searchDragY = -(window.innerHeight + 200);
+            setTimeout(() => {
+              this.closeSearch();
+              this.searchDragY = 0;
+              this.searchDismissMomentum = false;
+            }, this.searchDismissDuration);
+          } else {
+            this.searchDragY = 0;
+          }
+        },
+
         /* FAVE 5 — independent drag state so it never moves the sheet underneath */
         faveDragY: 0,
         faveIsDragging: false,
@@ -2015,9 +2070,15 @@ document.addEventListener('alpine:init', () => {
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 translate-y-0"
              x-transition:leave-end="opacity-0 -translate-y-4"
+             @pointermove.window="searchDragMove($event)"
+             @pointerup.window="searchDragEnd()"
              class="fixed top-[64px] left-6 right-6 rounded-b-[16px] overflow-hidden z-[90] transition-colors duration-300 max-h-[70vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
              :class="isDark ? 'bg-[#1e232a]/95' : 'bg-[#e6e9ef]/95'"
-             :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
+             :style="(isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;') + ((searchDragY !== 0 || searchIsDragging || searchDismissMomentum) ? ('transform: translateY(' + searchDragY + 'px); transition: ' + (searchIsDragging ? 'none' : (searchDismissMomentum ? 'transform ' + searchDismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)')) + ';') : '')">
+          <div class="relative py-2 w-full flex justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+               @pointerdown="searchDragStart($event)">
+            <div class="w-9 h-1.5 rounded-full" :class="isDark ? 'bg-white/20' : 'bg-black/10'"></div>
+          </div>
           <template x-if="smartAnswer">
             <div class="m-3 p-4 rounded-[16px]" :class="isDark ? 'bg-[#ff2a2a]/15' : 'bg-[#e60000]/10'">
               <p class="text-[11px] font-bold uppercase tracking-wider mb-1.5" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" x-text="tr('answer')"></p>
@@ -2082,7 +2143,8 @@ document.addEventListener('alpine:init', () => {
          x-transition:leave-end="opacity-0"
          @click="closeSearch()"
          class="fixed inset-0 z-[65] transition-colors duration-300 backdrop-blur-sm"
-         :class="isDark ? 'bg-black/45' : 'bg-black/25'"></div>
+         :class="isDark ? 'bg-black/45' : 'bg-black/25'"
+         :style="(searchIsDragging || searchDismissMomentum) ? ('opacity:' + (1 - backdropDragProgress) + '; backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px); -webkit-backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px);') : ''"></div>
 
     <!-- HOME EDIT MODE: "Done" replaces the hamburger trigger in the same slot -->
     <div x-show="homeEditMode" x-cloak
