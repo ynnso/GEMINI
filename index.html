@@ -66,6 +66,7 @@ document.addEventListener('alpine:init', () => {
             animation: 320,
             easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
             draggable: 'button',
+            swapThreshold: 0.65,
             disabled: true,
             delay: 120,
             delayOnTouchOnly: true,
@@ -1627,6 +1628,7 @@ document.addEventListener('alpine:init', () => {
   <style>
     * {
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
       user-select: none;
     }
     html { overflow-x: hidden; overflow-y: hidden; height: 100%; overscroll-behavior: none; }
@@ -1683,11 +1685,15 @@ document.addEventListener('alpine:init', () => {
     .tile-jiggle { animation: tile-jiggle 0.24s ease-in-out infinite; }
 
     /* HOME TILE DRAG-AND-DROP: lifted tile must render ABOVE the tile it's passing over, never under it */
+    .home-tile-secondary-shrink {
+      scale: 0.98 !important;
+      transition: scale 0.2s ease-out;
+    }
     .home-tile-chosen {
       position: relative !important;
       z-index: 500 !important;
       animation: none !important;
-      scale: 1.08;
+      scale: 1.05 !important;
       box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.25) !important;
       transition: scale 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease-out;
     }
@@ -1699,7 +1705,7 @@ document.addEventListener('alpine:init', () => {
       z-index: 0 !important;
     }
     .home-tile-fallback {
-      scale: 1.08 !important;
+      scale: 1.05 !important;
       opacity: 1 !important;
       z-index: 999 !important;
       animation: none !important;
@@ -1966,7 +1972,7 @@ document.addEventListener('alpine:init', () => {
                   @pointerup="cancelLongPress()" @pointerleave="cancelLongPress()" @pointercancel="cancelLongPress()"
                   :style="'animation-delay:' + (tileIdx * 0.06) + 's' + '; ' + (isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;')"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
-                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', (homeEditMode && !homeDragActive) ? 'tile-jiggle' : '']">
+                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', (homeEditMode && !homeDragActive) ? 'tile-jiggle' : '', homeDragActive ? 'home-tile-secondary-shrink' : '']">
             <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
