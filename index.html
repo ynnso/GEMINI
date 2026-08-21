@@ -64,13 +64,17 @@ document.addEventListener('alpine:init', () => {
           this._homeSortableInstance = Sortable.create(el, {
             animation: 320,
             easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+            draggable: 'button',
             disabled: true,
-            delay: 0,
+            delay: 120,
+            delayOnTouchOnly: true,
+            touchStartThreshold: 5,
             forceFallback: true,
-            fallbackClass: 'home-tile-fallback',
             fallbackOnBody: true,
-            fallbackTolerance: 3,
+            fallbackTolerance: 0,
+            fallbackClass: 'home-tile-fallback',
             chosenClass: 'home-tile-chosen',
+            dragClass: 'home-tile-chosen',
             ghostClass: 'home-tile-ghost',
             onStart: () => { if (navigator.vibrate) navigator.vibrate(30); },
             onChange: () => { if (navigator.vibrate) navigator.vibrate(8); },
@@ -1690,13 +1694,13 @@ document.addEventListener('alpine:init', () => {
       z-index: 0 !important;
     }
     .home-tile-fallback {
-      scale: 1.08;
+      scale: 1.08 !important;
       opacity: 1 !important;
       z-index: 999 !important;
       animation: none !important;
       border-radius: 24px !important;
       box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.25) !important;
-      transition: scale 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease-out;
+      pointer-events: none !important;
     }
   </style>
 </head>
