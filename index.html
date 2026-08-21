@@ -1960,16 +1960,22 @@ document.addEventListener('alpine:init', () => {
     .home-tile-icon-wrap::before {
       content: '';
       position: absolute;
-      inset: 0;
-      border-radius: 50%;
+      inset: -12%;
+      /* Irregular blob, not a perfect circle -- a true circle scaling up reads as a shape zooming
+         in, not liquid. This wobbles unevenly and sharpens into a clean circle only once it's
+         fully flooded, closer to how a droplet actually spreads and settles. */
+      border-radius: 42% 58% 55% 45% / 45% 42% 58% 55%;
       background: #e60000;
       transform: scale(0);
-      transition: transform 0.35s cubic-bezier(0.4, 0, 1, 1);
+      filter: blur(5px);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 1, 1), filter 0.3s ease-out, border-radius 0.35s ease-out;
       z-index: 0;
     }
     .home-tile-press:active .home-tile-icon-wrap::before {
       transform: scale(1.6);
-      transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: blur(0px);
+      border-radius: 50%;
+      transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s ease-out, border-radius 0.85s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .home-tile-icon-wrap svg {
       position: relative;
