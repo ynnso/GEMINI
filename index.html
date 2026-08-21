@@ -176,8 +176,8 @@ document.addEventListener('alpine:init', () => {
             this.openSheet('addonProduct');
           } else if (result.type === 'product') {
             this.makeHero(result.hero);
-            if (result.setState) result.setState.call(this);
             this.openSheet(result.sheet);
+            if (result.setState) result.setState.call(this);
           }
           this.closeSearch();
         },
@@ -191,6 +191,8 @@ document.addEventListener('alpine:init', () => {
           { label: 'Zillow 3D Tour', sheet: 'zillow', hero: 'tour360', syn: ['zst'] },
           { label: 'MLS Matterport', sheet: 'matterport', hero: 'tour360', syn: ['mtp'], setState() { this.mpPortSide = 'MLS'; } },
           { label: 'PORT Matterport', sheet: 'matterport', hero: 'tour360', syn: ['mtp'], setState() { this.mpPortSide = 'PORT'; } },
+          { label: 'MLS Matterport Premium', sheet: 'matterport', hero: 'tour360', syn: ['mtpr'], setState() { this.mpPortSide = 'MLS'; this.mpService = 'Premium'; } },
+          { label: 'PORT Matterport Premium', sheet: 'matterport', hero: 'tour360', syn: ['mtpr'], setState() { this.mpPortSide = 'PORT'; this.mpService = 'Premium'; } },
           { label: 'MLS BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', syn: ['bzrt'], setState() { this.videoSelected = 'BuzzReels Trio'; this.videoSelectedSide = 'MLS'; } },
           { label: 'PORT BCD BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', syn: ['bzrt','bcd'], setState() { this.videoSelected = 'BuzzReels Trio'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'BCD'; } },
           { label: 'PORT CR BuzzReels Trio', sheet: 'videoBuzz', hero: 'video', syn: ['bzrt','cr'], setState() { this.videoSelected = 'BuzzReels Trio'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'CR'; } },
@@ -203,8 +205,12 @@ document.addEventListener('alpine:init', () => {
           { label: 'PORT BCD Full HD Video', sheet: 'videoFullHD', hero: 'video', syn: ['hd','bcd'], setState() { this.videoSelected = 'Full HD'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'BCD'; } },
           { label: 'PORT CR Full HD Video', sheet: 'videoFullHD', hero: 'video', syn: ['hd','cr'], setState() { this.videoSelected = 'Full HD'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'CR'; } },
           { label: 'PORT AMF Full HD Video', sheet: 'videoFullHD', hero: 'video', syn: ['hd','amf'], setState() { this.videoSelected = 'Full HD'; this.videoSelectedSide = 'PORT'; this.videoPortSector = 'AMF'; } },
-          { label: 'MLS Floor Plan', sheet: 'floorplan', hero: 'floor', setState() { this.floorPortSide = 'MLS'; } },
-          { label: 'PORT Floor Plan', sheet: 'floorplan', hero: 'floor', setState() { this.floorPortSide = 'PORT'; } },
+          { label: 'MLS Floor Plan', sheet: 'floorplan', hero: 'floor', syn: ['flp'], setState() { this.floorPortSide = 'MLS'; } },
+          { label: 'PORT Floor Plan', sheet: 'floorplan', hero: 'floor', syn: ['flp'], setState() { this.floorPortSide = 'PORT'; } },
+          { label: 'MLS Standard Floor Plan 2D', sheet: 'floorplan', hero: 'floor', syn: ['s2dflp'], setState() { this.floorPortSide = 'MLS'; this.floorPlanType = '2D'; } },
+          { label: 'PORT Standard Floor Plan 2D', sheet: 'floorplan', hero: 'floor', syn: ['s2dflp'], setState() { this.floorPortSide = 'PORT'; this.floorPlanType = '2D'; } },
+          { label: 'MLS Standard Floor Plan 3D', sheet: 'floorplan', hero: 'floor', syn: ['s3dflp'], setState() { this.floorPortSide = 'MLS'; this.floorPlanType = '3D'; } },
+          { label: 'PORT Standard Floor Plan 3D', sheet: 'floorplan', hero: 'floor', syn: ['s3dflp'], setState() { this.floorPortSide = 'PORT'; this.floorPlanType = '3D'; } },
           { label: 'MLS Aerial Mini 2 Photos', sheet: 'aerialProduct', hero: 'aerial', syn: ['ap','apm'], setState() { this.aerialSelectedSide = 'MLS'; this.aerialSelected = 'Aerial Mini 2 Images'; } },
           { label: 'MLS Aerial Standard 5 Photos', sheet: 'aerialProduct', hero: 'aerial', syn: ['ap'], setState() { this.aerialSelectedSide = 'MLS'; this.aerialSelected = 'Aerial Standard 5 Images'; } },
           { label: 'PORT Aerial Mini 2 Photos', sheet: 'aerialProduct', hero: 'aerial', syn: ['ap','apm'], setState() { this.aerialSelectedSide = 'PORT'; this.aerialSelected = 'Aerial Mini 2 Images'; } },
