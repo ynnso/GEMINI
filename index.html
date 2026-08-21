@@ -1673,9 +1673,22 @@ document.addEventListener('alpine:init', () => {
     }
     .tile-jiggle { animation: tile-jiggle 0.24s ease-in-out infinite; }
 
-    /* HOME TILE DRAG-AND-DROP: lift + spring feel */
-    .home-tile-chosen { animation: none !important; }
-    .home-tile-ghost { animation: none !important; opacity: 0.25 !important; }
+    /* HOME TILE DRAG-AND-DROP: lifted tile must render ABOVE the tile it's passing over, never under it */
+    .home-tile-chosen {
+      position: relative !important;
+      z-index: 500 !important;
+      animation: none !important;
+      scale: 1.08;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.25) !important;
+      transition: scale 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease-out;
+    }
+    .home-tile-ghost {
+      animation: none !important;
+      opacity: 0.25 !important;
+      scale: 1 !important;
+      box-shadow: none !important;
+      z-index: 0 !important;
+    }
     .home-tile-fallback {
       scale: 1.08;
       opacity: 1 !important;
