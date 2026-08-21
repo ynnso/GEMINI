@@ -1302,9 +1302,26 @@ document.addEventListener('alpine:init', () => {
           // + dragY through Alpine's own reactivity collapsed into one DOM write with no real
           // 'previous painted frame' to animate from -- so sheets opened with zero slide/bounce.
           this.activeSheet = sheetName;
-          setTimeout(() => {
-            const el = this.$refs.dragSheet;
-            if (!el) return;
+          // Poll for the new sheet to actually finish mounting instead of guessing a fixed delay --
+          // a fixed setTimeout worked for a simple call but not reliably through a real click event,
+          // where more work is cascading through the same tick and mounting can land later. This
+          // retries every frame (up to ~500ms) until the ref is really there.
+          let waitFrames = 0;
+          const waitForSheet = () => {
+            // Every sheet shares the same x-ref name, so mid-navigation (sheet A -> sheet B) the
+            // OLD sheet can still be lingering in the DOM (its own close transition hasn't
+            // finished, so x-if hasn't removed it yet) alongside the new one -- $refs would grab
+            // whichever is first in DOM order, which was silently animating the departing sheet
+            // instead of the one that just opened. Disambiguate using each sheet's own x-show
+            // condition text, which already uniquely names it.
+            const candidates = Array.from(document.querySelectorAll('[x-ref="dragSheet"]'));
+            const el = candidates.find((c) => c.getAttribute('x-show') === `activeSheet === '${sheetName}'`)
+              || candidates[candidates.length - 1];
+            if (!el) {
+              waitFrames++;
+              if (waitFrames < 30) requestAnimationFrame(waitForSheet);
+              return;
+            }
             el.style.transition = 'none';
             el.style.transform = 'translateY(' + (window.innerHeight + 100) + 'px)';
             void el.offsetHeight;
@@ -1312,7 +1329,8 @@ document.addEventListener('alpine:init', () => {
               el.style.transition = 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
               el.style.transform = 'translateY(0px)';
             });
-          }, 20);
+          };
+          requestAnimationFrame(waitForSheet);
         },
 
         closeSheet() {
