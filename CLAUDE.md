@@ -52,7 +52,7 @@ Built first for Photogs in the field — quote and upgrade a job on-site, one-ha
 - **Not client-facing** — internal use only.
 - **Heads up:** Quotes are session-only — closing the tab or refreshing clears the cart. No way to copy a formatted quote out of the app currently.
 
-**Working file:** `PriceAppV10.html` (single-file HTML/Alpine.js/Tailwind)
+**Working file:** `index.html` (single-file HTML/Alpine.js/Tailwind)
 **Deployed:** https://ynnso.github.io/GEMINI/ (current), https://ynnso.github.io/PRICEAPP/ (legacy)
 **Source:** github.com/ynnso/GEMINI
 **Design system:** Neumorphic — bg `#e6e9ef`/`#1e232a`, brand red `#e60000`/`#ff2a2a`, `rounded-[24px]` cards, locked shadow tokens
@@ -186,3 +186,33 @@ Confirm real browser-based visual testing actually works in this environment bef
 - Rationale: a bad local commit costs nothing — it's undo-able and never left the machine. A bad push updates the live, deployed site (`ynnso.github.io/GEMINI`) within minutes, with no review step in between, and is used by Photogs in the field. The asymmetry is in the cost of being wrong, not the odds of being wrong — so the bar for "push without asking" is "already fully verified," not "seems likely fine."
 - This session's real bugs (wrong Video sheet edited, CTA overflowing off-screen, CTA hidden behind nav) were all caught specifically because verification happened before anything was pushed — that check should not be removed, just gated correctly so it doesn't apply to already-verified work.
 - **Added 2026-08-20 after a bad session:** emulated-browser screenshots at a given width/height are NOT equivalent to testing on Sonny's actual phone, especially when a layout change is calibrated to real device behavior (see Section 5's failed-attempt note). When a change targets "how it looks on the real phone," push one small change, ask Sonny to check it on his phone, and wait for confirmation before pushing the next one — do not chain several unverified layout changes together.
+
+---
+
+## 9. Session Changelog — 2026-08-21 (Top Nav, Search, Home Tile Reorder)
+
+**Top nav overhaul:**
+- Morphing hamburger trigger (3-bar ↔ X) replaces the old header icons. Opens a right-side, 33%-width flyout drawer with icon-only nav: Favorites, Cart, Language toggle, Theme toggle. New state: `drawerOpen`.
+- Drawer sits at `z-[71]`, just above the header's `z-[70]`, so it renders correctly. The trigger itself lives as an independent `z-[80]` fixed element outside `<header>` so it's never covered by the drawer or anything else.
+- Real Tailwind CDN gotcha, cost real debugging time: bare `duration-NNNms` classes outside Tailwind's default scale (75/100/150/200/300/500/700/1000) produce **zero CSS** and silently fall back to the built-in 150ms — use bracket syntax `duration-[NNNms]` for any custom duration.
+
+**Search:**
+- Abbreviation/acronym search added: `syn: [...]` tags on `productSearchIndex`/`addonSearchIndex` entries, a `categorySynonyms` map, and an exact-abbreviation short-circuit in the `searchResults` getter. Typing a known abbreviation (AP, BCD, etc.) returns only exact matches, bypassing fuzzy search.
+- **Hard rule:** MLS and PORT must never collapse into one generic search result — different products, different pricing. Product labels always lead with the side (`MLS Matterport`, not `Matterport MLS`).
+- Search bar restyled: taller (`h-[55px]`, +25%), bigger font (`text-[20px]`, +40%), red border only when focused (no fill).
+- Predictive dropdown rebuilt as a "top sheet": `fixed`, full app width, slides down, with a dim+blur backdrop scrim behind it — matches the existing bottom-sheet scrim pattern instead of a small anchored popover.
+- Result rows: bigger font, MLS/PORT prefix rendered heavier than the rest of the name, no subtext line, "Popular" label matches row size/case.
+- Real bug found and fixed: the compact search icon button could stay visible after opening search — an `x-bind:style` effect was silently clobbering `x-show`'s `display:none` on the same element. Fixed by moving that styling to a Tailwind arbitrary class instead of `:style`. **General lesson:** don't mix `:style` and `x-show` on the same element in this codebase.
+
+**Home screen custom tile order:**
+- Long-press a tile → edit mode (tiles jiggle, "Done" replaces the hamburger trigger in its exact header slot, no separate instruction banner).
+- Drag to reorder. Order is saved permanently to `localStorage` under `homeTileOrder`. **This is the one deliberate exception to the "session-only, no persistence" rule** — it's a device layout preference, not quote data, so it's meant to survive closing the app.
+- Bottom nav pill order is driven by the same array, so it always matches the grid.
+- **Do not use SortableJS for this** (Fave 5 still uses it fine — that's a simple vertical list, not a 2-column grid with a jiggle animation running). Five real, confirmed rounds of SortableJS breakage on the real device before abandoning it: it was dragging Alpine's own `<template x-for>` marker instead of the tile (fixed with `draggable: 'button'`, still not enough); Alpine's reactivity and SortableJS's direct DOM manipulation were fighting over the same nodes mid-drag (icons scrambling after drop); and ultimately no reliable visual feedback on the real phone despite code that checked out correctly in an isolated browser test every time.
+- Rebuilt by hand instead, matching the pointer-based drag technique this app already uses elsewhere (cart/Fave5 sheets): `homeDragKey` + `homeDragX`/`homeDragY` state, one Alpine-owned floating tile that tracks the pointer directly, a manual FLIP animation for displaced tiles, and target-slot detection from pointer-position math against the grid's own geometry — never from measuring DOM elements that are themselves mid-animation.
+- Reorder is previewed live in a separate `homeTileDisplayOrder` array while dragging; the authoritative `homeTileOrder` (and the save to `localStorage`) only updates once, at the exact moment of release.
+- Swap timing: a fixed-delay debounce (tried 130ms) never felt right against a real finger — too eager or too laggy depending on drag speed. Replaced with geometric hysteresis instead: a swap only commits when the pointer is within a slot's center zone, not merely past its edge.
+- **Real iOS-only landmine, easy to miss:** `-webkit-user-drag` was never set anywhere in this app. iOS Safari can hijack a long-press-drag with its own native magnifier loupe and drag-and-drop indicator, rendered on top of any custom drag code, especially on `<svg>` content. Fixed with `-webkit-user-drag: none` globally plus `pointer-events: none` on all `svg`/`img` (clicks still reach the parent button fine). If a future custom drag/long-press feature "looks right in code but wrong on the phone," check this first.
+- **Still open as of this update:** a "ghosting" artifact still reported on the real device. Bubble and text-highlight artifacts from the iOS native-gesture issue above are confirmed fixed; ghosting was not. Next session should start here — ask for a real screenshot or screen recording from Sonny before making further changes blind, per the Verification rule at the top of this file.
+
+**Up next:** transitions and bottom sheet behavior, app-wide.
