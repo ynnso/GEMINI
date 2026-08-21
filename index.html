@@ -1964,11 +1964,12 @@ document.addEventListener('alpine:init', () => {
       border-radius: 50%;
       background: #e60000;
       transform: scale(0);
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 1, 1);
       z-index: 0;
     }
     .home-tile-press:active .home-tile-icon-wrap::before {
       transform: scale(1.6);
+      transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .home-tile-icon-wrap svg {
       position: relative;
@@ -1976,7 +1977,7 @@ document.addEventListener('alpine:init', () => {
     }
     .home-tile-press:active .home-tile-icon-svg {
       color: #fff !important;
-      transition: color 0.35s cubic-bezier(0.16,1,0.3,1) 0.1s;
+      transition: color 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s;
     }
 
     @keyframes tile-jiggle {
