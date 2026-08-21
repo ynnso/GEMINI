@@ -1936,6 +1936,29 @@ document.addEventListener('alpine:init', () => {
     .hamburger-bar { transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); }
     .hamburger-bar-mid { transition: opacity 0.4s cubic-bezier(0.34,1.56,0.64,1); }
 
+    /* Home tile press: same slow deep-press red fill as the drawer icon buttons (.drawer-icon-btn),
+       ported here. Only ever applied when !homeEditMode (see the tile's :class binding) -- the
+       drag/jiggle classes already fight each other enough without a third transform/background
+       source added into the mix while a tile-swap drag is active. */
+    .home-tile-press {
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), background 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .home-tile-press:active {
+      background: #e60000 !important;
+      box-shadow: inset 4px 4px 9px rgba(0,0,0,0.4), inset -3px -3px 7px rgba(255,255,255,0.15) !important;
+      transform: scale(0.96);
+    }
+    .home-tile-press:active .home-tile-icon-wrap {
+      background: transparent !important;
+      box-shadow: none !important;
+      transition: background 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .home-tile-press:active .home-tile-icon-svg,
+    .home-tile-press:active .home-tile-label {
+      color: #fff !important;
+      transition: color 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+
     @keyframes tile-jiggle {
       0%, 100% { transform: rotate(-1deg); }
       50% { transform: rotate(1deg); }
@@ -2264,13 +2287,13 @@ document.addEventListener('alpine:init', () => {
                   @pointerup="cancelLongPress()" @pointerleave="cancelLongPress()" @pointercancel="cancelLongPress()"
                   :style="'animation-delay:' + (tileIdx * 0.06) + 's' + '; ' + (isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;')"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all cursor-pointer"
-                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', (homeEditMode && !homeDragKey) ? 'tile-jiggle' : '', key === homeDragKey ? 'opacity-25' : '', (homeDragKey && key !== homeDragKey) ? 'scale-[0.98]' : '', !homeEditMode ? 'active:scale-[0.97]' : '']">
-            <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
+                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', (homeEditMode && !homeDragKey) ? 'tile-jiggle' : '', key === homeDragKey ? 'opacity-25' : '', (homeDragKey && key !== homeDragKey) ? 'scale-[0.98]' : '', !homeEditMode ? 'home-tile-press' : '']">
+            <div class="home-tile-icon-wrap w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-              <svg :class="[(key === 'video' || key === 'tour360' || key === 'addons') ? 'w-[78%] h-[78%]' : 'w-[75%] h-[75%]', isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]']" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
+              <svg class="home-tile-icon-svg" :class="[(key === 'video' || key === 'tour360' || key === 'addons') ? 'w-[78%] h-[78%]' : 'w-[75%] h-[75%]', isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]']" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[key]"></svg>
             </div>
-            <span class="text-[18px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
+            <span class="home-tile-label text-[18px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
           </button>
         </template>
       </div>
