@@ -1288,22 +1288,51 @@ document.addEventListener('alpine:init', () => {
           }
         },
         openSheet(sheetName) {
-          this.dragY = 0;
           this.activeSheet = null;
           if (this.ctaTimeoutId) { clearTimeout(this.ctaTimeoutId); this.ctaTimeoutId = null; }
           this.state = 'idle';
           if (sheetName === 'floorplan') { this.floorSqFt = '0-3999'; this.floorPlanType = '2D'; }
           if (sheetName === 'matterport') { this.mpSqFt = '0-1999'; this.mpService = 'Standard'; }
           if (sheetName === 'zillow') { this.zillowSqFt = '0-1999'; }
-          this.$nextTick(() => {
-            this.activeSheet = sheetName;
-          });
+          // Drive the entrance with direct DOM writes on the actual element (same technique as
+          // the Home tile FLIP animation, which is proven to work) instead of routing it through
+          // Alpine's reactive :style binding. Confirmed two real problems with the reactive route:
+          // Tailwind's CDN compiler doesn't reliably generate translate-y-full/translate-y-0 in
+          // time for the class-based x-transition to catch it, and separately, batching isDragging
+          // + dragY through Alpine's own reactivity collapsed into one DOM write with no real
+          // 'previous painted frame' to animate from -- so sheets opened with zero slide/bounce.
+          this.activeSheet = sheetName;
+          setTimeout(() => {
+            const el = this.$refs.dragSheet;
+            if (!el) return;
+            el.style.transition = 'none';
+            el.style.transform = 'translateY(' + (window.innerHeight + 100) + 'px)';
+            void el.offsetHeight;
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
+              el.style.transform = 'translateY(0px)';
+            });
+          }, 20);
         },
 
         closeSheet() {
-          this.activeSheet = null;
+          if (this.activeSheet === null) return;
           this.mpCustomSqftInput = '';
-          setTimeout(() => { this.dragY = 0; }, 300);
+          if (this.dragY > window.innerHeight * 0.5) {
+            // already animated off-screen (e.g. dragEnd's own momentum exit already ran) -- just finalize
+            this.activeSheet = null;
+            this.dragY = 0;
+            this.dismissMomentum = false;
+            return;
+          }
+          this.dismissMomentum = true;
+          this.dismissDuration = 300;
+          this.dragY = window.innerHeight + 200;
+          setTimeout(() => {
+            this.activeSheet = null;
+            this.dragY = 0;
+            this.dismissMomentum = false;
+          }, this.dismissDuration);
         },
 
         /* FAVE 5 */
@@ -2137,15 +2166,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'cart'">
       <div x-show="activeSheet === 'cart'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-1 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -2309,13 +2338,13 @@ document.addEventListener('alpine:init', () => {
     <template x-if="showFave5Sheet">
       <div x-show="showFave5Sheet"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${faveDragY}px); transition: ${faveIsDragging ? 'none' : (faveDismissMomentum ? 'transform ' + faveDismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(faveDragY !== 0 || faveIsDragging || faveDismissMomentum) ? (`transform: translateY(${faveDragY}px); transition: ${faveIsDragging ? 'none' : (faveDismissMomentum ? 'transform ' + faveDismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="faveDragMove($event)"
            @pointerup.window="faveDragEnd()"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-[55] flex flex-col max-h-[82vh] transition-colors duration-300"
@@ -2399,15 +2428,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'reshoot'">
       <div x-show="activeSheet === 'reshoot'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -2566,15 +2595,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'tourCategory'">
       <div x-show="activeSheet === 'tourCategory'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -2642,15 +2671,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'photosCategory'">
       <div x-show="activeSheet === 'photosCategory'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -2801,15 +2830,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'floorCategory'">
       <div x-show="activeSheet === 'floorCategory'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[100px] z-50 flex flex-col gap-5 max-h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -2860,15 +2889,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'floorplan'">
       <div x-show="activeSheet === 'floorplan'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[60vh] max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -3024,15 +3053,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'matterport'">
       <div x-show="activeSheet === 'matterport'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[60vh] max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -3171,15 +3200,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'zillow'">
       <div x-show="activeSheet === 'zillow'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -3297,15 +3326,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'video'">
       <div x-show="activeSheet === 'video'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -3390,15 +3419,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'videoBuzz' || activeSheet === 'videoHD' || activeSheet === 'videoFullHD'">
       <div x-show="activeSheet === 'videoBuzz' || activeSheet === 'videoHD' || activeSheet === 'videoFullHD'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col min-h-[30vh] max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -3483,15 +3512,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'addon'">
       <div x-show="activeSheet === 'addon'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -3588,15 +3617,15 @@ document.addEventListener('alpine:init', () => {
       <div x-show="activeSheet === 'addonProduct'"
            x-cloak
            x-init="state = 'idle'"
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            :class="[(addonHasStepper(addonSelected) || addonIsHourly(addonSelected)) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]']"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300">
 
@@ -3735,15 +3764,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'aerial'">
       <div x-show="activeSheet === 'aerial'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] px-5 pt-3 pb-[120px] z-50 flex flex-col gap-4 h-[82vh] overflow-y-auto no-scrollbar transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -3892,15 +3921,15 @@ document.addEventListener('alpine:init', () => {
       <div x-show="activeSheet === 'aerialProduct'"
            x-cloak
            x-init="state = 'idle'"
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            :class="[aerialHasImageStepper(aerialSelected) ? 'min-h-[45vh]' : 'min-h-[30vh]', isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]']"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300">
 
@@ -4025,15 +4054,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'port'">
       <div x-show="activeSheet === 'port'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -4248,15 +4277,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'full'">
       <div x-show="activeSheet === 'full'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -4526,15 +4555,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'exterior'">
       <div x-show="activeSheet === 'exterior'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -4693,15 +4722,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'mini'">
       <div x-show="activeSheet === 'mini'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -4858,15 +4887,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'airbnb'">
       <div x-show="activeSheet === 'airbnb'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
@@ -5025,15 +5054,15 @@ document.addEventListener('alpine:init', () => {
     <template x-if="activeSheet === 'ranch'">
       <div x-show="activeSheet === 'ranch'"
            x-cloak
-           x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-400 transform"
+           x-transition:enter="transition ease-[cubic-bezier(0.34,1.56,0.64,1)] duration-[460ms] transform"
            x-transition:enter-start="translate-y-full"
            x-transition:enter-end="translate-y-0"
            x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
            x-transition:leave-start="translate-y-0"
            x-transition:leave-end="translate-y-full"
-           :style="`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`"
+           :style="(dragY !== 0 || isDragging || dismissMomentum) ? (`transform: translateY(${dragY}px); transition: ${isDragging ? 'none' : (dismissMomentum ? 'transform ' + dismissDuration + 'ms cubic-bezier(0.36,0,0.66,-0.56)' : 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)')}`) : ''"
            @pointermove.window="dragMove($event)"
-           @pointerup.window="dragEnd()"
+           @pointerup.window="dragEnd()" x-ref="dragSheet"
            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto rounded-t-[28px] z-50 flex flex-col max-h-[82vh] transition-colors duration-300"
            :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'">
 
