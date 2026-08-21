@@ -25,6 +25,7 @@ document.addEventListener('alpine:init', () => {
         homeTileDefaultOrder: ['photos','aerial','floor','video','tour360','addons'],
         homeTileOrder: ['photos','aerial','floor','video','tour360','addons'],
         homeEditMode: false,
+        homeDragActive: false,
         longPressTimer: null,
         loadHomeTileOrder() {
           try {
@@ -71,15 +72,19 @@ document.addEventListener('alpine:init', () => {
             touchStartThreshold: 5,
             forceFallback: true,
             fallbackOnBody: true,
-            fallbackTolerance: 0,
+            fallbackTolerance: 3,
             fallbackClass: 'home-tile-fallback',
             chosenClass: 'home-tile-chosen',
             dragClass: 'home-tile-chosen',
             ghostClass: 'home-tile-ghost',
-            onStart: () => { if (navigator.vibrate) navigator.vibrate(30); },
+            onStart: () => {
+              this.homeDragActive = true;
+              if (navigator.vibrate) navigator.vibrate(30);
+            },
             onChange: () => { if (navigator.vibrate) navigator.vibrate(8); },
             onEnd: (evt) => {
               if (navigator.vibrate) navigator.vibrate(20);
+              setTimeout(() => { this.homeDragActive = false; }, 340);
               if (evt.oldIndex === evt.newIndex) return;
               const moved = this.homeTileOrder.splice(evt.oldIndex, 1)[0];
               this.homeTileOrder.splice(evt.newIndex, 0, moved);
@@ -1961,7 +1966,7 @@ document.addEventListener('alpine:init', () => {
                   @pointerup="cancelLongPress()" @pointerleave="cancelLongPress()" @pointercancel="cancelLongPress()"
                   :style="'animation-delay:' + (tileIdx * 0.06) + 's' + '; ' + (isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;')"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
-                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', homeEditMode ? 'tile-jiggle' : '']">
+                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', (homeEditMode && !homeDragActive) ? 'tile-jiggle' : '']">
             <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
