@@ -156,6 +156,11 @@ document.addEventListener('alpine:init', () => {
           if (idx === -1) return label;
           return label.slice(0, idx) + '<strong>' + label.slice(idx, idx + query.length) + '</strong>' + label.slice(idx + query.length);
         },
+        formatResultLabel(label, query) {
+          let html = this.highlightMatch(label, query);
+          html = html.replace(/^(MLS|PORT)(\s)/, '<span class="font-black">$1</span>$2');
+          return html;
+        },
         zeroStateIndex: [
           { type: 'product', label: 'MLS Full Shoot', sheet: 'full', hero: 'photos', sub: 'Photos' },
           { type: 'product', label: 'MLS Mini Shoot', sheet: 'mini', hero: 'photos', sub: 'Photos' },
@@ -1724,7 +1729,7 @@ document.addEventListener('alpine:init', () => {
                 </template>
               </div>
               <div class="flex flex-col items-start min-w-0">
-                <span class="text-[14px] font-bold truncate w-full text-left" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-html="highlightMatch(result.label, searchQuery.trim().toLowerCase())"></span>
+                <span class="text-[18px] font-bold truncate w-full text-left" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-html="formatResultLabel(result.label, searchQuery.trim().toLowerCase())"></span>
               </div>
             </button>
           </template>
