@@ -249,6 +249,7 @@ document.addEventListener('alpine:init', () => {
           { item: 'MLS Extended/Hr', group: 'Time' }, { item: 'PORT Extended/Hr', group: 'Time' },
           { item: 'Processing/Hr', group: 'Time' }
         ],
+        categorySynonyms: { drone: 'aerial' },
         get searchResults() {
           const q = this.searchQuery.trim().toLowerCase();
           if (!q) {
@@ -258,7 +259,8 @@ document.addEventListener('alpine:init', () => {
           // substring search entirely (prevents e.g. "ap" incidentally matching
           // "Appeal" inside an unrelated label).
           const isKnownAbbrev = this.productSearchIndex.some(p => p.syn && p.syn.includes(q))
-            || this.addonSearchIndex.some(r => r.syn && r.syn.includes(q));
+            || this.addonSearchIndex.some(r => r.syn && r.syn.includes(q))
+            || this.categorySynonyms[q];
           if (isKnownAbbrev) {
             const abbrevProducts = this.productSearchIndex
               .filter(p => p.syn && p.syn.includes(q))
@@ -266,7 +268,10 @@ document.addEventListener('alpine:init', () => {
             const abbrevItems = this.addonSearchIndex
               .filter(r => r.syn && r.syn.includes(q))
               .map(r => ({ type: 'item', item: r.item, group: r.group, label: r.item, sub: r.group + ' Add-On' }));
-            return [...abbrevProducts, ...abbrevItems];
+            const abbrevCats = this.categorySynonyms[q]
+              ? [{ type: 'category', key: this.categorySynonyms[q], label: this.catTitle[this.categorySynonyms[q]], sub: '' }]
+              : [];
+            return [...abbrevCats, ...abbrevProducts, ...abbrevItems];
           }
           const catMatches = this.catList
             .filter(key => this.fuzzyMatch(q, this.catTitle[key]))
