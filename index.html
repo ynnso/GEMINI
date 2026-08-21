@@ -2107,7 +2107,13 @@ document.addEventListener('alpine:init', () => {
     </div>
 
     <!-- DASHBOARD CONTENT -->
-    <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px]">
+    <!-- Scales down behind an open sheet for depth (Apple Maps / Uber style). Scoped to just this
+         content area, NOT the app container -- header and nav pill are siblings outside this
+         element, so they can never inherit this transform. That's the exact fix for the earlier
+         reverted attempt: a transform on an ancestor of position:fixed elements changes their
+         containing block and clips them off the real viewport. Header/nav sit outside it here. -->
+    <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px] transition-all duration-300"
+          :style="(activeSheet !== null || showFave5Sheet) ? 'transform: scale(0.96); border-radius: 24px; overflow: hidden;' : ''">
 
       <div x-ref="homeGrid" @click.self="exitHomeEditMode()"
            @pointermove.window="homeTileDragMove($event)" @pointerup.window="endHomeTileDrag($event)" @pointercancel.window="endHomeTileDrag()"
