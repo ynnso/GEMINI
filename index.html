@@ -1557,6 +1557,9 @@ document.addEventListener('alpine:init', () => {
     }
     .drawer-icon-btn:active .drawer-icon-svg { transform: scale(1.18); color: #fff !important; }
     .drawer-icon-svg { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), color 0.4s cubic-bezier(0.16,1,0.3,1); }
+
+    .hamburger-bar { transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+    .hamburger-bar-mid { transition: opacity 0.4s cubic-bezier(0.34,1.56,0.64,1); }
   </style>
 </head>
 <body class="w-full min-h-screen transition-colors duration-300"
@@ -1702,13 +1705,13 @@ document.addEventListener('alpine:init', () => {
                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
                 :title="drawerOpen ? tr('close') : tr('menu')">
           <div class="w-5 h-4 relative flex flex-col justify-between">
-            <span class="block h-[2px] w-full rounded-full transition-all duration-300 origin-center"
+            <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
                   :class="isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
                   :style="drawerOpen ? 'transform: translateY(7px) rotate(45deg);' : 'transform: translateY(0) rotate(0);'"></span>
-            <span class="block h-[2px] w-full rounded-full transition-all duration-200"
+            <span class="hamburger-bar-mid block h-[2px] w-full rounded-full"
                   :class="isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
                   :style="drawerOpen ? 'opacity:0;' : 'opacity:1;'"></span>
-            <span class="block h-[2px] w-full rounded-full transition-all duration-300 origin-center"
+            <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
                   :class="isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
                   :style="drawerOpen ? 'transform: translateY(-7px) rotate(-45deg);' : 'transform: translateY(0) rotate(0);'"></span>
           </div>
@@ -1720,17 +1723,17 @@ document.addEventListener('alpine:init', () => {
     <!-- NAV FLYOUT DRAWER (frosted dark glass, no scrim/blur on main content) -->
     <div x-show="drawerOpen" x-cloak
          @click.outside="drawerOpen = false"
-         x-transition:enter="transition ease-[cubic-bezier(0.16,1,0.3,1)] duration-350 transform"
+         x-transition:enter="transition ease-[cubic-bezier(0.22,1,0.36,1)] duration-[1050ms] transform"
          x-transition:enter-start="translate-x-full"
          x-transition:enter-end="translate-x-0"
-         x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-300 transform"
+         x-transition:leave="transition ease-[cubic-bezier(0.7,0,0.84,0)] duration-[900ms] transform"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="translate-x-full"
          class="fixed top-0 right-0 bottom-0 w-[33%] z-[65] flex flex-col items-end justify-center gap-6 pr-6"
          style="background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: -8px 0 24px rgba(0,0,0,0.5);">
 
       <!-- FAVORITES -->
-      <button @click="drawerOpen = false; setTimeout(() => toggleFaveHeart(), 320)"
+      <button @click="drawerOpen = false; setTimeout(() => toggleFaveHeart(), 950)"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center cursor-pointer"
               :title="tr('favorites')">
         <svg class="drawer-icon-svg w-8 h-8" :class="currentFaveIndex !== -1 ? 'text-[#ff2a2a]' : 'text-[#64748b]'"
@@ -1741,7 +1744,7 @@ document.addEventListener('alpine:init', () => {
       </button>
 
       <!-- CART -->
-      <button @click="drawerOpen = false; setTimeout(() => openSheet('cart'), 320)"
+      <button @click="drawerOpen = false; setTimeout(() => openSheet('cart'), 950)"
               class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center relative cursor-pointer"
               :title="tr('viewQuoteCart')">
         <svg class="drawer-icon-svg w-[37px] h-[37px] text-[#64748b]" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
