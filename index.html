@@ -1900,17 +1900,17 @@ document.addEventListener('alpine:init', () => {
   <div class="w-full min-h-screen max-w-md mx-auto flex flex-col justify-between relative pb-28">
 
     <!-- APP HEADER -->
-    <header class="fixed top-0 left-0 right-0 px-6 h-[76px] grid items-center z-[70] transition-colors duration-300"
+    <header class="fixed top-0 left-0 right-0 px-6 h-[64px] grid items-center z-[70] transition-colors duration-300"
             style="grid-template-columns: auto 1fr auto;"
             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'">
 
       <!-- LOGO / HOME BUTTON -->
       <div x-show="!searchOpen" class="justify-self-start flex items-center gap-2">
         <button @click="activePrimary = null; closeSheet()"
-                class="h-10 px-3 rounded-[15px] inline-grid place-items-center tracking-tighter transition-all active:scale-90 cursor-pointer"
+                class="w-10 h-10 rounded-[15px] inline-grid place-items-center tracking-tighter transition-all active:scale-90 cursor-pointer"
                 :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                 :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'">
-          <span class="font-bold text-[20px]" style="font-variant-numeric: tabular-nums;" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">S<span class="font-black" style="font-size:27px;" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">2</span>S</span>
+          <span class="font-bold text-[14px]" style="font-variant-numeric: tabular-nums;" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">S<span class="font-black" style="font-size:19px;" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">2</span>S</span>
         </button>
         <template x-if="activeSheet !== null">
           <button @click="goBack()"
@@ -1982,7 +1982,7 @@ document.addEventListener('alpine:init', () => {
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 translate-y-0"
              x-transition:leave-end="opacity-0 -translate-y-4"
-             class="fixed top-[76px] left-6 right-6 rounded-b-[16px] overflow-hidden z-[90] transition-colors duration-300 max-h-[70vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
+             class="fixed top-[64px] left-6 right-6 rounded-b-[16px] overflow-hidden z-[90] transition-colors duration-300 max-h-[70vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
              :class="isDark ? 'bg-[#1e232a]/95' : 'bg-[#e6e9ef]/95'"
              :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
           <template x-if="smartAnswer">
@@ -2048,12 +2048,12 @@ document.addEventListener('alpine:init', () => {
     <div x-show="homeEditMode" x-cloak
          x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
-         class="fixed top-[18px] right-0 w-[33%] z-[80] flex justify-center">
+         class="fixed top-[12px] right-0 w-[33%] z-[80] flex justify-center">
       <button @click="exitHomeEditMode()" class="h-10 px-4 rounded-[15px] flex items-center justify-center text-[18px] font-black transition-all active:scale-90 cursor-pointer" :class="isDark ? 'bg-[#ff2a2a] text-white' : 'bg-[#e60000] text-white'">Done</button>
     </div>
 
     <!-- MORPHING HAMBURGER TRIGGER (independent, always above header + drawer so it never gets covered) -->
-    <div x-show="!searchOpen && !homeEditMode" class="fixed top-[18px] right-0 w-[33%] z-[80] flex justify-center">
+    <div x-show="!searchOpen && !homeEditMode" class="fixed top-[12px] right-0 w-[33%] z-[80] flex justify-center">
       <button @click="drawerOpen = !drawerOpen"
               class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
               :class="drawerOpen ? '' : (isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]')"
@@ -2145,7 +2145,7 @@ document.addEventListener('alpine:init', () => {
          element, so they can never inherit this transform. That's the exact fix for the earlier
          reverted attempt: a transform on an ancestor of position:fixed elements changes their
          containing block and clips them off the real viewport. Header/nav sit outside it here. -->
-    <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px] transition-all duration-300"
+    <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[84px] transition-all duration-300"
           :style="(activeSheet !== null || showFave5Sheet) ? 'transform: scale(0.82); border-radius: 32px; overflow: hidden; filter: brightness(0.8);' : ''">
 
       <div x-ref="homeGrid" @click.self="exitHomeEditMode()"
