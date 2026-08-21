@@ -21,12 +21,25 @@ document.addEventListener('alpine:init', () => {
         searchQuery: '',
         catList: ['photos','video','aerial','tour360','floor','addons'],
 
-        /* HOME SCREEN CUSTOM TILE ORDER */
+        /* HOME SCREEN CUSTOM TILE ORDER -- hand-rolled drag (no SortableJS).
+           Same technique this app already uses elsewhere (pointerdown/pointermove.window/pointerup),
+           applied to a 2-column grid: the real tile follows the finger via a floating overlay that
+           Alpine alone controls, target slot is computed from raw pointer math (not DOM measurement
+           of moving elements), and a manual FLIP animates the tiles that get displaced. */
         homeTileDefaultOrder: ['photos','aerial','floor','video','tour360','addons'],
         homeTileOrder: ['photos','aerial','floor','video','tour360','addons'],
         homeEditMode: false,
-        homeDragActive: false,
         longPressTimer: null,
+        homeDragKey: null,
+        homeDragX: 0,
+        homeDragY: 0,
+        homeDragOffsetX: 0,
+        homeDragOffsetY: 0,
+        homeDragGridRect: null,
+        homeDragTileW: 0,
+        homeDragTileH: 0,
+        homeDragGapX: 16,
+        homeDragGapY: 16,
         loadHomeTileOrder() {
           try {
             const saved = JSON.parse(localStorage.getItem('homeTileOrder'));
@@ -52,67 +65,87 @@ document.addEventListener('alpine:init', () => {
         enterHomeEditMode() {
           this.homeEditMode = true;
           if (navigator.vibrate) navigator.vibrate(40);
-          if (this._homeSortableInstance) this._homeSortableInstance.option('disabled', false);
         },
         exitHomeEditMode() {
           this.homeEditMode = false;
           this.cancelLongPress();
-          if (this._homeSortableInstance) this._homeSortableInstance.option('disabled', true);
+          this.homeDragKey = null;
         },
-        initHomeSortable(el) {
-          if (typeof Sortable === 'undefined') return;
-          if (this._homeSortableInstance) return;
-          this._homeSortableInstance = Sortable.create(el, {
-            animation: 320,
-            easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
-            draggable: 'button',
-            swapThreshold: 0.65,
-            disabled: true,
-            delay: 120,
-            delayOnTouchOnly: true,
-            touchStartThreshold: 5,
-            forceFallback: true,
-            fallbackOnBody: true,
-            fallbackTolerance: 3,
-            fallbackClass: 'home-tile-fallback',
-            chosenClass: 'home-tile-chosen',
-            dragClass: 'home-tile-chosen',
-            ghostClass: 'home-tile-ghost',
-            onStart: (evt) => {
-              if (navigator.vibrate) navigator.vibrate(30);
-              // Plain DOM only here -- do NOT touch Alpine reactive state while Sortable
-              // owns this DOM subtree. Flipping a reactive prop mid-drag makes Alpine's
-              // x-for reconcile the same nodes Sortable is actively moving, and the two
-              // fight over the DOM (no visible movement, icons can end up scrambled).
-              Array.from(evt.from.querySelectorAll(':scope > button')).forEach((btn) => {
-                btn.classList.remove('tile-jiggle');
-                if (btn !== evt.item) btn.classList.add('home-tile-secondary-shrink');
+        startHomeTileDrag(key, e) {
+          if (!this.homeEditMode) return;
+          const gridEl = this.$refs.homeGrid;
+          const btn = e.currentTarget;
+          const rect = btn.getBoundingClientRect();
+          const gridRect = gridEl.getBoundingClientRect();
+          const cs = getComputedStyle(gridEl);
+          this.homeDragGapX = parseFloat(cs.columnGap) || 16;
+          this.homeDragGapY = parseFloat(cs.rowGap) || 16;
+          this.homeDragTileW = rect.width;
+          this.homeDragTileH = rect.height;
+          this.homeDragGridRect = gridRect;
+          this.homeDragOffsetX = e.clientX - rect.left;
+          this.homeDragOffsetY = e.clientY - rect.top;
+          this.homeDragX = rect.left;
+          this.homeDragY = rect.top;
+          this.homeDragKey = key;
+          if (navigator.vibrate) navigator.vibrate(30);
+        },
+        homeTileDragMove(e) {
+          if (!this.homeDragKey) return;
+          this.homeDragX = e.clientX - this.homeDragOffsetX;
+          this.homeDragY = e.clientY - this.homeDragOffsetY;
+
+          // Target slot from raw pointer math -- not from measuring DOM elements that are
+          // themselves mid-animation, so this stays correct no matter what's visually happening.
+          const colW = this.homeDragTileW + this.homeDragGapX;
+          const rowH = this.homeDragTileH + this.homeDragGapY;
+          const relX = e.clientX - this.homeDragGridRect.left;
+          const relY = e.clientY - this.homeDragGridRect.top;
+          let col = Math.floor(relX / colW);
+          let row = Math.floor(relY / rowH);
+          col = Math.max(0, Math.min(1, col));
+          row = Math.max(0, Math.min(Math.ceil(this.homeTileOrder.length / 2) - 1, row));
+          const targetIndex = Math.min(this.homeTileOrder.length - 1, row * 2 + col);
+
+          const fromIndex = this.homeTileOrder.indexOf(this.homeDragKey);
+          if (targetIndex !== fromIndex && fromIndex !== -1) {
+            this.reorderHomeTiles(fromIndex, targetIndex);
+          }
+        },
+        endHomeTileDrag() {
+          if (!this.homeDragKey) return;
+          if (navigator.vibrate) navigator.vibrate(20);
+          this.homeDragKey = null;
+          this.saveHomeTileOrder();
+        },
+        reorderHomeTiles(fromIdx, toIdx) {
+          const gridEl = this.$refs.homeGrid;
+          const tiles = Array.from(gridEl.querySelectorAll(':scope > button'));
+          const firstRects = new Map(tiles.map((el) => [el, el.getBoundingClientRect()]));
+
+          const moved = this.homeTileOrder.splice(fromIdx, 1)[0];
+          this.homeTileOrder.splice(toIdx, 0, moved);
+          if (navigator.vibrate) navigator.vibrate(8);
+
+          // Manual FLIP: Alpine's keyed x-for reuses these same DOM nodes, it just moves them
+          // to new positions -- so measuring before/after on the same element reference and
+          // animating the delta gives the 'secondary tile slides out of the way' motion.
+          this.$nextTick(() => {
+            tiles.forEach((el) => {
+              const first = firstRects.get(el);
+              if (!first) return;
+              const last = el.getBoundingClientRect();
+              const dx = first.left - last.left;
+              const dy = first.top - last.top;
+              if (!dx && !dy) return;
+              el.style.transition = 'none';
+              el.style.transform = `translate(${dx}px, ${dy}px)`;
+              el.getBoundingClientRect();
+              requestAnimationFrame(() => {
+                el.style.transition = 'transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                el.style.transform = '';
               });
-            },
-            onChange: () => { if (navigator.vibrate) navigator.vibrate(8); },
-            onEnd: (evt) => {
-              if (navigator.vibrate) navigator.vibrate(20);
-
-              // Sortable physically moved evt.item in the DOM during the drag. Put it back
-              // where it started so Alpine's x-for (driven by homeTileOrder below) is the
-              // only thing that ever performs the actual reorder -- otherwise Alpine's keyed
-              // diffing desyncs from the DOM Sortable already rearranged, and a tile can end
-              // up rendering the wrong icon after a drop.
-              const buttons = Array.from(evt.from.querySelectorAll(':scope > button'));
-              evt.from.insertBefore(evt.item, buttons[evt.oldIndex] || null);
-
-              setTimeout(() => {
-                Array.from(evt.from.querySelectorAll(':scope > button')).forEach((btn) => {
-                  btn.classList.remove('home-tile-secondary-shrink');
-                  if (this.homeEditMode) btn.classList.add('tile-jiggle');
-                });
-              }, 340);
-
-              if (evt.oldIndex === evt.newIndex) return;
-              const moved = this.homeTileOrder.splice(evt.oldIndex, 1)[0];
-              this.homeTileOrder.splice(evt.newIndex, 0, moved);
-              this.saveHomeTileOrder();
-            }
+            });
           });
         },
         catTitleEn: { photos:'Photos', video:'Video', aerial:'Aerial', tour360:'360 Tour', floor:'Floor Plan', addons:'Add-Ons' },
@@ -1705,36 +1738,6 @@ document.addEventListener('alpine:init', () => {
       50% { transform: rotate(1deg); }
     }
     .tile-jiggle { animation: tile-jiggle 0.24s ease-in-out infinite; }
-
-    /* HOME TILE DRAG-AND-DROP: lifted tile must render ABOVE the tile it's passing over, never under it */
-    .home-tile-secondary-shrink {
-      scale: 0.98 !important;
-      transition: scale 0.2s ease-out;
-    }
-    .home-tile-chosen {
-      position: relative !important;
-      z-index: 500 !important;
-      animation: none !important;
-      scale: 1.05 !important;
-      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.25) !important;
-      transition: scale 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease-out;
-    }
-    .home-tile-ghost {
-      animation: none !important;
-      opacity: 0.25 !important;
-      scale: 1 !important;
-      box-shadow: none !important;
-      z-index: 0 !important;
-    }
-    .home-tile-fallback {
-      scale: 1.05 !important;
-      opacity: 1 !important;
-      z-index: 999 !important;
-      animation: none !important;
-      border-radius: 24px !important;
-      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.25) !important;
-      pointer-events: none !important;
-    }
   </style>
 </head>
 <body class="w-full min-h-screen transition-colors duration-300"
@@ -1987,14 +1990,16 @@ document.addEventListener('alpine:init', () => {
     <!-- DASHBOARD CONTENT -->
     <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px]">
 
-      <div x-init="$nextTick(() => initHomeSortable($el))" @click.self="exitHomeEditMode()" class="grid grid-cols-2 gap-x-4 gap-y-4 w-full max-w-sm">
+      <div x-ref="homeGrid" @click.self="exitHomeEditMode()"
+           @pointermove.window="homeTileDragMove($event)" @pointerup.window="endHomeTileDrag()" @pointercancel.window="endHomeTileDrag()"
+           class="grid grid-cols-2 gap-x-4 gap-y-4 w-full max-w-sm">
         <template x-for="(key, tileIdx) in homeTileOrder" :key="key">
           <button @click="homeEditMode ? null : (makeHero(key), openSheet(sheetForCategory(key)))"
-                  @pointerdown="!homeEditMode && startLongPress()"
+                  @pointerdown="!homeEditMode ? startLongPress() : startHomeTileDrag(key, $event)"
                   @pointerup="cancelLongPress()" @pointerleave="cancelLongPress()" @pointercancel="cancelLongPress()"
                   :style="'animation-delay:' + (tileIdx * 0.06) + 's' + '; ' + (isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;')"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
-                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', homeEditMode ? 'tile-jiggle' : '']">
+                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', (homeEditMode && !homeDragKey) ? 'tile-jiggle' : '', key === homeDragKey ? 'opacity-25' : '', (homeDragKey && key !== homeDragKey) ? 'scale-[0.98]' : '']">
             <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
@@ -2003,6 +2008,21 @@ document.addEventListener('alpine:init', () => {
             <span class="text-[18px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[key]"></span>
           </button>
         </template>
+      </div>
+
+      <!-- FLOATING DRAG VISUAL: the tile you're actually holding, tracks the finger 1:1, Alpine-only (no library) -->
+      <div x-show="homeDragKey" x-cloak
+           class="fixed pointer-events-none z-[999] rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3"
+           :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+           :style="'left:' + homeDragX + 'px; top:' + homeDragY + 'px; width:' + homeDragTileW + 'px; height:' + homeDragTileH + 'px; scale:1.05; box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.25);'">
+        <template x-if="homeDragKey">
+        <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
+             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+             :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+          <svg :class="[(homeDragKey === 'video' || homeDragKey === 'tour360' || homeDragKey === 'addons') ? 'w-[78%] h-[78%]' : 'w-[75%] h-[75%]', isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]']" viewBox="0 0 24 24" fill="currentColor" x-html="catIconSvg[homeDragKey]"></svg>
+        </div>
+        </template>
+        <span class="text-[18px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="catTitle[homeDragKey]"></span>
       </div>
     </main>
 
