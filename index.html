@@ -28,6 +28,9 @@ document.addEventListener('alpine:init', () => {
            of moving elements), and a manual FLIP animates the tiles that get displaced. */
         homeTileDefaultOrder: ['photos','aerial','floor','video','tour360','addons'],
         homeTileOrder: ['photos','aerial','floor','video','tour360','addons'],
+        // What the grid actually renders while dragging -- previews live, debounced against
+        // jitter. homeTileOrder (the saved/authoritative order) only updates once, on release.
+        homeTileDisplayOrder: ['photos','aerial','floor','video','tour360','addons'],
         homeEditMode: false,
         longPressTimer: null,
         homeDragKey: null,
@@ -41,16 +44,19 @@ document.addEventListener('alpine:init', () => {
         homeDragGapX: 16,
         homeDragGapY: 16,
         homeDragPendingTarget: null,
+        homeDragSwapTimer: null,
         loadHomeTileOrder() {
           try {
             const saved = JSON.parse(localStorage.getItem('homeTileOrder'));
             const validSet = this.homeTileDefaultOrder.slice().sort().join(',');
             if (Array.isArray(saved) && saved.slice().sort().join(',') === validSet) {
               this.homeTileOrder = saved;
+              this.homeTileDisplayOrder = saved.slice();
               return;
             }
           } catch (e) {}
           this.homeTileOrder = this.homeTileDefaultOrder.slice();
+          this.homeTileDisplayOrder = this.homeTileDefaultOrder.slice();
         },
         saveHomeTileOrder() {
           try { localStorage.setItem('homeTileOrder', JSON.stringify(this.homeTileOrder)); } catch (e) {}
@@ -99,30 +105,47 @@ document.addEventListener('alpine:init', () => {
           let col = Math.floor(relX / colW);
           let row = Math.floor(relY / rowH);
           col = Math.max(0, Math.min(1, col));
-          row = Math.max(0, Math.min(Math.ceil(this.homeTileOrder.length / 2) - 1, row));
-          return Math.min(this.homeTileOrder.length - 1, row * 2 + col);
+          row = Math.max(0, Math.min(Math.ceil(this.homeTileDisplayOrder.length / 2) - 1, row));
+          return Math.min(this.homeTileDisplayOrder.length - 1, row * 2 + col);
         },
         homeTileDragMove(e) {
           if (!this.homeDragKey) return;
-          // Nothing reorders here on purpose -- only the floating tile follows the finger.
-          // The actual swap happens once, on release, in endHomeTileDrag.
           this.homeDragX = e.clientX - this.homeDragOffsetX;
           this.homeDragY = e.clientY - this.homeDragOffsetY;
-          this.homeDragPendingTarget = this.homeTileTargetIndex(e);
-        },
-        endHomeTileDrag(e) {
-          if (!this.homeDragKey) return;
-          const key = this.homeDragKey;
-          const fromIndex = this.homeTileOrder.indexOf(key);
-          const targetIndex = e ? this.homeTileTargetIndex(e) : this.homeDragPendingTarget;
 
+          const targetIndex = this.homeTileTargetIndex(e);
+          const fromIndex = this.homeTileDisplayOrder.indexOf(this.homeDragKey);
+          if (targetIndex === fromIndex || fromIndex === -1) {
+            if (this.homeDragSwapTimer) { clearTimeout(this.homeDragSwapTimer); this.homeDragSwapTimer = null; }
+            this.homeDragPendingTarget = null;
+            return;
+          }
+
+          // Preview live (so the grid isn't a dead gap while you're still deciding), but don't
+          // react to every cell edge crossing -- only commit the preview once the pointer has
+          // settled on the new slot for a beat. This never touches homeTileOrder/localStorage;
+          // that only happens once, in endHomeTileDrag, at the moment you actually let go.
+          if (targetIndex !== this.homeDragPendingTarget) {
+            this.homeDragPendingTarget = targetIndex;
+            if (this.homeDragSwapTimer) clearTimeout(this.homeDragSwapTimer);
+            this.homeDragSwapTimer = setTimeout(() => {
+              this.homeDragSwapTimer = null;
+              const currentFrom = this.homeTileDisplayOrder.indexOf(this.homeDragKey);
+              if (currentFrom !== -1 && this.homeDragPendingTarget !== null && this.homeDragPendingTarget !== currentFrom) {
+                this.reorderHomeTiles(currentFrom, this.homeDragPendingTarget);
+              }
+            }, 130);
+          }
+        },
+        endHomeTileDrag() {
+          if (!this.homeDragKey) return;
+          if (this.homeDragSwapTimer) { clearTimeout(this.homeDragSwapTimer); this.homeDragSwapTimer = null; }
           this.homeDragKey = null;
           this.homeDragPendingTarget = null;
           if (navigator.vibrate) navigator.vibrate(20);
 
-          if (fromIndex !== -1 && targetIndex !== null && targetIndex !== fromIndex) {
-            this.reorderHomeTiles(fromIndex, targetIndex);
-          }
+          // Lock in: the live preview becomes the saved order, exactly once, right now.
+          this.homeTileOrder = this.homeTileDisplayOrder.slice();
           this.saveHomeTileOrder();
         },
         reorderHomeTiles(fromIdx, toIdx) {
@@ -130,8 +153,8 @@ document.addEventListener('alpine:init', () => {
           const tiles = Array.from(gridEl.querySelectorAll(':scope > button'));
           const firstRects = new Map(tiles.map((el) => [el, el.getBoundingClientRect()]));
 
-          const moved = this.homeTileOrder.splice(fromIdx, 1)[0];
-          this.homeTileOrder.splice(toIdx, 0, moved);
+          const moved = this.homeTileDisplayOrder.splice(fromIdx, 1)[0];
+          this.homeTileDisplayOrder.splice(toIdx, 0, moved);
           if (navigator.vibrate) navigator.vibrate(8);
 
           // Manual FLIP: Alpine's keyed x-for reuses these same DOM nodes, it just moves them
@@ -2000,7 +2023,7 @@ document.addEventListener('alpine:init', () => {
       <div x-ref="homeGrid" @click.self="exitHomeEditMode()"
            @pointermove.window="homeTileDragMove($event)" @pointerup.window="endHomeTileDrag($event)" @pointercancel.window="endHomeTileDrag()"
            class="grid grid-cols-2 gap-x-4 gap-y-4 w-full max-w-sm">
-        <template x-for="(key, tileIdx) in homeTileOrder" :key="key">
+        <template x-for="(key, tileIdx) in homeTileDisplayOrder" :key="key">
           <button @click="homeEditMode ? null : (makeHero(key), openSheet(sheetForCategory(key)))"
                   @pointerdown="!homeEditMode ? startLongPress() : startHomeTileDrag(key, $event)"
                   @pointerup="cancelLongPress()" @pointerleave="cancelLongPress()" @pointercancel="cancelLongPress()"
