@@ -180,6 +180,12 @@ document.addEventListener('alpine:init', () => {
         catTitleEn: { photos:'Photos', video:'Video', aerial:'Aerial', tour360:'360 Tour', floor:'Floor Plan', addons:'Add-Ons' },
         catTitleEs: { photos:'Fotos', video:'Video', aerial:'Aéreo', tour360:'Tour 360', floor:'Plano', addons:'Extras' },
         get catTitle() { return this.appLang === 'es' ? this.catTitleEs : this.catTitleEn; },
+        /* How far dismissed the current sheet drag is, 0 (closed/resting) to 1 (fully dragged
+           away) -- drives the backdrop live instead of it only fading on open/close click. */
+        get backdropDragProgress() {
+          const d = Math.max(this.dragY || 0, this.faveDragY || 0, 0);
+          return Math.min(1, d / 400);
+        },
 
         /* LANGUAGE TOGGLE */
         appLang: 'en',
@@ -2102,7 +2108,8 @@ document.addEventListener('alpine:init', () => {
          x-transition:leave-end="opacity-0"
          @click="closeSheet(); showFave5Sheet = false"
          class="fixed inset-0 z-40 transition-colors duration-300 backdrop-blur-sm"
-         :class="isDark ? 'bg-black/45' : 'bg-black/25'"></div>
+         :class="isDark ? 'bg-black/45' : 'bg-black/25'"
+         :style="(isDragging || faveIsDragging) ? ('opacity:' + (1 - backdropDragProgress) + '; backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px); -webkit-backdrop-filter: blur(' + (4 * (1 - backdropDragProgress)) + 'px);') : ''"></div>
 
     <!-- CART QUOTE BOTTOM SHEET -->
     <template x-if="activeSheet === 'cart'">
