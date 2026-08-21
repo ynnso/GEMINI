@@ -1750,11 +1750,23 @@ document.addEventListener('alpine:init', () => {
         /* PACKAGE WIZARD (SANDBOX / TEST ONLY) -- reads real price numbers but its state is
            entirely separate from the live sheets (miniCount, reshootCount, exteriorCount,
            selectedSqFt, cart). Nothing in the real flow calls into this, and this never writes
-           back into real state. Reachable only from the hamburger drawer while it's being tested. */
+           back into real state. Reachable only from the hamburger drawer while it's being tested.
+
+           v2 rebuild: the first version made you pick a package before it would tell you anything
+           -- backwards, since "which package" is the actual question a Photog has standing in a
+           house with a client waiting. This version asks only the two things you always know cold
+           (roughly how big the house is, roughly how many photos it needs) and opens already
+           showing a real answer -- no blank state, no dead end. "Intent" replaces "package" as the
+           first choice: 'standard' ranks Mini vs Full head-to-head (the common case, not gated
+           behind a pre-picked package); 'exterior'/'reshoot' are treated as separate job types, not
+           another rung on the same ladder -- compared only against Full, since Full is a strictly
+           better deal for THAT price the instant it undercuts them, but never offered as a
+           replacement for Mini semantics (comparing two ways to do "a normal shoot" would be noise
+           for someone who specifically asked for an exterior-only or reshoot job). */
         wizTestOpen: false,
-        wizTestPackage: 'MINI',
-        wizTestQty: '12',
-        wizTestSqft: '',
+        wizTestIntent: 'standard',
+        wizTestQty: '20',
+        wizTestSqft: '0-1999',
         openWizTestSheet() {
           this.wizTestOpen = true;
           let waitFrames = 0;
@@ -1775,73 +1787,115 @@ document.addEventListener('alpine:init', () => {
           };
           requestAnimationFrame(waitForSheet);
         },
-        wizTestSetPackage(pkg) {
-          this.wizTestPackage = pkg;
-          this.wizTestQty = pkg === 'MINI' ? '12' : (pkg === 'FULL' ? '25' : '8');
+        wizTestSetIntent(intent) {
+          this.wizTestIntent = intent;
+          this.wizTestQty = intent === 'standard' ? '20' : '12';
+        },
+        // Preset chips adapt to intent -- standard mode spans a normal listing's range (Mini
+        // through a real Full Shoot job); exterior/reshoot stay inside what those two products
+        // can actually deliver (8-20), since offering a chip they can't select is its own kind
+        // of dead end.
+        wizTestQtyChips() {
+          return this.wizTestIntent === 'standard' ? [10, 15, 20, 25, 30, 40, 50] : [8, 10, 12, 15, 18, 20];
         },
         wizTestUpdateQty(dir) {
-          const floor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 25 : 8);
-          const cap = this.wizTestPackage === 'MINI' ? 24 : (this.wizTestPackage === 'FULL' ? 150 : 20);
+          const floor = this.wizTestIntent === 'standard' ? 8 : 8;
+          const cap = this.wizTestIntent === 'standard' ? 150 : 20;
           let val = parseInt(this.wizTestQty) || floor;
           val = dir === 'up' ? Math.min(cap, val + 1) : Math.max(floor, val - 1);
           this.wizTestQty = String(val);
         },
-        wizTestPrices() {
+        // Mirrors the real Full Shoot sheet's evaluateCheapestBase(): cheapest of (tier flat price)
+        // vs (tier + $5/extra overage), across all 4 tiers -- not a naive "round up to the nearest
+        // tier" bucket. A naive bucket undercharges anything past 50 photos (confirmed against the
+        // Golden Dataset: 60 photos should be $274, a flat-50 bucket was showing $224).
+        wizTestCheapestFull(n) {
           const tiers = [25, 36, 40, 50];
           const sqftTable = (this.wizTestSqft && this.priceMatrix[this.wizTestSqft]) ? this.priceMatrix[this.wizTestSqft] : null;
-          // Mirrors the real Full Shoot sheet's evaluateCheapestBase(): cheapest of (tier flat price)
-          // vs (tier + $5/extra overage), across all 4 tiers -- not a naive "round up to the nearest
-          // tier" bucket. A naive bucket undercharges anything past 50 photos (confirmed against the
-          // Golden Dataset: 60 photos should be $274, a flat-50 bucket was showing $224).
-          const cheapestFull = (n) => {
-            if (!sqftTable) return { tier: null, price: null };
-            let bestTier = tiers[0];
-            let minCost = Infinity;
-            for (const t of tiers) {
-              const cost = n >= t ? sqftTable[t] + (n - t) * 5 : sqftTable[t];
-              if (cost < minCost) { minCost = cost; bestTier = t; }
-            }
-            return { tier: bestTier, price: minCost };
-          };
-          // Caps mirror the real per-package steppers (Mini 24, Reshoot/Exterior 20, Full 150,
-          // Full's own floor 25) -- without these the math still "works" but describes a photo
-          // count no real sheet would ever let a Photog select.
-          const qFloor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 25 : 8);
-          const qCap = this.wizTestPackage === 'MINI' ? 24 : (this.wizTestPackage === 'FULL' ? 150 : 20);
-          const rawQty = parseInt(this.wizTestQty) || 0;
-          const q = Math.min(qCap, Math.max(qFloor, rawQty || qFloor));
-          const reshoot = 89 + Math.max(0, q - 8) * 10;
-          const ext = 79 + Math.max(0, q - 8) * 10;
-          const mini = 119 + Math.max(0, q - 12) * 10;
-          const fullResult = cheapestFull(q);
-          const fullTier = fullResult.tier;
-          const full = fullResult.price;
-          const current = this.wizTestPackage === 'RESHOOT' ? reshoot : (this.wizTestPackage === 'EXT' ? ext : (this.wizTestPackage === 'FULL' ? full : mini));
-          const currentLabel = this.wizTestPackage === 'RESHOOT' ? 'Reshoot' : (this.wizTestPackage === 'EXT' ? 'Exterior' : (this.wizTestPackage === 'FULL' ? 'Full' : 'Mini'));
-          const candidates = [{ key: 'current', label: currentLabel + ' ' + (this.wizTestPackage === 'FULL' ? q + ' img (' + fullTier + ' tier)' : q + ' img'), price: current, imgs: q }];
-          if (this.wizTestPackage !== 'MINI' && q <= 24) candidates.push({ key: 'mini', label: 'Mini ' + Math.max(q, 12) + ' img', price: mini, imgs: Math.max(q, 12) });
-          if (full !== null && full !== undefined && this.wizTestPackage !== 'FULL') candidates.push({ key: 'full', label: 'Full ' + (q > fullTier ? q + ' img (' + fullTier + ' tier)' : fullTier + ' img'), price: full, imgs: Math.max(q, fullTier) });
-          const validCandidates = candidates.filter(c => c.price !== null && c.price !== undefined);
-          if (!validCandidates.length) { candidates.forEach(c => { c.isBest = false; }); return candidates; }
-          const minPrice = Math.min(...validCandidates.map(c => c.price));
-          const tiedForLowest = validCandidates.filter(c => c.price === minPrice);
-          const mostImagesAtLowest = Math.max(...tiedForLowest.map(c => c.imgs));
-          const winners = tiedForLowest.filter(c => c.imgs === mostImagesAtLowest);
-          let winner = winners.find(c => c.key === 'current') || winners[0];
-          if (this.wizTestPackage === 'EXT' && winner && winner.key === 'current') {
-            const miniC = winners.find(c => c.key === 'mini');
-            if (miniC) winner = miniC;
+          if (!sqftTable) return { tier: null, price: null };
+          let bestTier = tiers[0];
+          let minCost = Infinity;
+          for (const t of tiers) {
+            const cost = n >= t ? sqftTable[t] + (n - t) * 5 : sqftTable[t];
+            if (cost < minCost) { minCost = cost; bestTier = t; }
           }
+          return { tier: bestTier, price: minCost };
+        },
+        wizTestRank(candidates) {
+          const valid = candidates.filter(c => c.price !== null && c.price !== undefined);
+          if (!valid.length) { candidates.forEach(c => { c.isBest = false; }); return candidates; }
+          const minPrice = Math.min(...valid.map(c => c.price));
+          const tied = valid.filter(c => c.price === minPrice);
+          const mostImgs = Math.max(...tied.map(c => c.imgs));
+          const winner = tied.find(c => c.imgs === mostImgs) || tied[0];
           candidates.forEach(c => { c.isBest = (c === winner); });
           return candidates;
         },
+        wizTestPrices() {
+          const rawQty = parseInt(this.wizTestQty) || 0;
+
+          if (this.wizTestIntent === 'exterior' || this.wizTestIntent === 'reshoot') {
+            const q = Math.min(20, Math.max(8, rawQty || 8));
+            const isReshoot = this.wizTestIntent === 'reshoot';
+            const price = (isReshoot ? 89 : 79) + Math.max(0, q - 8) * 10;
+            const label = isReshoot ? 'Reshoot' : 'Exterior';
+            const fullResult = this.wizTestCheapestFull(q);
+            const candidates = [{ key: isReshoot ? 'reshoot' : 'exterior', label: label + ' ' + q + ' img', price, imgs: q }];
+            if (fullResult.price != null) {
+              candidates.push({ key: 'full', label: 'Full ' + (q > fullResult.tier ? q + ' img (' + fullResult.tier + ' tier)' : fullResult.tier + ' img'), price: fullResult.price, imgs: Math.max(q, fullResult.tier) });
+            }
+            return this.wizTestRank(candidates);
+          }
+
+          // 'standard': Mini vs Full, ranked head to head -- neither is pre-selected as "current."
+          const effQty = rawQty || 20;
+          const candidates = [];
+          if (effQty <= 24) {
+            const miniQ = Math.max(12, effQty);
+            candidates.push({ key: 'mini', label: 'Mini ' + miniQ + ' img', price: 119 + Math.max(0, miniQ - 12) * 10, imgs: miniQ });
+          }
+          const fullQ = Math.max(25, effQty);
+          const fullResult = this.wizTestCheapestFull(fullQ);
+          if (fullResult.price != null) {
+            candidates.push({ key: 'full', label: 'Full ' + (fullQ > fullResult.tier ? fullQ + ' img (' + fullResult.tier + ' tier)' : fullResult.tier + ' img'), price: fullResult.price, imgs: Math.max(fullQ, fullResult.tier) });
+          }
+          return this.wizTestRank(candidates);
+        },
+        // The one-line, glance-and-go answer -- built to be read once, out loud if needed, while
+        // a client is standing right there. Never just two raw numbers side by side; always the
+        // comparison already done for you.
+        wizTestVerdict() {
+          if (!this.wizTestSqft) return 'Pick a sq ft to see real numbers.';
+          const cands = this.wizTestPrices();
+          const winner = cands.find(c => c.isBest);
+          if (!winner) return 'Enter a sq ft and photo count.';
+          const other = cands.find(c => c !== winner);
+          const nameOf = (c) => c.key === 'mini' ? 'Mini Shoot' : (c.key === 'full' ? 'Full Shoot' : (c.key === 'exterior' ? 'Exterior Only' : 'Reshoot'));
+          if (!other) {
+            if (this.wizTestIntent === 'standard' && winner.key === 'full') {
+              return 'Only Full Shoot covers ' + winner.imgs + ' photos — $' + winner.price + '.';
+            }
+            return nameOf(winner) + ' — $' + winner.price + '.';
+          }
+          const diff = Math.abs(winner.price - other.price);
+          const imgDiff = winner.imgs - other.imgs;
+          if (diff === 0) {
+            return nameOf(winner) + ' and ' + nameOf(other) + ' cost the same — ' + nameOf(winner) + ' gets you more photos.';
+          }
+          if (winner.key === 'full' && (this.wizTestIntent === 'exterior' || this.wizTestIntent === 'reshoot')) {
+            return 'Full Shoot covers the whole listing for $' + diff + ' more than ' + nameOf(other) + '.';
+          }
+          const photoNote = imgDiff > 0 ? ' for ' + imgDiff + ' more photos' : '';
+          return nameOf(winner) + ' saves $' + diff + photoNote + '.';
+        },
         wizTestSelectCandidate(c) {
-          if (c.key === 'current') { this.wizTestOpen = false; return; }
           if (c.key === 'mini') {
-            this.wizTestPackage = 'MINI';
-            this.wizTestQty = String(Math.max(parseInt(this.wizTestQty) || 12, 12));
+            this.wizTestIntent = 'standard';
+            this.wizTestQty = String(c.imgs);
           } else if (c.key === 'full') {
-            this.wizTestPackage = 'FULL';
+            this.wizTestQty = String(c.imgs);
+          } else if (c.key === 'exterior' || c.key === 'reshoot') {
+            this.wizTestIntent = c.key;
             this.wizTestQty = String(c.imgs);
           }
           this.wizTestOpen = false;
@@ -2848,58 +2902,68 @@ document.addEventListener('alpine:init', () => {
 
         <div class="text-center mb-1">
           <span class="text-[11px] font-bold uppercase tracking-wide" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">Test Sandbox — Not Live</span>
-          <h1 class="text-[26px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Package Wizard</h1>
+          <h1 class="text-[26px] font-black leading-tight" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'">Wizard</h1>
         </div>
 
-        <!-- Package picker -->
-        <div class="grid grid-cols-4 gap-2">
-          <template x-for="pkg in [['FULL','Full'],['MINI','Mini'],['RESHOOT','Reshoot'],['EXT','Ext']]" :key="pkg[0]">
-            <button @click="wizTestSetPackage(pkg[0])"
-                    class="h-11 rounded-[12px] text-[13px] font-black transition-all active:scale-95 cursor-pointer"
-                    :class="wizTestPackage === pkg[0] ? 'text-white' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
-                    :style="wizTestPackage === pkg[0] ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')"
-                    x-text="pkg[1]"></button>
+        <!-- Intent: what kind of job, not which package -- package is the answer, not the question. -->
+        <div class="grid grid-cols-3 gap-2">
+          <template x-for="opt in [['standard','Standard'],['exterior','Ext Only'],['reshoot','Reshoot']]" :key="opt[0]">
+            <button @click="wizTestSetIntent(opt[0])"
+                    class="h-11 rounded-[12px] text-[12px] font-black transition-all active:scale-95 cursor-pointer"
+                    :class="wizTestIntent === opt[0] ? 'text-white' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
+                    :style="wizTestIntent === opt[0] ? (isDark ? 'background:#ff2a2a; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);' : 'background:#e60000; box-shadow: inset 3px 3px 6px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(255,255,255,0.2);') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')"
+                    x-text="opt[1]"></button>
           </template>
         </div>
 
-        <!-- Qty stepper + Sq Ft -->
-        <div class="grid grid-cols-2 gap-2.5">
-          <div class="h-14 rounded-[16px] flex items-center justify-between px-3"
-               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-               :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-            <button @click="wizTestUpdateQty('down')" class="w-8 h-8 rounded-[10px] flex items-center justify-center text-[18px] font-black cursor-pointer active:scale-90" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">–</button>
-            <span class="text-[18px] font-black tabular-nums" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="wizTestQty + ' img'"></span>
-            <button @click="wizTestUpdateQty('up')" class="w-8 h-8 rounded-[10px] flex items-center justify-center text-[18px] font-black cursor-pointer active:scale-90" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">+</button>
-          </div>
-          <select x-model="wizTestSqft"
-                  class="h-14 rounded-[16px] px-3 text-[14px] font-bold text-center outline-none appearance-none cursor-pointer"
-                  :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
-                  :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
-            <option value="">Sq Ft?</option>
-            <template x-for="opt in sqFtOptions" :key="opt.value">
-              <option :value="opt.value" x-text="opt.label"></option>
+        <!-- Sq ft first -- it's the thing a Photog already knows before they know a photo count. -->
+        <select x-model="wizTestSqft"
+                class="h-14 rounded-[16px] px-3 text-[15px] font-bold text-center outline-none appearance-none cursor-pointer"
+                :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
+                :style="isDark ? 'box-shadow: inset 4px 4px 8px #12151a, inset -3px -3px 7px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
+          <template x-for="opt in sqFtOptions" :key="opt.value">
+            <option :value="opt.value" x-text="opt.label"></option>
+          </template>
+        </select>
+
+        <!-- Photo count: one-tap chips for the common case, +/- underneath only for fine-tuning.
+             Eleven taps on a stepper is not fast enough with a client standing there. -->
+        <div>
+          <div class="grid grid-cols-4 gap-1.5 mb-1.5">
+            <template x-for="n in wizTestQtyChips()" :key="n">
+              <button @click="wizTestQty = String(n)"
+                      class="h-9 rounded-[10px] text-[13px] font-black transition-all active:scale-95 cursor-pointer"
+                      :class="parseInt(wizTestQty) === n ? 'text-white' : (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]')"
+                      :style="parseInt(wizTestQty) === n ? (isDark ? 'background:#ff2a2a;' : 'background:#e60000;') : (isDark ? 'box-shadow: 3px 3px 6px #14171c, -2px -2px 5px #282e38;' : 'box-shadow: 3px 3px 6px #b8bec9, -3px -3px 6px #ffffff;')"
+                      x-text="n"></button>
             </template>
-          </select>
+          </div>
+          <div class="h-11 rounded-[14px] flex items-center justify-between px-3"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="isDark ? 'box-shadow: inset 3px 3px 6px #12151a, inset -2px -2px 5px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
+            <button @click="wizTestUpdateQty('down')" class="w-7 h-7 rounded-[8px] flex items-center justify-center text-[16px] font-black cursor-pointer active:scale-90" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">–</button>
+            <span class="text-[14px] font-bold tabular-nums" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-text="wizTestQty + ' photos'"></span>
+            <button @click="wizTestUpdateQty('up')" class="w-7 h-7 rounded-[8px] flex items-center justify-center text-[16px] font-black cursor-pointer active:scale-90" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">+</button>
+          </div>
         </div>
 
-        <!-- Live price -->
-        <div class="flex items-baseline justify-center gap-1 rounded-[24px] py-4"
+        <!-- The verdict: one sentence, glance-and-go. This is the actual answer, not the price grid. -->
+        <div class="rounded-[24px] py-4 px-4 text-center"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
              :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 5px 5px 10px #c1c7d0, inset -5px -5px 10px #ffffff;'">
-          <span class="text-[24px] font-black self-start pt-1" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'">$</span>
-          <span class="text-[52px] font-black leading-none" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" x-text="wizTestPrices().find(c => c.key === 'current').price ?? '--'"></span>
+          <p class="text-[19px] font-black leading-snug" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" x-text="wizTestVerdict()"></p>
         </div>
 
-        <!-- Candidates -->
-        <div class="grid gap-2.5" :class="wizTestPrices().length === 3 ? 'grid-cols-3' : (wizTestPrices().length === 1 ? 'grid-cols-1' : 'grid-cols-2')">
+        <!-- Supporting numbers -- both options laid out, winner tagged, in case they want to see it. -->
+        <div class="grid gap-2.5" :class="wizTestPrices().length === 1 ? 'grid-cols-1' : 'grid-cols-2'">
           <template x-for="c in wizTestPrices()" :key="c.key">
             <button @click="wizTestSelectCandidate(c)"
                     class="rounded-[16px] px-2 py-3 text-center cursor-pointer transition-all active:scale-95"
                     :class="c.isBest ? 'text-white' : (isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]')"
                     :style="c.isBest ? (isDark ? 'background:#ff2a2a; box-shadow: 4px 4px 12px rgba(255,42,42,0.35), 4px 4px 8px #14171c;' : 'background:#e60000; box-shadow: 4px 4px 12px rgba(230,0,0,0.35), 4px 4px 8px #b8bec9;') : (isDark ? 'box-shadow: 4px 4px 8px #14171c, -3px -3px 7px #282e38;' : 'box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;')">
-              <p class="text-[10px] font-bold uppercase tracking-wide mb-1" :class="c.isBest ? 'text-white/80' : (isDark ? 'text-[#64748b]' : 'text-[#94a3b8]')" x-text="c.isBest ? 'Best Pkg' : c.label.split(' ')[0]"></p>
-              <p class="text-[18px] font-black leading-none" x-text="'$' + (c.price ?? '--')"></p>
-              <p class="text-[10px] font-bold mt-1 opacity-70" x-text="c.label"></p>
+              <p class="text-[10px] font-bold uppercase tracking-wide mb-1" :class="c.isBest ? 'text-white/80' : (isDark ? 'text-[#64748b]' : 'text-[#94a3b8]')" x-text="c.isBest ? 'Best' : 'Also'"></p>
+              <p class="text-[20px] font-black leading-none" x-text="'$' + (c.price ?? '--')"></p>
+              <p class="text-[11px] font-bold mt-1 opacity-70" x-text="c.label"></p>
             </button>
           </template>
         </div>
