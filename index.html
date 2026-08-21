@@ -1947,15 +1947,36 @@ document.addEventListener('alpine:init', () => {
       transform: scale(0.96);
     }
     .home-tile-icon-wrap {
-      transition: background 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.4s cubic-bezier(0.16,1,0.3,1);
     }
     .home-tile-press:active .home-tile-icon-wrap {
-      background: #e60000 !important;
       box-shadow: inset 4px 4px 9px rgba(0,0,0,0.4), inset -3px -3px 7px rgba(255,255,255,0.15) !important;
+    }
+    /* The actual fill: a red disc, invisible at scale(0) from the well's center, that grows to
+       flood the whole well on press -- real spatial motion (liquid rushing in), not a flat
+       background-color crossfade, which reads as an instant flip no matter how long the duration. */
+    .home-tile-icon-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #e60000;
+      transform: scale(0);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 0;
+    }
+    .home-tile-press:active .home-tile-icon-wrap::before {
+      transform: scale(1.6);
+    }
+    .home-tile-icon-wrap svg {
+      position: relative;
+      z-index: 1;
     }
     .home-tile-press:active .home-tile-icon-svg {
       color: #fff !important;
-      transition: color 0.4s cubic-bezier(0.16,1,0.3,1);
+      transition: color 0.35s cubic-bezier(0.16,1,0.3,1) 0.1s;
     }
 
     @keyframes tile-jiggle {
