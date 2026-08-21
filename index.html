@@ -2404,7 +2404,11 @@ document.addEventListener('alpine:init', () => {
 
     </div>
 
-    <!-- ADD-TO-CART TOAST: confirms the add without forcing navigation, sits just above the nav pill -->
+    <!-- ADD-TO-CART TOAST: confirms the add without forcing navigation, sits just above the nav pill.
+         Outer div matches the sheet container exactly (left-0 right-0 max-w-md mx-auto, no px) so the
+         inner toast's mx-5 lines up 1:1 with the CTA button's own mx-5 -- same 20px inset, same edges. -->
+    <div class="fixed left-0 right-0 max-w-md mx-auto z-[62] pointer-events-none"
+         :style="'bottom: calc(84px + env(safe-area-inset-bottom));'">
     <div x-show="cartToast" x-cloak
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 translate-y-4"
@@ -2412,10 +2416,10 @@ document.addEventListener('alpine:init', () => {
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-4"
-         class="fixed left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[62] rounded-[20px] px-4 py-3 flex items-center gap-3 transition-colors duration-300"
+         class="mx-5 pointer-events-auto rounded-[20px] px-4 py-3 flex items-center gap-3 transition-colors duration-300"
          :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
-         :style="'bottom: calc(84px + env(safe-area-inset-bottom)); ' + (isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;')">
-      <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" :class="isDark ? 'bg-[#ff2a2a]/15' : 'bg-[#e60000]/10'">
+         :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 3px 3px 6px #12151a, inset -3px -3px 6px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
         <svg class="w-5 h-5" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
@@ -2424,7 +2428,8 @@ document.addEventListener('alpine:init', () => {
         <p class="text-[11px] font-bold uppercase tracking-wide" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Added to cart</p>
         <p class="text-[15px] font-bold truncate" x-text="cartToast"></p>
       </div>
-      <button @click="dismissCartToast(); openSheet('cart')" class="shrink-0 text-[13px] font-black px-3 py-2 rounded-[12px] cursor-pointer" :class="isDark ? 'bg-[#ff2a2a] text-white' : 'bg-[#e60000] text-white'">View Cart</button>
+      <button @click="dismissCartToast(); openSheet('cart')" class="shrink-0 text-[13px] font-black px-3 py-2 rounded-[12px] cursor-pointer text-white" :style="isDark ? 'background:#ff2a2a; box-shadow: 3px 3px 8px rgba(255,42,42,0.35), 3px 3px 6px #14171c;' : 'background:#e60000; box-shadow: 3px 3px 8px rgba(230,0,0,0.35), 3px 3px 6px #b8bec9;'">View Cart</button>
+    </div>
     </div>
 
     <!-- BACKDROP WITH ADAPTIVE OPACITY & BLUR -->
@@ -2644,10 +2649,10 @@ document.addEventListener('alpine:init', () => {
 
         <div class="flex items-center gap-4 p-2.5 rounded-[24px] cursor-grab active:cursor-grabbing touch-none select-none" @pointerdown="faveDragStart($event)"
              :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
-             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);'">
+             :style="isDark ? 'box-shadow: 6px 6px 12px #14171c, -5px -5px 11px #282e38;' : 'box-shadow: 6px 6px 12px #b8bec9, -6px -6px 12px #ffffff;'">
           <div class="w-[52px] h-[52px] rounded-[16px] flex items-center justify-center shrink-0 transition-colors duration-300"
                :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
-               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);'">
+               :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
             <svg class="w-9 h-9" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" fill="currentColor" viewBox="0 0 24 24">
               <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
             </svg>
@@ -2677,7 +2682,7 @@ document.addEventListener('alpine:init', () => {
               </div>
               <div class="relative flex items-center gap-3 py-4 pl-3 pr-4 rounded-[20px]"
                    :class="isDark ? 'bg-[#1e232a]' : 'bg-white'"
-                   :style="`transform: translateX(${swipeX}px); transition: ${dragging ? 'none' : 'transform 0.25s ease'}; ` + (isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 0 1px 3px rgba(0,0,0,0.15);')"
+                   :style="`transform: translateX(${swipeX}px); transition: ${dragging ? 'none' : 'transform 0.25s ease'}; ` + (isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;')"
                    @pointerdown="if ($event.target.closest('.fave-drag-handle')) return; startX = $event.clientX; dragging = true"
                    @pointermove.window="if (!dragging) return; const dx = $event.clientX - startX; swipeX = Math.min(0, Math.max(dx, -120));"
                    @pointerup.window="if (!dragging) return; dragging = false; if (swipeX < -70) { removeFaveEntry(entry); } else { swipeX = 0; }">
