@@ -1869,27 +1869,27 @@ document.addEventListener('alpine:init', () => {
        with that, and direction carries meaning -- arriving from the right reads as moving forward/
        deeper (default), arriving from the left reads as backing out, matching goBack(). */
     @keyframes sheet-stagger-in {
-      from { opacity: 0; transform: translateX(28px); }
-      to { opacity: 1; transform: translateX(0); }
+      from { opacity: 0; transform: translateX(28px) scale(0.82); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
     }
     @keyframes sheet-stagger-in-back {
-      from { opacity: 0; transform: translateX(-28px); }
-      to { opacity: 1; transform: translateX(0); }
+      from { opacity: 0; transform: translateX(-28px) scale(0.82); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
     }
     .sheet-stagger-content > * {
-      animation: sheet-stagger-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: sheet-stagger-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     }
     .sheet-stagger-content.nav-back > * {
       animation-name: sheet-stagger-in-back;
     }
-    .sheet-stagger-content > *:nth-child(1) { animation-delay: 0.02s; }
-    .sheet-stagger-content > *:nth-child(2) { animation-delay: 0.08s; }
-    .sheet-stagger-content > *:nth-child(3) { animation-delay: 0.14s; }
-    .sheet-stagger-content > *:nth-child(4) { animation-delay: 0.20s; }
-    .sheet-stagger-content > *:nth-child(5) { animation-delay: 0.26s; }
-    .sheet-stagger-content > *:nth-child(6) { animation-delay: 0.32s; }
-    .sheet-stagger-content > *:nth-child(7) { animation-delay: 0.38s; }
-    .sheet-stagger-content > *:nth-child(n+8) { animation-delay: 0.44s; }
+    .sheet-stagger-content > *:nth-child(1) { animation-delay: 0.00s; }
+    .sheet-stagger-content > *:nth-child(2) { animation-delay: 0.15s; }
+    .sheet-stagger-content > *:nth-child(3) { animation-delay: 0.30s; }
+    .sheet-stagger-content > *:nth-child(4) { animation-delay: 0.45s; }
+    .sheet-stagger-content > *:nth-child(5) { animation-delay: 0.60s; }
+    .sheet-stagger-content > *:nth-child(6) { animation-delay: 0.75s; }
+    .sheet-stagger-content > *:nth-child(7) { animation-delay: 0.90s; }
+    .sheet-stagger-content > *:nth-child(n+8) { animation-delay: 1.05s; }
   </style>
 </head>
 <body class="w-full min-h-screen transition-colors duration-300"
