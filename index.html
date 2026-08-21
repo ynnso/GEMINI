@@ -216,20 +216,20 @@ document.addEventListener('alpine:init', () => {
           { label: 'PORT AMF', sheet: 'port', hero: 'aerial', setState() { this.portBrand = 'AMF'; } }
         ],
         addonSearchIndex: [
-          { item: 'Rain Blue Sky', group: 'Sky' }, { item: 'Blue Sky', group: 'Sky' },
-          { item: 'Sunset Sky', group: 'Sky' }, { item: 'Sky + Grass Bundle', group: 'Sky' },
-          { item: 'Green Grass', group: 'Grass' }, { item: 'Aerial Green Grass', group: 'Grass' },
+          { item: 'Rain Blue Sky', group: 'Sky', syn: ['rbs'] }, { item: 'Blue Sky', group: 'Sky', syn: ['bs'] },
+          { item: 'Sunset Sky', group: 'Sky', syn: ['ss'] }, { item: 'Sky + Grass Bundle', group: 'Sky' },
+          { item: 'Green Grass', group: 'Grass', syn: ['gg'] }, { item: 'Aerial Green Grass', group: 'Grass', syn: ['agg'] },
           { item: 'Aerial/Ground Grass Bundle', group: 'Grass' },
-          { item: 'ColorPop', group: 'Digital' }, { item: 'Digital Twilight', group: 'Digital' },
-          { item: 'Home Measurement', group: 'Digital' }, { item: 'Social Media Teaser', group: 'Digital' },
-          { item: 'YouTube', group: 'Digital' }, { item: 'Trueview', group: 'Digital' },
-          { item: 'TV Screen/Monitor', group: 'Digital' }, { item: 'Virtual Staging', group: 'Digital' },
-          { item: 'Keepsake Photo Album', group: 'Market' }, { item: '2 MLS Market Add-On', group: 'Market' },
+          { item: 'ColorPop', group: 'Digital', syn: ['cpop'] }, { item: 'Digital Twilight', group: 'Digital', syn: ['dtw'] },
+          { item: 'Home Measurement', group: 'Digital', syn: ['mrh'] }, { item: 'Social Media Teaser', group: 'Digital', syn: ['smt'] },
+          { item: 'YouTube', group: 'Digital', syn: ['yt'] }, { item: 'Trueview', group: 'Digital', syn: ['trvw'] },
+          { item: 'TV Screen/Monitor', group: 'Digital', syn: ['tv'] }, { item: 'Virtual Staging', group: 'Digital', syn: ['vs'] },
+          { item: 'Keepsake Photo Album', group: 'Market', syn: ['kpa'] }, { item: '2 MLS Market Add-On', group: 'Market' },
           { item: '5 MLS Market Add-On', group: 'Market' }, { item: '10 MLS Market Add-On', group: 'Market' },
-          { item: 'Inclement Weather Return', group: 'Time' }, { item: 'Cancellation Fee', group: 'Time' },
+          { item: 'Inclement Weather Return', group: 'Time', syn: ['iwr'] }, { item: 'Cancellation Fee', group: 'Time', syn: ['cx'] },
           { item: 'Sunrise Time Slot', group: 'Time' }, { item: 'Twilight Time Slot', group: 'Time' },
-          { item: 'Night Time Slot', group: 'Time' }, { item: 'Weekend Fee', group: 'Time' },
-          { item: 'Next Day Rush', group: 'Time' }, { item: 'Same Day Rush', group: 'Time' },
+          { item: 'Night Time Slot', group: 'Time' }, { item: 'Weekend Fee', group: 'Time', syn: ['wk'] },
+          { item: 'Next Day Rush', group: 'Time', syn: ['ndr'] }, { item: 'Same Day Rush', group: 'Time', syn: ['sdr'] },
           { item: 'MLS Extended/Hr', group: 'Time' }, { item: 'PORT Extended/Hr', group: 'Time' },
           { item: 'Processing/Hr', group: 'Time' }
         ],
@@ -241,11 +241,16 @@ document.addEventListener('alpine:init', () => {
           // Exact abbreviation match: show ONLY the tagged entries, skip loose
           // substring search entirely (prevents e.g. "ap" incidentally matching
           // "Appeal" inside an unrelated label).
-          const isKnownAbbrev = this.productSearchIndex.some(p => p.syn && p.syn.includes(q));
+          const isKnownAbbrev = this.productSearchIndex.some(p => p.syn && p.syn.includes(q))
+            || this.addonSearchIndex.some(r => r.syn && r.syn.includes(q));
           if (isKnownAbbrev) {
-            return this.productSearchIndex
+            const abbrevProducts = this.productSearchIndex
               .filter(p => p.syn && p.syn.includes(q))
               .map(p => ({ type: 'product', ...p, sub: this.catTitle[p.hero] }));
+            const abbrevItems = this.addonSearchIndex
+              .filter(r => r.syn && r.syn.includes(q))
+              .map(r => ({ type: 'item', item: r.item, group: r.group, label: r.item, sub: r.group + ' Add-On' }));
+            return [...abbrevProducts, ...abbrevItems];
           }
           const catMatches = this.catList
             .filter(key => this.fuzzyMatch(q, this.catTitle[key]))
