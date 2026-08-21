@@ -2033,6 +2033,12 @@ document.addEventListener('alpine:init', () => {
           <template x-if="!smartAnswer && searchQuery.trim().length > 0 && searchResults.length === 0">
             <p class="text-[13px] font-semibold text-center py-4 px-3" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'" x-text="tr('noMatchingServices')"></p>
           </template>
+          <!-- Stagger only applies to the zero-state 'Popular' list (searchQuery empty). Live
+               filtered results change on every keystroke -- since x-for keys by label, most rows
+               are freshly-inserted DOM nodes on each keystroke, which would retrigger the cascade
+               constantly and read as twitchy rather than premium. Popular is a fixed, unchanging
+               list, so it's the one place this plays once and looks intentional. -->
+          <div :class="searchQuery.trim().length === 0 ? 'sheet-stagger-content' : ''">
           <template x-for="(result, idx) in searchResults" :key="result.type + '-' + idx + '-' + result.label">
             <button x-show="!smartAnswer" @click="selectSearchResult(result)"
                     class="w-full flex items-center gap-3 px-4 py-2 transition-colors active:scale-[0.98] cursor-pointer"
@@ -2054,6 +2060,7 @@ document.addEventListener('alpine:init', () => {
               </div>
             </button>
           </template>
+          </div>
         </div>
         </template>
       </div>
