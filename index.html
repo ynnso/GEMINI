@@ -1941,20 +1941,19 @@ document.addEventListener('alpine:init', () => {
        drag/jiggle classes already fight each other enough without a third transform/background
        source added into the mix while a tile-swap drag is active. */
     .home-tile-press {
-      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1), background 0.4s cubic-bezier(0.16,1,0.3,1);
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
     }
     .home-tile-press:active {
-      background: #e60000 !important;
-      box-shadow: inset 4px 4px 9px rgba(0,0,0,0.4), inset -3px -3px 7px rgba(255,255,255,0.15) !important;
       transform: scale(0.96);
     }
-    .home-tile-press:active .home-tile-icon-wrap {
-      background: transparent !important;
-      box-shadow: none !important;
+    .home-tile-icon-wrap {
       transition: background 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1);
     }
-    .home-tile-press:active .home-tile-icon-svg,
-    .home-tile-press:active .home-tile-label {
+    .home-tile-press:active .home-tile-icon-wrap {
+      background: #e60000 !important;
+      box-shadow: inset 4px 4px 9px rgba(0,0,0,0.4), inset -3px -3px 7px rgba(255,255,255,0.15) !important;
+    }
+    .home-tile-press:active .home-tile-icon-svg {
       color: #fff !important;
       transition: color 0.4s cubic-bezier(0.16,1,0.3,1);
     }
