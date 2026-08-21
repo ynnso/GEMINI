@@ -1624,6 +1624,15 @@ document.addEventListener('alpine:init', () => {
           });
         },
 
+        /* Real elastic resistance for dragging a sheet past its natural bound (e.g. pulling
+           up when there's nothing more to reveal) -- the classic iOS UIScrollView formula.
+           Grows fast at first, then flattens the harder you pull, instead of a flat fraction. */
+        rubberBand(delta, dim = 400) {
+          const c = 0.55;
+          const sign = delta < 0 ? -1 : 1;
+          const d = Math.abs(delta);
+          return sign * (d * dim * c) / (dim + c * d);
+        },
         dragStart(e) {
           const clientY = e.clientY ?? (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
           this.startY = clientY;
@@ -1648,7 +1657,7 @@ document.addEventListener('alpine:init', () => {
           this.lastTime = now;
 
           if (deltaY < 0) {
-            this.dragY = deltaY * 0.25; 
+            this.dragY = this.rubberBand(deltaY);
           } else {
             this.dragY = deltaY;
           }
@@ -1689,7 +1698,7 @@ document.addEventListener('alpine:init', () => {
           if (dt > 0) this.faveVelocityY = (currentY - this.faveLastY) / dt;
           this.faveLastY = currentY;
           this.faveLastTime = now;
-          this.faveDragY = deltaY < 0 ? deltaY * 0.25 : deltaY;
+          this.faveDragY = deltaY < 0 ? this.rubberBand(deltaY) : deltaY;
         },
         faveDragEnd() {
           if (!this.faveIsDragging) return;
