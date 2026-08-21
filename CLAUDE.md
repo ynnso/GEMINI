@@ -250,3 +250,30 @@ Confirm real browser-based visual testing actually works in this environment bef
 - Category-picker sheets (`tourCategory`, `floorCategory`, `video`, `addon`, `aerial`) and `cart` get the same flush/level/grey/stroke-weight treatment on their close button, but no heart — there's nothing to favorite there. Fave 5's own sheet keeps its original close X untouched, by explicit instruction.
 - Per-sheet `pt` offset for handle-alignment is NOT one constant — it depends on that sheet's own wrapper/row padding combo, measured empirically per sheet rather than assumed: `pt-[7px]` for sheets with a `pt-3` wrapper + `py-3` handle row (most product sheets, cart, tourCategory), `pt-[3px]` for `pt-2` wrapper + `py-3` row (`floorplan`, `matterport`, `port`), `pt-[1px]` for `pt-3`-on-self + `py-1.5` row (the category pickers). If a sheet's padding changes, this offset needs re-measuring, not copy-pasting from another sheet.
 - Real bug caught mid-rollout: on 5 sheets (`full`, `exterior`, `mini`, `airbnb`, `ranch`) a find-replace boundary mismatch left the OLD close-button SVG un-replaced, nested inside the NEW heart button's `<svg>` — rendered as a visibly broken/crossed icon. Caught by a real screenshot (not just code review), fixed, then re-verified all 13 sheets via `querySelectorAll('svg').length === 1` on every heart button before calling it done.
+
+---
+
+## 11. Package Wizard — Sandbox Build (Not Live Yet)
+
+A "Wizard" feature existed in an old reference build (`PriceApp v1`, a file Sonny shared, not part of this repo) — compares whatever package/photo count you've got dialed in against Mini and Full Shoot, tells you which is actually cheaper. Rebuilding it here, on purpose kept fully disconnected from the real app until it's proven out.
+
+**Where it lives right now:**
+- Own sheet, own state: `wizTestOpen`, `wizTestPackage`, `wizTestQty`, `wizTestSqft`. Reads `priceMatrix` directly but never touches `selectedSqFt`, `count`, `miniCount`, `reshootCount`, `exteriorCount`, or `cartItems` — verified live, selecting a candidate only ever changes `wizTest*` state.
+- Only reachable via a 5th icon in the hamburger drawer. No chip on any of the four real product sheets yet — that's the next step, not done.
+- `wizTestPrices()` does a real 3-way comparison (current package vs. Mini vs. Full), not just current-vs-Full — this matters, see below.
+
+**The math is copied from v1, verified against this app's real numbers, then fixed where v1 (and the first port) got it wrong:**
+- Full Shoot's price for a count past 50 photos was a naive "round up to the nearest tier" bucket, inherited straight from v1. Undercharged every job past 50 photos — 60 photos showed the flat 50-tier price ($224) instead of the real tier + $5/extra overage price ($274, confirmed against the Golden Dataset). Fixed by porting in the actual `evaluateCheapestBase()`-style cheapest-tier-or-overage comparison instead of the bucket.
+- The qty steppers had a floor (12/8/8/25) but no ceiling — spamming the `+` button past the real product limits (Mini 24, Reshoot/Exterior 20, Full 150) kept computing a price for a photo count no real sheet would ever let a Photog select. Both the stepper and the price math now clamp to the same caps the real sheets enforce.
+- Full's own floor was wrongly 1 instead of 25 (the real sheet's actual minimum) — fixed alongside the above, so a nonsense "Full 3 img" label can no longer happen.
+
+**A genuinely useful finding from testing v1 live (not guessed, watched it happen):** its three auto-popup thresholds (Mini fires at 14 photos, Reshoot at 11, Exterior at 12) are not arbitrary tuning — they're the exact price tie-point for switching to the *cheapest available alternative*, which is sometimes Mini, not Full. Example: at 11 photos, Reshoot ($119) exactly ties Mini's flat price ($119) — Full isn't even competitive yet at that point. Confirmed the same tie-points hold in this app's own numbers. Worth reusing 14/11/12 as the real trigger thresholds if/when the auto-nudge gets built, not re-deriving new ones.
+
+**Also found, watching v1 live:** the auto-popup fires right on schedule, then dead-ends — "What's the property's sq ft?" — with zero comparison shown until you answer it. That's the real bottleneck Sonny flagged: Mini/Reshoot/Exterior sheets don't collect sq ft at all today, so the Wizard has nothing to compare against until asked. Agreed direction to fix it: default the Wizard to the smallest tier (0–1,999 sq ft) the instant it opens, so it always shows a real, usable comparison immediately — worst case conservative (undersells how much Full would save on a bigger house), never wrong in a way that costs money, one tap to correct if the house is actually bigger.
+
+**Explicitly decided, not yet built:**
+- Auto-nudge on the real Mini/Reshoot/Exterior sheets once photo count crosses the real threshold, using the smallest-tier default described above so it's never a dead end. Should fire even before sq ft is known — the alternative (waiting) means Photogs get stepper-happy and blow past the point where switching would've saved money.
+- A shared "property sq ft" value the whole session can read from — Full Shoot already collects it, nothing else does. Sonny doesn't think session-only vs. slightly-longer persistence matters either way; go with session-only, matching everything else in this app.
+- Chip on all four real product sheets, pre-filling from that shared sq ft.
+- Light Smart Search integration: silently run the Wizard math in the background on existing search answers, surface a "may be cheaper" nudge only when it's true. No new query parsing.
+- PORT, Airbnb, and Ranch were explicitly **not** checked for the same crossover pattern — Sonny called them "different animals," skip until MLS side is fully proven.
