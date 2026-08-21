@@ -36,7 +36,7 @@ document.addEventListener('alpine:init', () => {
             photos: 'Photos', video: 'Video', floorPlan: 'Floor Plan', addOns: 'Add-Ons', aerial: 'Aerial',
             matterport: 'Matterport', zillow3DTour: 'Zillow 3D Tour',
             sqFt: 'Sq Ft', totalPhotos: 'Total Photos', tax: 'Tax', base: 'Base', extra: 'Extra', combo: 'Combo',
-            searchPlaceholder: 'Search services or add-ons...',
+            searchPlaceholder: 'Search services...',
             searchByVoice: 'Search by voice', searchCategories: 'Search categories', close: 'Close',
             popular: 'Popular', noMatchingServices: 'No matching services', answer: 'Answer', viewSheet: 'View sheet',
             switchToDark: 'Switch to Dark Mode', switchToLight: 'Switch to Light Mode', viewQuoteCart: 'View Quote Cart',
@@ -54,7 +54,7 @@ document.addEventListener('alpine:init', () => {
             photos: 'Fotos', video: 'Video', floorPlan: 'Plano', addOns: 'Extras', aerial: 'Aéreo',
             matterport: 'Matterport', zillow3DTour: 'Tour 3D Zillow',
             sqFt: 'Pies²', totalPhotos: 'Total de Fotos', tax: 'Impuesto', base: 'Base', extra: 'Extra', combo: 'Combo',
-            searchPlaceholder: 'Buscar servicios o extras...',
+            searchPlaceholder: 'Buscar servicios...',
             searchByVoice: 'Buscar por voz', searchCategories: 'Buscar categorías', close: 'Cerrar',
             popular: 'Popular', noMatchingServices: 'Sin resultados', answer: 'Respuesta', viewSheet: 'Ver detalle',
             switchToDark: 'Modo Oscuro', switchToLight: 'Modo Claro', viewQuoteCart: 'Ver Cotización',
@@ -1638,8 +1638,7 @@ document.addEventListener('alpine:init', () => {
            @click.outside="closeSearch()">
         <button x-show="!searchOpen" @click="openSearch()"
                 class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer mx-auto"
-                :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
-                :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
+                :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9] shadow-[5px_5px_10px_#14171c,-5px_-5px_10px_#282e38]' : 'bg-[#e6e9ef] text-[#1e2530] shadow-[5px_5px_10px_#b8bec9,-5px_-5px_10px_#ffffff]'"
                 :title="tr('searchCategories')">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
@@ -1684,13 +1683,13 @@ document.addEventListener('alpine:init', () => {
         <!-- PREDICTIVE RESULTS DROPDOWN -->
         <template x-if="searchOpen">
         <div x-show="searchOpen" x-cloak
-             x-transition:enter="transition ease-out duration-150"
-             x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
-             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-100"
-             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-             x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
-             class="absolute top-[52px] left-0 right-0 rounded-[16px] overflow-hidden z-[80] transition-colors duration-300 max-h-[60vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-4"
+             class="fixed top-[76px] left-6 right-6 rounded-b-[16px] overflow-hidden z-[90] transition-colors duration-300 max-h-[70vh] overflow-y-auto no-scrollbar backdrop-blur-sm"
              :class="isDark ? 'bg-[#1e232a]/95' : 'bg-[#e6e9ef]/95'"
              :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
           <template x-if="smartAnswer">
@@ -1703,7 +1702,7 @@ document.addEventListener('alpine:init', () => {
             </div>
           </template>
           <template x-if="!smartAnswer && searchQuery.trim().length === 0">
-            <p class="text-[11px] font-bold uppercase tracking-wider px-4 pt-3 pb-1" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'" x-text="tr('popular')"></p>
+            <p class="text-[11px] font-bold uppercase tracking-wider pl-[60px] pr-4 pt-3 pb-1" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'" x-text="tr('popular')"></p>
           </template>
           <template x-if="!smartAnswer && searchQuery.trim().length > 0 && searchResults.length === 0">
             <p class="text-[13px] font-semibold text-center py-4 px-3" :class="isDark ? 'text-[#64748b]' : 'text-[#94a3b8]'" x-text="tr('noMatchingServices')"></p>
@@ -1726,7 +1725,6 @@ document.addEventListener('alpine:init', () => {
               </div>
               <div class="flex flex-col items-start min-w-0">
                 <span class="text-[14px] font-bold truncate w-full text-left" :class="isDark ? 'text-[#f1f5f9]' : 'text-[#1e2530]'" x-html="highlightMatch(result.label, searchQuery.trim().toLowerCase())"></span>
-                <span x-show="result.sub" class="text-[11px] font-semibold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" x-text="result.sub"></span>
               </div>
             </button>
           </template>
