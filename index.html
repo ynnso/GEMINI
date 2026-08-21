@@ -62,11 +62,20 @@ document.addEventListener('alpine:init', () => {
           if (typeof Sortable === 'undefined') return;
           if (this._homeSortableInstance) return;
           this._homeSortableInstance = Sortable.create(el, {
-            animation: 150,
+            animation: 320,
+            easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
             disabled: true,
             delay: 0,
-            ghostClass: 'home-tile-drag-ghost',
+            forceFallback: true,
+            fallbackClass: 'home-tile-fallback',
+            fallbackOnBody: true,
+            fallbackTolerance: 3,
+            chosenClass: 'home-tile-chosen',
+            ghostClass: 'home-tile-ghost',
+            onStart: () => { if (navigator.vibrate) navigator.vibrate(30); },
+            onChange: () => { if (navigator.vibrate) navigator.vibrate(8); },
             onEnd: (evt) => {
+              if (navigator.vibrate) navigator.vibrate(20);
               if (evt.oldIndex === evt.newIndex) return;
               const moved = this.homeTileOrder.splice(evt.oldIndex, 1)[0];
               this.homeTileOrder.splice(evt.newIndex, 0, moved);
@@ -1663,7 +1672,19 @@ document.addEventListener('alpine:init', () => {
       50% { transform: rotate(1deg); }
     }
     .tile-jiggle { animation: tile-jiggle 0.24s ease-in-out infinite; }
-    .home-tile-drag-ghost { opacity: 0.4; }
+
+    /* HOME TILE DRAG-AND-DROP: lift + spring feel */
+    .home-tile-chosen { animation: none !important; }
+    .home-tile-ghost { animation: none !important; opacity: 0.25 !important; }
+    .home-tile-fallback {
+      scale: 1.08;
+      opacity: 1 !important;
+      z-index: 999 !important;
+      animation: none !important;
+      border-radius: 24px !important;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 8px 18px rgba(0,0,0,0.25) !important;
+      transition: scale 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease-out;
+    }
   </style>
 </head>
 <body class="w-full min-h-screen transition-colors duration-300"
@@ -1818,8 +1839,16 @@ document.addEventListener('alpine:init', () => {
          class="fixed inset-0 z-[65] transition-colors duration-300 backdrop-blur-sm"
          :class="isDark ? 'bg-black/45' : 'bg-black/25'"></div>
 
+    <!-- HOME EDIT MODE: "Done" replaces the hamburger trigger in the same slot -->
+    <div x-show="homeEditMode" x-cloak
+         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+         class="fixed top-[18px] right-0 w-[33%] z-[80] flex justify-center">
+      <button @click="exitHomeEditMode()" class="h-10 px-4 rounded-[15px] flex items-center justify-center text-[14px] font-black transition-all active:scale-90 cursor-pointer" :class="isDark ? 'bg-[#ff2a2a] text-white' : 'bg-[#e60000] text-white'">Done</button>
+    </div>
+
     <!-- MORPHING HAMBURGER TRIGGER (independent, always above header + drawer so it never gets covered) -->
-    <div x-show="!searchOpen" class="fixed top-[18px] right-0 w-[33%] z-[80] flex justify-center">
+    <div x-show="!searchOpen && !homeEditMode" class="fixed top-[18px] right-0 w-[33%] z-[80] flex justify-center">
       <button @click="drawerOpen = !drawerOpen"
               class="w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
               :class="drawerOpen ? '' : (isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]')"
@@ -1907,15 +1936,6 @@ document.addEventListener('alpine:init', () => {
 
     <!-- DASHBOARD CONTENT -->
     <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px]">
-
-      <!-- EDIT LAYOUT BANNER -->
-      <div x-show="homeEditMode" x-cloak
-           x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-           x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-           class="w-full max-w-sm flex items-center justify-between mb-3 px-1">
-        <span class="text-[13px] font-bold" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Hold &amp; drag to reorder</span>
-        <button @click="exitHomeEditMode()" class="text-[14px] font-black px-4 py-1.5 rounded-full cursor-pointer" :class="isDark ? 'bg-[#ff2a2a] text-white' : 'bg-[#e60000] text-white'">Done</button>
-      </div>
 
       <div x-init="$nextTick(() => initHomeSortable($el))" @click.self="exitHomeEditMode()" class="grid grid-cols-2 gap-x-4 gap-y-4 w-full max-w-sm">
         <template x-for="(key, tileIdx) in homeTileOrder" :key="key">
