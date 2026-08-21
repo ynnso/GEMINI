@@ -1780,28 +1780,47 @@ document.addEventListener('alpine:init', () => {
           this.wizTestQty = pkg === 'MINI' ? '12' : (pkg === 'FULL' ? '25' : '8');
         },
         wizTestUpdateQty(dir) {
-          const floor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 1 : 8);
+          const floor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 25 : 8);
+          const cap = this.wizTestPackage === 'MINI' ? 24 : (this.wizTestPackage === 'FULL' ? 150 : 20);
           let val = parseInt(this.wizTestQty) || floor;
-          val = dir === 'up' ? val + 1 : Math.max(floor, val - 1);
+          val = dir === 'up' ? Math.min(cap, val + 1) : Math.max(floor, val - 1);
           this.wizTestQty = String(val);
         },
         wizTestPrices() {
           const tiers = [25, 36, 40, 50];
           const sqftTable = (this.wizTestSqft && this.priceMatrix[this.wizTestSqft]) ? this.priceMatrix[this.wizTestSqft] : null;
-          const fullTierFor = (n) => { for (const t of tiers) { if (n <= t) return t; } return 50; };
-          const qFloor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 1 : 8);
+          // Mirrors the real Full Shoot sheet's evaluateCheapestBase(): cheapest of (tier flat price)
+          // vs (tier + $5/extra overage), across all 4 tiers -- not a naive "round up to the nearest
+          // tier" bucket. A naive bucket undercharges anything past 50 photos (confirmed against the
+          // Golden Dataset: 60 photos should be $274, a flat-50 bucket was showing $224).
+          const cheapestFull = (n) => {
+            if (!sqftTable) return { tier: null, price: null };
+            let bestTier = tiers[0];
+            let minCost = Infinity;
+            for (const t of tiers) {
+              const cost = n >= t ? sqftTable[t] + (n - t) * 5 : sqftTable[t];
+              if (cost < minCost) { minCost = cost; bestTier = t; }
+            }
+            return { tier: bestTier, price: minCost };
+          };
+          // Caps mirror the real per-package steppers (Mini 24, Reshoot/Exterior 20, Full 150,
+          // Full's own floor 25) -- without these the math still "works" but describes a photo
+          // count no real sheet would ever let a Photog select.
+          const qFloor = this.wizTestPackage === 'MINI' ? 12 : (this.wizTestPackage === 'FULL' ? 25 : 8);
+          const qCap = this.wizTestPackage === 'MINI' ? 24 : (this.wizTestPackage === 'FULL' ? 150 : 20);
           const rawQty = parseInt(this.wizTestQty) || 0;
-          const q = Math.max(qFloor, rawQty || (this.wizTestPackage === 'FULL' ? 25 : qFloor));
+          const q = Math.min(qCap, Math.max(qFloor, rawQty || qFloor));
           const reshoot = 89 + Math.max(0, q - 8) * 10;
           const ext = 79 + Math.max(0, q - 8) * 10;
           const mini = 119 + Math.max(0, q - 12) * 10;
-          const fullTier = fullTierFor(q);
-          const full = sqftTable ? sqftTable[fullTier] : null;
+          const fullResult = cheapestFull(q);
+          const fullTier = fullResult.tier;
+          const full = fullResult.price;
           const current = this.wizTestPackage === 'RESHOOT' ? reshoot : (this.wizTestPackage === 'EXT' ? ext : (this.wizTestPackage === 'FULL' ? full : mini));
           const currentLabel = this.wizTestPackage === 'RESHOOT' ? 'Reshoot' : (this.wizTestPackage === 'EXT' ? 'Exterior' : (this.wizTestPackage === 'FULL' ? 'Full' : 'Mini'));
           const candidates = [{ key: 'current', label: currentLabel + ' ' + (this.wizTestPackage === 'FULL' ? q + ' img (' + fullTier + ' tier)' : q + ' img'), price: current, imgs: q }];
           if (this.wizTestPackage !== 'MINI' && q <= 24) candidates.push({ key: 'mini', label: 'Mini ' + Math.max(q, 12) + ' img', price: mini, imgs: Math.max(q, 12) });
-          if (full !== null && full !== undefined && this.wizTestPackage !== 'FULL') candidates.push({ key: 'full', label: 'Full ' + fullTier + ' img', price: full, imgs: fullTier });
+          if (full !== null && full !== undefined && this.wizTestPackage !== 'FULL') candidates.push({ key: 'full', label: 'Full ' + (q > fullTier ? q + ' img (' + fullTier + ' tier)' : fullTier + ' img'), price: full, imgs: Math.max(q, fullTier) });
           const validCandidates = candidates.filter(c => c.price !== null && c.price !== undefined);
           if (!validCandidates.length) { candidates.forEach(c => { c.isBest = false; }); return candidates; }
           const minPrice = Math.min(...validCandidates.map(c => c.price));
