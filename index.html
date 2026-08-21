@@ -1971,30 +1971,38 @@ document.addEventListener('alpine:init', () => {
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
-             class="flex items-center h-[55px] rounded-[15px] px-3 gap-2 border-2 transition-colors duration-300 w-full"
-             :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
-             :style="(searchInputFocused ? (isDark ? 'border-color:#ff2a2a;' : 'border-color:#e60000;') : 'border-color:transparent;') + (isDark ? 'box-shadow: inset 4px 4px 8px #14171c, inset -4px -4px 8px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;')">
-          <svg class="w-5 h-5 shrink-0" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-          </svg>
-          <input x-ref="searchInput" x-model="searchQuery" type="text" :placeholder="tr('searchPlaceholder')"
-                 class="flex-1 min-w-0 bg-transparent outline-none text-[20px] font-semibold"
-                 :class="isDark ? 'text-[#f1f5f9] placeholder:text-[#64748b]' : 'text-[#1e2530] placeholder:text-[#94a3b8]'"
-                 @focus="searchInputFocused = true" @blur="searchInputFocused = false"
-                 @keydown.escape="closeSearch()" @keydown.enter="handleSearchEnter()" />
-          <button x-show="voiceSupported" @click="voiceListening ? stopVoiceSearch() : startVoiceSearch()" :title="tr('searchByVoice')"
-                  class="shrink-0 w-6 h-6 flex items-center justify-center rounded-full transition-all active:scale-90"
-                  :class="voiceListening ? 'animate-pulse' : ''"
-                  :style="voiceListening ? 'background:#fff; color:#e60000;' : ''">
-            <svg class="w-4 h-4" :class="!voiceListening ? (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]') : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+             class="w-full">
+          <!-- Border/background styling lives on this INNER element, not the one being directly
+               animated above -- Alpine's :style effect here reacts to searchInputFocused (which
+               openSearch() triggers via focus()), and if it shared an element with our manual
+               transform/transition writes, its own re-render would wipe them out. Same bug class
+               as the earlier x-show-vs-:style clobber found this session, avoided by splitting
+               them onto two elements instead of fighting over one. -->
+          <div class="flex items-center h-[55px] rounded-[15px] px-3 gap-2 border-2 transition-colors duration-300 w-full"
+               :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
+               :style="(searchInputFocused ? (isDark ? 'border-color:#ff2a2a;' : 'border-color:#e60000;') : 'border-color:transparent;') + (isDark ? 'box-shadow: inset 4px 4px 8px #14171c, inset -4px -4px 8px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;')">
+            <svg class="w-5 h-5 shrink-0" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
             </svg>
-          </button>
-          <button @click="closeSearch()" class="shrink-0 w-5 h-5 flex items-center justify-center" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            <input x-ref="searchInput" x-model="searchQuery" type="text" :placeholder="tr('searchPlaceholder')"
+                   class="flex-1 min-w-0 bg-transparent outline-none text-[20px] font-semibold"
+                   :class="isDark ? 'text-[#f1f5f9] placeholder:text-[#64748b]' : 'text-[#1e2530] placeholder:text-[#94a3b8]'"
+                   @focus="searchInputFocused = true" @blur="searchInputFocused = false"
+                   @keydown.escape="closeSearch()" @keydown.enter="handleSearchEnter()" />
+            <button x-show="voiceSupported" @click="voiceListening ? stopVoiceSearch() : startVoiceSearch()" :title="tr('searchByVoice')"
+                    class="shrink-0 w-6 h-6 flex items-center justify-center rounded-full transition-all active:scale-90"
+                    :class="voiceListening ? 'animate-pulse' : ''"
+                    :style="voiceListening ? 'background:#fff; color:#e60000;' : ''">
+              <svg class="w-4 h-4" :class="!voiceListening ? (isDark ? 'text-[#94a3b8]' : 'text-[#64748b]') : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+              </svg>
+            </button>
+            <button @click="closeSearch()" class="shrink-0 w-5 h-5 flex items-center justify-center" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
         </template>
 
