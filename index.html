@@ -1282,24 +1282,25 @@ document.addEventListener('alpine:init', () => {
             this.ctaTimeoutId = null;
           }, 600);
 
-          // Toast confirmation instead of forcing the user out of the sheet -- stay put by
-          // default (they might want to add another item from the same screen), only actually
-          // navigate to the cart if they explicitly tap View Cart in the toast.
-          this.showCartToast(title);
+          // No toast -- stay put by default (they might want to add another item from the same
+          // screen). The CTA's own success checkmark confirms the tap; the header cart badge
+          // (count + a quick bump) confirms the cart actually grew. User taps the badge if they
+          // want to go look at the cart -- nothing forces them there.
+          this.bumpCartBadge();
         },
-        cartToast: null,
-        cartToastTimer: null,
-        showCartToast(title) {
-          if (this.cartToastTimer) clearTimeout(this.cartToastTimer);
-          this.cartToast = title;
-          this.cartToastTimer = setTimeout(() => {
-            this.cartToast = null;
-            this.cartToastTimer = null;
-          }, 2800);
-        },
-        dismissCartToast() {
-          if (this.cartToastTimer) { clearTimeout(this.cartToastTimer); this.cartToastTimer = null; }
-          this.cartToast = null;
+        cartBadgeBump: false,
+        cartBadgeBumpTimer: null,
+        bumpCartBadge() {
+          if (this.cartBadgeBumpTimer) clearTimeout(this.cartBadgeBumpTimer);
+          this.cartBadgeBump = false;
+          // setTimeout(0), not requestAnimationFrame -- this just needs to land on the next tick so
+          // Alpine's class removal actually commits before we re-add it (restarting the CSS animation
+          // even on back-to-back adds); rAF ties it to frame compositing, which stalls if the tab isn't
+          // actively painting.
+          setTimeout(() => {
+            this.cartBadgeBump = true;
+            this.cartBadgeBumpTimer = setTimeout(() => { this.cartBadgeBump = false; this.cartBadgeBumpTimer = null; }, 420);
+          }, 0);
         },
 
         /* SHEET CONTROLS & SMOOTH DRAG MECHANICS */
@@ -1976,6 +1977,11 @@ document.addEventListener('alpine:init', () => {
     .hamburger-bar { transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1); }
     .hamburger-bar-mid { transition: opacity 0.4s cubic-bezier(0.34,1.56,0.64,1); }
 
+    /* Cart badge bump: the only feedback an add-to-cart gets now that the toast is gone. Quick
+       overshoot pop, not a bounce loop -- reads as "count just changed," not a decoration. */
+    @keyframes cart-badge-bump { 0% { transform: scale(1); } 40% { transform: scale(1.22); } 100% { transform: scale(1); } }
+    .cart-badge-bump { animation: cart-badge-bump 0.42s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
     /* Home tile press: same slow deep-press red fill as the drawer icon buttons (.drawer-icon-btn),
        ported here. Only ever applied when !homeEditMode (see the tile's :class binding) -- the
        drag/jiggle classes already fight each other enough without a third transform/background
@@ -2254,6 +2260,30 @@ document.addEventListener('alpine:init', () => {
          grid's right edge like the rest of the header icons. Open (X), it needs to match the drawer's
          own icon column instead, which is centered within a wider 40% box -- those are two different
          reference points, not one, which is why the X drifted out of line before. -->
+    <!-- PERSISTENT CART BADGE: replaces the old add-to-cart toast. Lives just left of the hamburger
+         trigger (right-20 = right-8's 32px + the trigger's own 40px + an 8px gap, so it sits flush
+         beside it). Only exists once the cart actually has something in it -- an empty cart isn't
+         worth a permanent header slot. A tap opens the real cart sheet; no forced navigation on add,
+         just this badge bumping so the count-change is felt, not missed. -->
+    <div x-show="!searchOpen && !homeEditMode && !drawerOpen && activeCount() > 0" x-cloak
+         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-75" x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-75"
+         class="fixed top-[12px] right-20 z-[80] flex justify-center">
+      <button @click="openSheet('cart')"
+              class="relative w-10 h-10 rounded-[15px] flex items-center justify-center transition-all active:scale-90 focus:outline-none cursor-pointer"
+              :class="[isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]', cartBadgeBump ? 'cart-badge-bump' : '']"
+              :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
+              :title="tr('viewQuoteCart')">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+          <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
+        </svg>
+        <div class="absolute -top-1.5 -right-1.5 text-white text-[10px] font-black w-[18px] h-[18px] rounded-full flex items-center justify-center"
+             :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'"
+             :style="isDark ? 'box-shadow: 2px 2px 4px #14171c;' : 'box-shadow: 2px 2px 4px #b8bec9;'"
+             x-text="activeCount()"></div>
+      </button>
+    </div>
+
     <div x-show="!searchOpen && !homeEditMode"
          class="fixed top-[12px] z-[80] flex justify-center"
          :class="drawerOpen ? 'right-0 w-[40%]' : 'right-8'">
@@ -2297,20 +2327,6 @@ document.addEventListener('alpine:init', () => {
              :style="currentFaveIndex !== -1 ? 'filter: drop-shadow(0 0 6px rgba(255,42,42,0.75));' : ''">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
         </svg>
-      </button>
-
-      <!-- CART -->
-      <button @click="drawerOpen = false; setTimeout(() => openSheet('cart'), 950)"
-              class="drawer-icon-btn w-14 h-14 rounded-[18px] flex items-center justify-center relative cursor-pointer"
-              :title="tr('viewQuoteCart')">
-        <svg class="drawer-icon-svg w-[46px] h-[46px] text-[#64748b]" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
-          <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
-        </svg>
-        <template x-if="activeCount() > 0">
-          <div class="absolute -top-1 -right-1 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-sm"
-               :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'"
-               x-text="activeCount()"></div>
-        </template>
       </button>
 
       <!-- LANGUAGE -->
@@ -2402,34 +2418,6 @@ document.addEventListener('alpine:init', () => {
         </button>
       </template>
 
-    </div>
-
-    <!-- ADD-TO-CART TOAST: confirms the add without forcing navigation, sits just above the nav pill.
-         Outer div matches the sheet container exactly (left-0 right-0 max-w-md mx-auto, no px) so the
-         inner toast's mx-5 lines up 1:1 with the CTA button's own mx-5 -- same 20px inset, same edges. -->
-    <div class="fixed left-0 right-0 max-w-md mx-auto z-[62] pointer-events-none"
-         :style="'bottom: calc(84px + env(safe-area-inset-bottom));'">
-    <div x-show="cartToast" x-cloak
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 translate-y-4"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 translate-y-4"
-         class="mx-5 pointer-events-auto rounded-[20px] px-4 py-3 flex items-center gap-3 transition-colors duration-300"
-         :class="isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]'"
-         :style="isDark ? 'box-shadow: 8px 8px 16px #14171c, -7px -7px 15px #282e38;' : 'box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;'">
-      <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0" :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'" :style="isDark ? 'box-shadow: inset 3px 3px 6px #12151a, inset -3px -3px 6px #282e38;' : 'box-shadow: inset 3px 3px 6px #c1c7d0, inset -3px -3px 6px #ffffff;'">
-        <svg class="w-5 h-5" :class="isDark ? 'text-[#ff2a2a]' : 'text-[#e60000]'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-        </svg>
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="text-[11px] font-bold uppercase tracking-wide" :class="isDark ? 'text-[#94a3b8]' : 'text-[#64748b]'">Added to cart</p>
-        <p class="text-[15px] font-bold truncate" x-text="cartToast"></p>
-      </div>
-      <button @click="dismissCartToast(); openSheet('cart')" class="shrink-0 text-[13px] font-black px-3 py-2 rounded-[12px] cursor-pointer text-white" :style="isDark ? 'background:#ff2a2a; box-shadow: 3px 3px 8px rgba(255,42,42,0.35), 3px 3px 6px #14171c;' : 'background:#e60000; box-shadow: 3px 3px 8px rgba(230,0,0,0.35), 3px 3px 6px #b8bec9;'">View Cart</button>
-    </div>
     </div>
 
     <!-- BACKDROP WITH ADAPTIVE OPACITY & BLUR -->
