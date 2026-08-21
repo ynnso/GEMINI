@@ -41,7 +41,6 @@ document.addEventListener('alpine:init', () => {
         homeDragGapX: 16,
         homeDragGapY: 16,
         homeDragPendingTarget: null,
-        homeDragSwapTimer: null,
         loadHomeTileOrder() {
           try {
             const saved = JSON.parse(localStorage.getItem('homeTileOrder'));
@@ -92,13 +91,7 @@ document.addEventListener('alpine:init', () => {
           this.homeDragKey = key;
           if (navigator.vibrate) navigator.vibrate(30);
         },
-        homeTileDragMove(e) {
-          if (!this.homeDragKey) return;
-          this.homeDragX = e.clientX - this.homeDragOffsetX;
-          this.homeDragY = e.clientY - this.homeDragOffsetY;
-
-          // Target slot from raw pointer math -- not from measuring DOM elements that are
-          // themselves mid-animation, so this stays correct no matter what's visually happening.
+        homeTileTargetIndex(e) {
           const colW = this.homeDragTileW + this.homeDragGapX;
           const rowH = this.homeDragTileH + this.homeDragGapY;
           const relX = e.clientX - this.homeDragGridRect.left;
@@ -107,37 +100,29 @@ document.addEventListener('alpine:init', () => {
           let row = Math.floor(relY / rowH);
           col = Math.max(0, Math.min(1, col));
           row = Math.max(0, Math.min(Math.ceil(this.homeTileOrder.length / 2) - 1, row));
-          const targetIndex = Math.min(this.homeTileOrder.length - 1, row * 2 + col);
-
-          const fromIndex = this.homeTileOrder.indexOf(this.homeDragKey);
-          if (targetIndex === fromIndex || fromIndex === -1) {
-            // pointer drifted back over its own slot before committing -- cancel any pending swap
-            if (this.homeDragSwapTimer) { clearTimeout(this.homeDragSwapTimer); this.homeDragSwapTimer = null; }
-            this.homeDragPendingTarget = null;
-            return;
-          }
-
-          // Don't swap the instant the pointer crosses a cell edge -- that's what reads as
-          // jerky/premature. Only commit once the pointer has settled over the new slot for
-          // a beat, matching a real 'this is where it's going' pause instead of every wobble.
-          if (targetIndex !== this.homeDragPendingTarget) {
-            this.homeDragPendingTarget = targetIndex;
-            if (this.homeDragSwapTimer) clearTimeout(this.homeDragSwapTimer);
-            this.homeDragSwapTimer = setTimeout(() => {
-              this.homeDragSwapTimer = null;
-              const currentFrom = this.homeTileOrder.indexOf(this.homeDragKey);
-              if (currentFrom !== -1 && this.homeDragPendingTarget !== null && this.homeDragPendingTarget !== currentFrom) {
-                this.reorderHomeTiles(currentFrom, this.homeDragPendingTarget);
-              }
-            }, 130);
-          }
+          return Math.min(this.homeTileOrder.length - 1, row * 2 + col);
         },
-        endHomeTileDrag() {
+        homeTileDragMove(e) {
           if (!this.homeDragKey) return;
-          if (this.homeDragSwapTimer) { clearTimeout(this.homeDragSwapTimer); this.homeDragSwapTimer = null; }
+          // Nothing reorders here on purpose -- only the floating tile follows the finger.
+          // The actual swap happens once, on release, in endHomeTileDrag.
+          this.homeDragX = e.clientX - this.homeDragOffsetX;
+          this.homeDragY = e.clientY - this.homeDragOffsetY;
+          this.homeDragPendingTarget = this.homeTileTargetIndex(e);
+        },
+        endHomeTileDrag(e) {
+          if (!this.homeDragKey) return;
+          const key = this.homeDragKey;
+          const fromIndex = this.homeTileOrder.indexOf(key);
+          const targetIndex = e ? this.homeTileTargetIndex(e) : this.homeDragPendingTarget;
+
+          this.homeDragKey = null;
           this.homeDragPendingTarget = null;
           if (navigator.vibrate) navigator.vibrate(20);
-          this.homeDragKey = null;
+
+          if (fromIndex !== -1 && targetIndex !== null && targetIndex !== fromIndex) {
+            this.reorderHomeTiles(fromIndex, targetIndex);
+          }
           this.saveHomeTileOrder();
         },
         reorderHomeTiles(fromIdx, toIdx) {
@@ -2013,7 +1998,7 @@ document.addEventListener('alpine:init', () => {
     <main class="flex-1 flex flex-col items-center px-8 pb-[92px] pt-[96px]">
 
       <div x-ref="homeGrid" @click.self="exitHomeEditMode()"
-           @pointermove.window="homeTileDragMove($event)" @pointerup.window="endHomeTileDrag()" @pointercancel.window="endHomeTileDrag()"
+           @pointermove.window="homeTileDragMove($event)" @pointerup.window="endHomeTileDrag($event)" @pointercancel.window="endHomeTileDrag()"
            class="grid grid-cols-2 gap-x-4 gap-y-4 w-full max-w-sm">
         <template x-for="(key, tileIdx) in homeTileOrder" :key="key">
           <button @click="homeEditMode ? null : (makeHero(key), openSheet(sheetForCategory(key)))"
