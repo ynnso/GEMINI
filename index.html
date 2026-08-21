@@ -78,14 +78,36 @@ document.addEventListener('alpine:init', () => {
             chosenClass: 'home-tile-chosen',
             dragClass: 'home-tile-chosen',
             ghostClass: 'home-tile-ghost',
-            onStart: () => {
-              this.homeDragActive = true;
+            onStart: (evt) => {
               if (navigator.vibrate) navigator.vibrate(30);
+              // Plain DOM only here -- do NOT touch Alpine reactive state while Sortable
+              // owns this DOM subtree. Flipping a reactive prop mid-drag makes Alpine's
+              // x-for reconcile the same nodes Sortable is actively moving, and the two
+              // fight over the DOM (no visible movement, icons can end up scrambled).
+              Array.from(evt.from.querySelectorAll(':scope > button')).forEach((btn) => {
+                btn.classList.remove('tile-jiggle');
+                if (btn !== evt.item) btn.classList.add('home-tile-secondary-shrink');
+              });
             },
             onChange: () => { if (navigator.vibrate) navigator.vibrate(8); },
             onEnd: (evt) => {
               if (navigator.vibrate) navigator.vibrate(20);
-              setTimeout(() => { this.homeDragActive = false; }, 340);
+
+              // Sortable physically moved evt.item in the DOM during the drag. Put it back
+              // where it started so Alpine's x-for (driven by homeTileOrder below) is the
+              // only thing that ever performs the actual reorder -- otherwise Alpine's keyed
+              // diffing desyncs from the DOM Sortable already rearranged, and a tile can end
+              // up rendering the wrong icon after a drop.
+              const buttons = Array.from(evt.from.querySelectorAll(':scope > button'));
+              evt.from.insertBefore(evt.item, buttons[evt.oldIndex] || null);
+
+              setTimeout(() => {
+                Array.from(evt.from.querySelectorAll(':scope > button')).forEach((btn) => {
+                  btn.classList.remove('home-tile-secondary-shrink');
+                  if (this.homeEditMode) btn.classList.add('tile-jiggle');
+                });
+              }, 340);
+
               if (evt.oldIndex === evt.newIndex) return;
               const moved = this.homeTileOrder.splice(evt.oldIndex, 1)[0];
               this.homeTileOrder.splice(evt.newIndex, 0, moved);
@@ -1972,7 +1994,7 @@ document.addEventListener('alpine:init', () => {
                   @pointerup="cancelLongPress()" @pointerleave="cancelLongPress()" @pointercancel="cancelLongPress()"
                   :style="'animation-delay:' + (tileIdx * 0.06) + 's' + '; ' + (isDark ? 'box-shadow: 9px 9px 18px #14171c, -9px -9px 18px #282e38;' : 'box-shadow: 9px 9px 18px #b8bec9, -9px -9px 18px #ffffff;')"
                   class="aspect-square rounded-[24px] flex flex-col items-center justify-center gap-3 pt-5 pb-3 px-3 transition-all active:scale-[0.97] cursor-pointer"
-                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', (homeEditMode && !homeDragActive) ? 'tile-jiggle' : '', homeDragActive ? 'home-tile-secondary-shrink' : '']">
+                  :class="[isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]', homeEditMode ? 'tile-jiggle' : '']">
             <div class="w-[64%] aspect-square rounded-[18px] flex items-center justify-center"
                  :class="isDark ? 'bg-[#1e232a]' : 'bg-[#e6e9ef]'"
                  :style="isDark ? 'box-shadow: inset 6px 6px 12px #12151a, inset -5px -5px 11px #282e38;' : 'box-shadow: inset 4px 4px 8px #c1c7d0, inset -4px -4px 8px #ffffff;'">
