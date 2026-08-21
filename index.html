@@ -2274,10 +2274,10 @@ document.addEventListener('alpine:init', () => {
               :class="[isDark ? 'bg-[#1e232a] text-[#f1f5f9]' : 'bg-[#e6e9ef] text-[#1e2530]', cartBadgeBump ? 'cart-badge-bump' : '']"
               :style="isDark ? 'box-shadow: 5px 5px 10px #14171c, -5px -5px 10px #282e38;' : 'box-shadow: 5px 5px 10px #b8bec9, -5px -5px 10px #ffffff;'"
               :title="tr('viewQuoteCart')">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" stroke-width="1.8" fill="none">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" style="width:26px; height:26px; transform: translate(-2px, 2px);">
           <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" stroke="currentColor"/>
         </svg>
-        <div class="absolute -top-1.5 -right-1.5 text-white text-[10px] font-black w-[18px] h-[18px] rounded-full flex items-center justify-center"
+        <div class="absolute -top-0.5 -right-0.5 text-white text-[10px] font-black w-[18px] h-[18px] rounded-full flex items-center justify-center"
              :class="isDark ? 'bg-[#ff2a2a]' : 'bg-[#e60000]'"
              :style="isDark ? 'box-shadow: 2px 2px 4px #14171c;' : 'box-shadow: 2px 2px 4px #b8bec9;'"
              x-text="activeCount()"></div>
