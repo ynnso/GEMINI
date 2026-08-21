@@ -1713,13 +1713,13 @@ document.addEventListener('alpine:init', () => {
               :title="drawerOpen ? tr('close') : tr('menu')">
         <div class="w-5 h-4 relative flex flex-col justify-between">
           <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
-                :class="(isDark || drawerOpen) ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
+                :class="drawerOpen ? 'bg-[#64748b]' : (isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]')"
                 :style="drawerOpen ? 'transform: translateY(7px) rotate(45deg);' : 'transform: translateY(0) rotate(0);'"></span>
           <span class="hamburger-bar-mid block h-[2px] w-full rounded-full"
-                :class="(isDark || drawerOpen) ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
+                :class="drawerOpen ? 'bg-[#64748b]' : (isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]')"
                 :style="drawerOpen ? 'opacity:0;' : 'opacity:1;'"></span>
           <span class="hamburger-bar block h-[2px] w-full rounded-full origin-center"
-                :class="(isDark || drawerOpen) ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]'"
+                :class="drawerOpen ? 'bg-[#64748b]' : (isDark ? 'bg-[#f1f5f9]' : 'bg-[#1e2530]')"
                 :style="drawerOpen ? 'transform: translateY(-7px) rotate(-45deg);' : 'transform: translateY(0) rotate(0);'"></span>
         </div>
       </button>
